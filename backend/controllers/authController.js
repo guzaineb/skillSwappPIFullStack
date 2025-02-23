@@ -128,6 +128,10 @@ async function Test(req, res) {
 	res.send(req.user);
 }
 
+async function Educator(req, res) {
+	res.send(req.user);
+}
+
 async function Admin(req, res) {
 	res.send("welcome admin");
 }
@@ -136,4 +140,4 @@ async function logout(req, res) {
 	console.log(req, res);
 }
 
-module.exports = { signup, verifyEmail, login, Test, Admin, logout };
+module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator };

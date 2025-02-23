@@ -3,7 +3,7 @@ var passport = require('passport');
 const { ROLES, inRole } = require("../security/Rolemiddelware");
 
 const router = express.Router(); // Créer un routeur
-const { signup, login, logout, verifyEmail, Test, Admin } = require("../controllers/authController");
+const { signup, login, logout, verifyEmail, Test,Educator, Admin } = require("../controllers/authController");
 
 router.post('/signup', signup);
 router.post('/login', login);
@@ -14,7 +14,10 @@ router.get("/test", passport.authenticate('jwt', { session: false }),
     inRole(ROLES.LEARNER),
     Test);
 
+ router.get("/educator", passport.authenticate('jwt', { session: false }),
+inRole(ROLES.EDUCATOR),
+Educator);
 // Route pour admin
-router.get("/admin", passport.authenticate('jwt', { session: false }), Admin);
+router.get("/admin", passport.authenticate('jwt', { session: false }), inRole(ROLES.ADMIN), Admin);
 
 module.exports = router; // Exporter le routeur
