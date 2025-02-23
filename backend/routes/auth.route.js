@@ -3,7 +3,7 @@ var passport = require('passport');
 const { ROLES, inRole } = require("../security/Rolemiddelware");
 
 const router = express.Router(); // Créer un routeur
-const { signup, login, logout, verifyEmail, Test,Educator, Admin } = require("../controllers/authController");
+const { signup, login, logout, verifyEmail, Test,Educator,GetAllProfiles, Admin,GetProfile ,AddProfile,DeleteProfile} = require("../controllers/authController");
 
 router.post('/signup', signup);
 router.post('/login', login);
@@ -22,13 +22,13 @@ router.post("/verify-email", verifyEmail);
 
 
 router.post("/profiles", passport.authenticate('jwt', { session: false }),
-    Admin);
+AddProfile);
 
 router.get("/profiles", passport.authenticate('jwt', { session: false }),
-    Admin);
+GetAllProfiles);
     
 router.get("/profile", passport.authenticate('jwt', { session: false }),
-    Admin);
+GetProfile);
 router.delete("/profiles/:id", passport.authenticate('jwt', { session: false }),
-    Admin);
+DeleteProfile);
 module.exports = router; // Exporter le routeur
