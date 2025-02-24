@@ -3,10 +3,13 @@ var passport = require('passport');
 const { ROLES, inRole } = require("../security/Rolemiddelware");
 
 const router = express.Router(); // Créer un routeur
-const { signup, login, logout, verifyEmail, Test,Educator,} = require("../controllers/authController");
+const { signup, login, logout, verifyEmail,register, Test,Educator,} = require("../controllers/authController");
 const { AddProfile, GetAllProfiles, GetProfile, DeleteProfile } = require("../controllers/profile.controllers");
 
 router.post('/signup', signup);
+
+router.post('/register', register);
+
 router.post('/login', login);
 router.post('/logout', logout);
 router.post("/verify-email", verifyEmail);

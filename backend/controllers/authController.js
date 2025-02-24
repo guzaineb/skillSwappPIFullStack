@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const ValidateLogin = require('../validation/Login');
 const { sendVerificationEmail, sendWelcomeEmail } = require('../mailtrap/emails');
 const generateTokenAndSetCookie = require('../utils/generateTokenAndSetCookie');
+const transporter = require('../config/nodemailer');
+
 
 async function signup(req, res) {
 	try {
@@ -14,7 +16,7 @@ async function signup(req, res) {
 			return res.status(400).json({ success: false, message: "All fields are required" });
 		}
 
-		const userAlreadyExists = await User.findOne({ password });
+		const userAlreadyExists = await User.findOne({ email });
 		if (userAlreadyExists) {
 			return res.status(400).json({ success: false, message: "User already exists" });
 		}
@@ -49,6 +51,67 @@ async function signup(req, res) {
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
+
+
+async function register(req, res) {
+	try {
+		const role = "learner";
+		const { email, password, name } = req.body;
+
+		if (!email || !password || !name) {
+			return res.status(400).json({ success: false, message: "All fields are required" });
+		}
+
+		const userAlreadyExists = await User.findOne({ email });
+		if (userAlreadyExists) {
+			return res.status(400).json({ success: false, message: "User already exists" });
+		}
+
+		const hashedPassword = await bcrypt.hash(password, 10);
+		const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+		const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24h expiration
+
+		const user = new User({
+			email,
+			password: hashedPassword,
+			name,
+			role,
+			verificationToken,
+			verificationTokenExpires,
+			isVerified: false,
+		});
+
+		await user.save();
+
+		// Générer un token JWT
+		generateTokenAndSetCookie(res, user._id);
+		const mailOptions = {
+			from: process.env.SENDER_EMAIL,
+			to: email,
+			subject: "Welcome",
+			text: `Welcome to SkillSwapp website. Your account has been created with email id: ${email},\n\n`
+		};
+		
+		// Envoi de l'email avec gestion des erreurs
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				console.error("Erreur lors de l'envoi de l'email :", error);
+				return res.status(500).json({ success: false, message: "Erreur lors de l'envoi de l'email" });
+			} else {
+				console.log("Email envoyé avec succès :", info.response);
+				return res.status(201).json({
+					success: true,
+					message: "Compte créé et email envoyé avec succès",
+				});
+			}
+		});
+		
+	} catch (error) {
+		res.status(400).json({ success: false, message: error.message });
+	}
+};
+
+
 
 async function verifyEmail(req, res) {
 	const { code } = req.body;
@@ -140,4 +203,4 @@ async function logout(req, res) {
 	console.log(req, res);
 }
 
-module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator };
+module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator, register};
