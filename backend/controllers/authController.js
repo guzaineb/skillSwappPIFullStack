@@ -5,7 +5,7 @@ const ValidateLogin = require('../validation/Login');
 const { sendVerificationEmail, sendWelcomeEmail } = require('../mailtrap/emails');
 const generateTokenAndSetCookie = require('../utils/generateTokenAndSetCookie');
 const transporter = require('../config/nodemailer');
-
+const { sendVerificationEmail1 } = require('../config/nodemail');
 
 async function signup(req, res) {
 	try {
@@ -85,25 +85,34 @@ async function register(req, res) {
 
 		// Générer un token JWT
 		generateTokenAndSetCookie(res, user._id);
-		const mailOptions = {
-			from: process.env.SENDER_EMAIL,
-			to: email,
-			subject: "Welcome",
-			text: `Welcome to SkillSwapp website. Your account has been created with email id: ${email},\n\n`
-		};
+		// const mailOptions = {
+		// 	from: process.env.SENDER_EMAIL,
+		// 	to: email,
+		// 	subject: "Welcome",
+		// 	text: `Welcome to SkillSwapp website. Your account has been created with email id: ${email},\n\n`
+		// };
 		
-		// Envoi de l'email avec gestion des erreurs
-		transporter.sendMail(mailOptions, (error, info) => {
-			if (error) {
-				console.error("Erreur lors de l'envoi de l'email :", error);
-				return res.status(500).json({ success: false, message: "Erreur lors de l'envoi de l'email" });
-			} else {
-				console.log("Email envoyé avec succès :", info.response);
-				return res.status(201).json({
-					success: true,
-					message: "Compte créé et email envoyé avec succès",
-				});
-			}
+		
+		// transporter.sendMail(mailOptions, (error, info) => {
+		// 	if (error) {
+		// 		console.error("Erreur lors de l'envoi de l'email :", error);
+		// 		return res.status(500).json({ success: false, message: "Erreur lors de l'envoi de l'email" });
+		// 	} else {
+		// 		console.log("Email envoyé avec succès :", info.response);
+		// 		return res.status(201).json({
+		// 			success: true,
+		// 			message: "Compte créé et email envoyé avec succès",
+		// 		});
+		// 	}
+		// });
+
+		
+		await sendVerificationEmail1(user.email,user.name, verificationToken);
+
+		res.status(201).json({
+			success: true,
+			message: "Account created successfully",
+			user: { ...user._doc, password: undefined },
 		});
 		
 	} catch (error) {
@@ -112,6 +121,38 @@ async function register(req, res) {
 };
 
 
+async function verifyEmailOtp(req, res) {
+	const { userId} = req.body;
+	try {
+		const user = await User.findById({
+			userId
+		});
+
+		if (userAlreadyExists) {
+			return res.json({ success: false, message: "Account Already verified" });
+		}
+		const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+		user.verificationToken = otp;
+		user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24h expiration
+		await user.save();
+		
+
+		await sendWelcomeEmail1(user.email, user.name);
+
+		res.status(200).json({
+			success: true,
+			message: "Email verified successfully",
+			user: {
+				...user._doc,
+				password: undefined,
+			},
+		});
+	} catch (error) {
+		console.log("error in verifyEmail ", error);
+		res.status(500).json({ success: false, message: "Server error" });
+	}
+};
 
 async function verifyEmail(req, res) {
 	const { code } = req.body;
@@ -203,4 +244,4 @@ async function logout(req, res) {
 	console.log(req, res);
 }
 
-module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator, register};
+module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator, register,verifyEmailOtp};
