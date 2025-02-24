@@ -14,7 +14,7 @@ async function signup(req, res) {
 			return res.status(400).json({ success: false, message: "All fields are required" });
 		}
 
-		const userAlreadyExists = await User.findOne({ email });
+		const userAlreadyExists = await User.findOne({ password });
 		if (userAlreadyExists) {
 			return res.status(400).json({ success: false, message: "User already exists" });
 		}

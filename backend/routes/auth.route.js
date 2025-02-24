@@ -3,7 +3,8 @@ var passport = require('passport');
 const { ROLES, inRole } = require("../security/Rolemiddelware");
 
 const router = express.Router(); // Créer un routeur
-const { signup, login, logout, verifyEmail, Test,Educator,GetAllProfiles, Admin,GetProfile ,AddProfile,DeleteProfile} = require("../controllers/authController");
+const { signup, login, logout, verifyEmail, Test,Educator,} = require("../controllers/authController");
+const { AddProfile, GetAllProfiles, GetProfile, DeleteProfile } = require("../controllers/profile.controllers");
 
 router.post('/signup', signup);
 router.post('/login', login);
@@ -22,13 +23,13 @@ router.post("/verify-email", verifyEmail);
 
 
 router.post("/profiles", passport.authenticate('jwt', { session: false }),
-AddProfile);
+AddProfile);//ajouter un profile
 
-router.get("/profiles", passport.authenticate('jwt', { session: false }),
-GetAllProfiles);
+router.get("/profiles", passport.authenticate('jwt', { session: false }),inRole(ROLES.ADMIN),
+GetAllProfiles);//récupérer tous les profiles
     
 router.get("/profile", passport.authenticate('jwt', { session: false }),
-GetProfile);
-router.delete("/profiles/:id", passport.authenticate('jwt', { session: false }),
-DeleteProfile);
-module.exports = router; // Exporter le routeur
+GetProfile);//récupérer un profile
+router.delete("/profiles/:id", passport.authenticate('jwt', { session: false }),inRole(ROLES.ADMIN),
+DeleteProfile);//supprimer un profile
+module.exports = router; 
