@@ -1,23 +1,35 @@
-const transporter = require('./nodemailer'); 
-const EMAIL_TEMPLATE = require('./Template');
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
-async function sendVerificationEmail1(email,name, verificationToken) {
-  try {
-    const mailOptions = {
-      from: process.env.SENDER_EMAIL,
-      to: email,
-      subject: "Welcome to SkillSwapp",
-      html: EMAIL_TEMPLATE.replace('{name}', name).replace('{verificationCode}', verificationToken),
-      category: 'Email Verification',
-    };
+// 🔹 Configuration du transporteur SMTP
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: false, // false pour TLS, true pour SSL (465)
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+    }
+});
 
-    const info = await transporter.sendMail(mailOptions); 
-    console.log("Email envoyé avec succès :", info.response);
-    return info;
-  } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email :", error);
-    throw new Error(`Error sending verification email: ${error}`);
-  }
-}
+// 🔹 Fonction pour envoyer un email
+const sendEmail = async (to, subject, text= null, html = null) => {
+    try {
+        const mailOptions = {
+            from: `"SkillSwapp" <${process.env.SMTP_USER}>`,
+            to,
+            subject,
+            text,
+            html: html || text // Par défaut, utilise text si html est null
+        };
 
-module.exports = { sendVerificationEmail1 };
+        const info = await transporter.sendMail(mailOptions);
+        console.log("📧 Email envoyé : ", info.messageId);
+        return info;
+    } catch (error) {
+        console.error("❌ Erreur d'envoi d'email : ", error);
+        throw error;
+    }
+};
+
+module.exports = sendEmail;

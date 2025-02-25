@@ -13,7 +13,6 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/logout', logout);
 router.post("/verify-email", verifyEmail);
- router.post("/verify-email-otp", verifyEmailOtp);
 // router.get("/test", passport.authenticate('jwt', { session: false }),
 //     inRole(ROLES.LEARNER),
 //     Test);

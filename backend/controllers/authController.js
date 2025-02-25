@@ -82,7 +82,6 @@ async function register(req, res) {
 		});
 
 		await user.save();
-
 		// Générer un token JWT
 		generateTokenAndSetCookie(res, user._id);
 		// const mailOptions = {
@@ -107,7 +106,7 @@ async function register(req, res) {
 		// });
 
 		
-		await sendVerificationEmail1(user.email,user.name, verificationToken);
+		await sendVerificationEmail(user.email,user.name, verificationToken);
 
 		res.status(201).json({
 			success: true,
@@ -121,38 +120,7 @@ async function register(req, res) {
 };
 
 
-async function verifyEmailOtp(req, res) {
-	const { userId} = req.body;
-	try {
-		const user = await User.findById({
-			userId
-		});
-
-		if (userAlreadyExists) {
-			return res.json({ success: false, message: "Account Already verified" });
-		}
-		const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-		user.verificationToken = otp;
-		user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24h expiration
-		await user.save();
-		
-
-		await sendWelcomeEmail1(user.email, user.name);
-
-		res.status(200).json({
-			success: true,
-			message: "Email verified successfully",
-			user: {
-				...user._doc,
-				password: undefined,
-			},
-		});
-	} catch (error) {
-		console.log("error in verifyEmail ", error);
-		res.status(500).json({ success: false, message: "Server error" });
-	}
-};
+	
 
 async function verifyEmail(req, res) {
 	const { code } = req.body;
@@ -244,4 +212,4 @@ async function logout(req, res) {
 	console.log(req, res);
 }
 
-module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator, register,verifyEmailOtp};
+module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator, register,};

@@ -38,11 +38,7 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Skill',
     }],
-    profilePicture:{
-        type:String,
-        default:"",//default profile picture
-
-    },
+   
 
     resetPasswordToken:String,
     resetPasswordExpires:Date,
