@@ -24,14 +24,10 @@ router.post("/verify-email", verifyEmail);
 // router.get("/admin", passport.authenticate('jwt', { session: false }), inRole(ROLES.ADMIN), Admin);
 
 
-router.post("/profiles", passport.authenticate('jwt', { session: false }),
-AddProfile);//ajouter un profile
+router.post("/profiles",AddProfile);//ajouter un profile
 
-router.get("/profiles", passport.authenticate('jwt', { session: false }),inRole(ROLES.ADMIN),
-GetAllProfiles);//récupérer tous les profiles
+router.get("/profiles",inRole(ROLES.ADMIN),GetAllProfiles);//récupérer tous les profiles
     
-router.get("/profile", passport.authenticate('jwt', { session: false }),
-GetProfile);//récupérer un profile
-router.delete("/profiles/:id", passport.authenticate('jwt', { session: false }),inRole(ROLES.ADMIN),
-DeleteProfile);//supprimer un profile
+router.get("/profile", GetProfile);//récupérer un profile
+router.delete("/profiles/:id",inRole(ROLES.ADMIN),DeleteProfile);//supprimer un profile
 module.exports = router; 
