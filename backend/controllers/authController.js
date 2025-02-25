@@ -183,8 +183,7 @@ async function login(req, res) {
 										role: user.role
 									}, process.env.JWT_SECRET1, { expiresIn: '2h' });
 									res.status(200).json({
-										message: "success",
-										token: "Bearer " + token,
+										message: "success"
 									});
 								}
 							});
