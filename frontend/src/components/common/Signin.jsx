@@ -1,5 +1,5 @@
 import React from 'react'
-
+  
 export default function Signin() {
   return (
 
@@ -9,36 +9,18 @@ export default function Signin() {
   <div className="row">
     {/* Login Banner */}
     <div className="col-md-6 login-bg">
-      <div className="owl-carousel login-slide owl-theme">
+      
+    
+     
         <div className="welcome-login">
           <div className="login-banner">
             <img src="assets/img/login-img.png" className="img-fluid" alt="Logo" />
           </div>
           <div className="mentor-course text-center">
-            <h2>Welcome to <br />DreamsLMS Courses.</h2>
+            <h2>Welcome to <br />SkillSwapp.</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
               ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-          </div>
-        </div>
-        <div className="welcome-login">
-          <div className="login-banner">
-            <img src="assets/img/login-img.png" className="img-fluid" alt="Logo" />
-          </div>
-          <div className="mentor-course text-center">
-            <h2>Welcome to <br />DreamsLMS Courses.</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-              ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-          </div>
-        </div>
-        <div className="welcome-login">
-          <div className="login-banner">
-            <img src="assets/img/login-img.png" className="img-fluid" alt="Logo" />
-          </div>
-          <div className="mentor-course text-center">
-            <h2>Welcome to <br />DreamsLMS Courses.</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-              ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-          </div>
+          
         </div>
       </div>
     </div>
