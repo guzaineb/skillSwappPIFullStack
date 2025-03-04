@@ -42,7 +42,7 @@
 // }
 
 // module.exports = { sendVerificationEmail, sendWelcomeEmail };
-const {VERIFICATION_EMAIL_TEMPLATE,WELCOME_EMAIL,PASSWORD_RESET_REQUEST_TEMPLATE} = require('./emailTemplate');
+const {VERIFICATION_EMAIL_TEMPLATE,WELCOME_EMAIL,PASSWORD_RESET_REQUEST_TEMPLATE , PASSWORD_RESET_SUCCESS_TEMPLATE} = require('./emailTemplate');
 const sendEmail = require("../config/nodemail");
 
 const  sendVerificationEmail= async (userEmail,name,verificationToken) => {
@@ -117,7 +117,10 @@ const sendResetSuccessEmail = async (email) => {
 	}
 };
 
+
+
+
 module.exports ={
     sendVerificationEmail,
-    sendWelcomeEmail,sendPasswordResetEmail ,//sendResetSuccessEmail 
+    sendWelcomeEmail,sendPasswordResetEmail ,sendResetSuccessEmail 
  }

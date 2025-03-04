@@ -11,8 +11,6 @@ const { sendVerificationEmail1 } = require('../config/nodemail');
 
 const { sendPasswordResetEmail } = require('../utils/EmailService'); 
 
-
-
 async function signup(req, res) {
 	try {
 		const role = "learner";
@@ -57,7 +55,6 @@ async function signup(req, res) {
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
-
 
 async function register(req, res) {
 	try {
@@ -124,9 +121,6 @@ async function register(req, res) {
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
-
-
-	
 
 async function verifyEmail(req, res) {
 	const { code } = req.body;
@@ -216,85 +210,66 @@ async function Admin(req, res) {
 
 async function logout(req, res) {
 	console.log(req, res);
-}
+};
+
+async function ForgotPassword(req, res){
+	const { email } = req.body;
+	try {
+		const user = await User.findOne({ email });
+
+		if (!user) {
+			return res.status(400).json({ success: false, message: "User not found" });
+		}
+
+		// Generate reset token
+		const resetToken = crypto.randomBytes(20).toString("hex");
+		const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+		user.resetPasswordToken = resetToken;
+		user.resetPasswordExpiresAt = resetTokenExpiresAt;
+
+		await user.save();
+
+		// send email
+		await sendPasswordResetEmail(user.email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);
+
+		res.status(200).json({ success: true, message: "Password reset link sent to your email" });
+	} catch (error) {
+		console.log("Error in forgotPassword ", error);
+		res.status(400).json({ success: false, message: error.message });
+	}
+};
+
+async function resetPassword  (req, res)  {
+	try {
+		const { token } = req.params;
+		const { password } = req.body;
+
+		const user = await User.findOne({
+			resetPasswordToken: token,
+			resetPasswordExpiresAt: { $gt: Date.now() },
+		});
+
+		if (!user) {
+			return res.status(400).json({ success: false, message: "Invalid or expired reset token" });
+		}
+
+		// update password
+		const hashedPassword = await bcryptjs.hash(password, 10);
+
+		user.password = hashedPassword;
+		user.resetPasswordToken = undefined;
+		user.resetPasswordExpiresAt = undefined;
+		await user.save();
+
+		await sendResetSuccessEmail(user.email);
+
+		res.status(200).json({ success: true, message: "Password reset successful" });
+	} catch (error) {
+		console.log("Error in resetPassword ", error);
+		res.status(400).json({ success: false, message: error.message });
+	}
+};
 
 
-async function forgetPassword(req, res) {
-    const { email } = req.body;
-
-    try {
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
-        }
-
-        // Générer un token sécurisé
-        const resetToken = crypto.randomBytes(20).toString('hex'); // Déclaration de resetToken
-        const resetTokenExpiresAt = Date.now() + 3600000; // 1 heure
-
-        // Stocker le token et la date d'expiration dans la base de données
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpiresAt = resetTokenExpiresAt;
-
-        await user.save();
-
-        // Envoyer l'e-mail avec le lien de réinitialisation
-        await sendPasswordResetEmail(user.email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);
-
-        res.status(200).json({ success: true, message: "Password reset link sent to your email" });
-    } catch (error) {
-        console.error("Error in forgetPassword: ", error);
-        res.status(500).json({ success: false, message: "An error occurred" });
-    }
-}
-
-
-
-	
-async function resetPassword(req, res) {
-    const { token } = req.params; // Récupérer le token depuis les paramètres de l'URL
-    const { password } = req.body; // Récupérer le nouveau mot de passe depuis le corps de la requête
-
-    try {
-        // Vérifier si le mot de passe est fourni
-        if (!password) {
-            return res.status(400).json({ success: false, message: "Password is required" });
-        }
-
-        // Trouver l'utilisateur avec le token valide et non expiré
-        const user = await User.findOne({
-            resetPasswordToken: token, // Vérifier que le token correspond
-            resetPasswordExpiresAt: { $gt: Date.now() }, // Vérifier que le token n'a pas expiré
-        });
-
-        // Si l'utilisateur n'est pas trouvé ou que le token est invalide/expiré
-        if (!user) {
-            return res.status(400).json({ success: false, message: "Invalid or expired reset token" });
-        }
-
-        // Hacher le nouveau mot de passe
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Mettre à jour le mot de passe de l'utilisateur
-        user.password = hashedPassword;
-        user.resetPasswordToken = undefined; // Effacer le token de réinitialisation
-        user.resetPasswordExpiresAt = undefined; // Effacer la date d'expiration du token
-
-        // Sauvegarder les modifications dans la base de données
-        await user.save();
-
-        // Réponse de succès
-        res.status(200).json({ success: true, message: "Password reset successful" });
-    } catch (error) {
-        // Gestion des erreurs
-        console.error("Error in resetPassword: ", error);
-        res.status(500).json({ success: false, message: "An error occurred while resetting the password" });
-    }
-}
-
-
-
-
-
-module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator, register, forgetPassword ,resetPassword};
+module.exports = { signup, verifyEmail, login, Test, Admin, logout,Educator, register,ForgotPassword,resetPassword};

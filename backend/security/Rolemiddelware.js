@@ -1,4 +1,3 @@
-
 const ROLES = {
     ADMIN: 'admin',
         EDUCATOR: 'educator',
