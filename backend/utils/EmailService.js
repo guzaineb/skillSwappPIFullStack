@@ -1,3 +1,4 @@
+
 const { PASSWORD_RESET_REQUEST_TEMPLATE ,PASSWORD_RESET_SUCCESS_TEMPLATE} = require('../mailtrap/emailTemplate');
 const sendEmail = require('../config/nodemail'); // Assurez-vous que le chemin est correct
 
@@ -15,6 +16,7 @@ const sendPasswordResetEmail = async (email, resetCode) => {
         throw new Error("Failed to send password reset email");
     }
 };
+
 const sendResetSuccessEmail = async (email) => {
 
 

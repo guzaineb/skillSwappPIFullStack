@@ -79,6 +79,7 @@ const sendWelcomeEmail = async  (email, name) => {
 		throw new Error(`Error sending verification email: ${error}`);
    }
 };
+
 async function sendPasswordResetEmail (email,resetURL) {
 	const recipient = [{ email }];
 

@@ -1,9 +1,12 @@
+
 const crypto = require('crypto');
+
 const bcrypt = require('bcryptjs');
 const User = require('../models/user.model');
 
 const jwt = require('jsonwebtoken');
 const ValidateLogin = require('../validation/Login');
+
 const { sendVerificationEmail, sendWelcomeEmail  } = require('../mailtrap/emails');
 const generateTokenAndSetCookie = require('../utils/generateTokenAndSetCookie');
 const transporter = require('../config/nodemailer');
@@ -93,8 +96,6 @@ async function register(req, res) {
 		// 	subject: "Welcome",
 		// 	text: `Welcome to SkillSwapp website. Your account has been created with email id: ${email},\n\n`
 		// };
-
-
 		// transporter.sendMail(mailOptions, (error, info) => {
 		// 	if (error) {
 		// 		console.error("Erreur lors de l'envoi de l'email :", error);
@@ -109,15 +110,13 @@ async function register(req, res) {
 		// });
 
 
-		await sendVerificationEmail(user.email, user.name, verificationToken);
 
-		res.status(201).json({
+		await sendVerificationEmail(user.email, user.name, verificationToken);
+	res.status(201).json({
 			success: true,
 			message: "Account created successfully",
 			user: { ...user._doc, password: undefined },
-		});
-
-	} catch (error) {
+		});	} catch (error) {
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
@@ -176,6 +175,7 @@ async function login(req, res) {
 									errors.password = "incorrect password";
 									res.status(404).json(errors);
 								} else {
+
 									const token = jwt.sign({
 										id: user._id,
 										name: user.name,
@@ -222,6 +222,7 @@ async function forgetPassWord(req, res) {
 		}
 
 		// Generate reset token
+
 		const resetToken = crypto.randomBytes(32).toString("hex");
 const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
 
@@ -231,6 +232,7 @@ const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
 		await user.save();
 
 		// send email
+
 		await sendPasswordResetEmail(user.email, `${process.env.CLIENT_URL}/api/auth/reset-password/${resetToken}`);
 
 		res.status(200).json({ success: true, message: "Password reset link sent to your email" });
@@ -247,14 +249,15 @@ async function resetPassword(req, res) {
 
 		const user = await User.findOne({
 			resetPasswordToken: token,
-			resetPasswordExpires: { $gt: Date.now() },
-		});
+
+			resetPasswordExpires: { $gt: Date.now() },		});
 
 		if (!user) {
 			return res.status(400).json({ success: false, message: "Invalid or expired reset token" });
 		}
 
 		// update password
+
 		const hashedPassword = await bcrypt.hash(password, 10);
 
 		user.password = hashedPassword;
@@ -271,6 +274,7 @@ async function resetPassword(req, res) {
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
+
 
 
 module.exports = { signup, verifyEmail, login, Test, Admin, logout, Educator, register, forgetPassWord, resetPassword };
