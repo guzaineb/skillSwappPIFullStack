@@ -8,7 +8,7 @@ const mailtrapClient = new MailtrapClient({
 });
 
 const sender = {
-    email: 'mailtrap@demomailtrap.com',
+    email: 'mailtrap@demomailtrap.co',
     name: 'SkillSwapp',
 };
 

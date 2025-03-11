@@ -42,7 +42,7 @@
 // }
 
 // module.exports = { sendVerificationEmail, sendWelcomeEmail };
-const {VERIFICATION_EMAIL_TEMPLATE,WELCOME_EMAIL} = require('./emailTemplate');
+const {VERIFICATION_EMAIL_TEMPLATE,WELCOME_EMAIL,INVITATION_EMAIL} = require('./emailTemplate');
 const sendEmail = require("../config/nodemail");
 
 const  sendVerificationEmail= async (userEmail,name,verificationToken) => {
@@ -80,10 +80,25 @@ const sendWelcomeEmail = async  (email, name) => {
    }
 };
 
+const sendInvitationEmail = async  (email) => {
+    try{   
+        sendEmail(
+        email,
+        "Invitation email",
+        null,
+        INVITATION_EMAIL
+        //`${INVITATION_EMAIL.replace("{name}", name)}`
+    );
+   }catch(error){
+    console.error(`Error sending invitation`, error);
 
+		throw new Error(`Error sending invitation email: ${error}`);
+   }
+};
 
 
 module.exports ={
     sendVerificationEmail,
     sendWelcomeEmail,
+    sendInvitationEmail,
  }
