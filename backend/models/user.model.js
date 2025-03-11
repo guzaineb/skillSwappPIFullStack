@@ -39,7 +39,10 @@ const userSchema = new mongoose.Schema({
         ref: 'Skill',
     }],
    
-
+    phone:{
+        type:Number,
+        required:true,
+    },
     resetPasswordToken:String,
     resetPasswordExpires:Date,
     verificationToken:String,

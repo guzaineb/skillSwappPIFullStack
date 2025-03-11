@@ -106,6 +106,16 @@
 .feather-battery:before {
 	content: "\e91c";
 }
+/* styles.css */
+body.dark-mode {
+	background-color: #121212;
+	color: #ffffff;
+  }
+  
+  body.light-mode {
+	background-color: #ffffff;
+	color: #000000;
+  }
 .feather-battery-charging:before {
 	content: "\e91d";
 }

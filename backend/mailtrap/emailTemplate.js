@@ -11,7 +11,7 @@ const VERIFICATION_EMAIL_TEMPLATE = `
   <!-- Header -->
   <div style="background: linear-gradient(to right, #FF6B6B, #556BFF); padding: 30px; text-align: center; border-radius: 12px 12px 0 0; color: white;">
     <h1 style="margin: 0; font-size: 26px;">🔐 Verify Your Email</h1>
-    <p style="margin: 5px 0 0; font-size: 16px;">Secure your SkillSwapp account</p>
+    <p style="margin: 5px 0 0; font-size: 16px;">Secure your SkillSwap account</p>
   </div>
 
   <!-- Content -->
@@ -38,7 +38,7 @@ const VERIFICATION_EMAIL_TEMPLATE = `
 
     <p>If you did not request this, please ignore this email.</p>
 
-    <p>Best regards,<br><strong>The SkillSwapp Team</strong></p>
+    <p>Best regards,<br><strong>The SkillSwap Team</strong></p>
   </div>
 
   <!-- Footer -->
@@ -56,13 +56,13 @@ const WELCOME_EMAIL = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to SkillSwapp</title>
+  <title>Welcome to SkillSwap</title>
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
   
   <!-- Header -->
   <div style="background: linear-gradient(to right, #FF6B6B, #556BFF); padding: 30px; text-align: center; border-radius: 12px 12px 0 0; color: white;">
-    <h1 style="margin: 0; font-size: 26px;">🚀 Welcome to SkillSwapp!</h1>
+    <h1 style="margin: 0; font-size: 26px;">🚀 Welcome to SkillSwap!</h1>
     <p style="margin: 5px 0 0; font-size: 16px;">Where skills meet opportunity</p>
   </div>
 
@@ -70,7 +70,7 @@ const WELCOME_EMAIL = `<!DOCTYPE html>
   <div style="background-color: white; padding: 25px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
     
     <p>Hello <strong>{name}</strong>, 👋</p>
-    <p>We’re excited to have you join <strong>SkillSwapp</strong> – the ultimate platform to learn, teach, and exchange skills with like-minded individuals!</p>
+    <p>We’re excited to have you join <strong>SkillSwap</strong> – the ultimate platform to learn, teach, and exchange skills with like-minded individuals!</p>
     
     <div style="text-align: center; margin: 30px 0;">
       <img src="https://cdn-icons-png.flaticon.com/512/2010/2010992.png" width="80" height="80" alt="Skills Icon" style="border-radius: 50%;">
@@ -93,7 +93,7 @@ const WELCOME_EMAIL = `<!DOCTYPE html>
     <p>If you have any questions, our support team is here to help.</p>
 
     <p>See you inside! 🎉</p>
-    <p>Best regards,<br><strong>The SkillSwapp Team</strong></p>
+    <p>Best regards,<br><strong>The SkillSwap Team</strong></p>
   </div>
 
   <!-- Footer -->

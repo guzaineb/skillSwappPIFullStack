@@ -29,7 +29,7 @@
 // 			to: recipient,
 // 			template_uuid: 'f12381ae-dd0f-441a-8380-6b7e125c35ec',
 // 			template_variables: {
-// 				company_info_name: 'SkillSwapp',
+// 				company_info_name: 'SkillSwap',
 // 				name: name,
 // 			},
 // 		});

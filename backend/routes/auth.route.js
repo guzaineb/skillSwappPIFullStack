@@ -1,9 +1,11 @@
 var express = require('express');
 var passport = require('passport');
 const { ROLES, inRole } = require("../security/Rolemiddelware");
+const verifyToken = require("../middleware/verifyToken");
+
 
 const router = express.Router(); // Créer un routeur
-const { signup, login, logout, verifyEmail,register,  verifyEmailOtp,Test,Educator,} = require("../controllers/authController");
+const { signup, login, logout, verifyEmail,register, checkAuth, verifyEmailOtp,Test,Educator,} = require("../controllers/authController");
 const { AddProfile, GetAllProfiles, GetProfile, DeleteProfile } = require("../controllers/profile.controllers");
 
 router.post('/signup', signup);
@@ -11,8 +13,9 @@ router.post('/signup', signup);
 router.post('/register', register);
 
 router.post('/login', login);
-router.post('/logout', logout);
+router.post("/logout", logout);
 router.post("/verify-email", verifyEmail);
+router.get("/check-auth", verifyToken, checkAuth);
 // router.get("/test", passport.authenticate('jwt', { session: false }),
 //     inRole(ROLES.LEARNER),
 //     Test);
@@ -30,4 +33,6 @@ router.get("/profiles",inRole(ROLES.ADMIN),GetAllProfiles);//récupérer tous le
     
 router.get("/profile", GetProfile);//récupérer un profile
 router.delete("/profiles/:id",inRole(ROLES.ADMIN),DeleteProfile);//supprimer un profile
+
+
 module.exports = router; 

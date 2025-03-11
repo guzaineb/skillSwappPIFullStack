@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, text= null, html = null) => {
     try {
         const mailOptions = {
-            from: `"SkillSwapp" <${process.env.SMTP_USER}>`,
+            from: `"SkillSwap" <${process.env.SMTP_USER}>`,
             to,
             subject,
             text,
