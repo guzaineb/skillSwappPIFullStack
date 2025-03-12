@@ -61,7 +61,7 @@ export default function Index() {
                 </div>
             </div>
             <div className="col-md-5 d-flex align-items-center">
-                <div className="girl-slide-img aos" data-aos="fade-up">
+                <div className="girl-slide-img aos">
                     <img src="assets/img/object.png" alt="Img" />
                 </div>
             </div>

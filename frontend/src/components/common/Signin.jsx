@@ -12,7 +12,7 @@ export default function Signin() {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate("/Dash"); // Rediriger après connexion réussie
+      navigate("/Dash"); 
     } catch (err) {
       console.error("Erreur de connexion :", err);
     }

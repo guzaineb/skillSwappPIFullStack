@@ -38,7 +38,6 @@ async function register(req, res) {
 
 		await user.save();
 
-		// Générer un token JWT
 		generateTokenAndSetCookie(res, user._id);
 
 		await sendVerificationEmail(user.email, verificationToken);
@@ -104,31 +103,25 @@ async function signup(req, res) {
 	try {
 		const { email, password, name, phone, role  } = req.body;
 
-		// Vérification des champs obligatoires
 		if (!email || !password || !name || !phone || !role) {
 			return res.status(400).json({ success: false, message: "All fields are required" });
 		}
 
-		// Vérification du rôle valide
 		const validRoles = ["learner", "admin", "educator"];
 		if (!validRoles.includes(role)) {
 			return res.status(400).json({ success: false, message: "Invalid role selected" });
 		}
 
-		// Vérification si l'utilisateur existe déjà
 		const userAlreadyExists = await User.findOne({ email });
 		if (userAlreadyExists) {
 			return res.status(400).json({ success: false, message: "User already exists" });
 		}
 
-		// Hash du mot de passe
 		const hashedPassword = await bcrypt.hash(password, 10);
 
-		// Génération du token de vérification
 		const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
 		const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // Expire dans 24h
 
-		// Création de l'utilisateur
 		const user = new User({
 			email,
 			password: hashedPassword,
@@ -140,16 +133,12 @@ async function signup(req, res) {
 			isVerified: false,
 		});
 
-		// Sauvegarde de l'utilisateur
 		await user.save();
 
-		// Génération du token JWT et enregistrement du cookie
 		generateTokenAndSetCookie(res, user._id);
 
-		// Envoi de l'email de vérification
 		await sendVerificationEmail(user.email, user.name, verificationToken);
 
-		// Réponse au client
 		res.status(201).json({
 			success: true,
 			message: "Account created successfully",
@@ -168,7 +157,7 @@ async function verifyEmail(req, res) {
 	try {
 		const user = await User.findOne({
 			verificationToken: code,
-			verificationTokenExpires: { $gt: Date.now() }, // Correction du champ
+			verificationTokenExpires: { $gt: Date.now() }, 
 		});
 
 		if (!user) {

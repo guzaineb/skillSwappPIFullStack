@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../store/authStore"; // Assure-toi que le chemin est correct
-
+import { useAuthStore } from "../../store/authStore"; 
 export default function VerificationCode() {
   const [code, setCode] = useState(Array(6).fill(""));
   const inputRefs = useRef([]);
@@ -11,12 +10,12 @@ export default function VerificationCode() {
 
 
   const handleChange = (index, value) => {
-    if (!/^\d*$/.test(value)) return; // N'accepte que les chiffres
+    if (!/^\d*$/.test(value)) return;
 
     const newCode = [...code];
 
     if (value.length === 6) {
-      // Gestion du collage de code complet
+      
       const pastedCode = value.split("").slice(0, 6);
       setCode(pastedCode);
       inputRefs.current[5].focus();
@@ -25,14 +24,14 @@ export default function VerificationCode() {
       setCode(newCode);
 
       if (value && index < 5) {
-        inputRefs.current[index + 1].focus(); // Focus sur la case suivante
+        inputRefs.current[index + 1].focus();
       }
     }
   };
 
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
-      inputRefs.current[index - 1].focus(); // Focus sur la case précédente
+      inputRefs.current[index - 1].focus(); 
     }
   };
 
@@ -42,7 +41,6 @@ export default function VerificationCode() {
     console.log("Verification Code:", verificationCode);
 
     try {
-      // Ajoute ici ta logique de vérification
       await verifyEmail(verificationCode);
       console.log("Code vérifié avec succès !");
       navigate("/signin");
@@ -68,7 +66,6 @@ export default function VerificationCode() {
             </div>
             <div className="mentor-course text-center">
               <h2>Welcome to <br />SkillSwap.</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
           </div>
         </div>
@@ -82,7 +79,7 @@ export default function VerificationCode() {
                 <div className="img-logo">
                   <img src="assets/img/logo.svg" className="img-fluid" alt="Logo" />
                   <div className="back-home">
-                    <a href="index-2.html">Back to Home</a>
+                    <a href="/index">Back to Home</a>
                   </div>
                 </div>
                 <h1>Enter Verification Code</h1>

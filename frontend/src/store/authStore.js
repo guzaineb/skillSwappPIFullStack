@@ -17,7 +17,6 @@ export const useAuthStore = create((set) => ({
     signup: async (name,email,  phone, role,password) => {
         set({ isLoading: true, error: null, message: null });
         
-        // Validation côté frontend
         if (!name || !email || !phone || !role || !password) {
             set({ error: "Tous les champs sont obligatoires", isLoading: false });
             return;
@@ -32,7 +31,7 @@ export const useAuthStore = create((set) => ({
         try {
             const response = await axios.post(`${API_URL}/signup`, {name,email, phone, role,password  });
 
-            // Succes de l'inscription
+           
             set({
                 user: response.data.user,
                 isAuthenticated: true,
@@ -40,8 +39,7 @@ export const useAuthStore = create((set) => ({
                 message: "Inscription réussie ! Vérifiez votre email.",
             });
 
-            // Optionnellement, rediriger l'utilisateur vers une page de vérification
-            // navigate("/verification");
+            
 
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Erreur lors de l'inscription";
