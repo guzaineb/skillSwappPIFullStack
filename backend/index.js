@@ -1,26 +1,36 @@
 const express = require("express");
-// const { connectDB } = require("./db/connectDB.js");
+const cors = require("cors");
 const dotenv = require("dotenv");
-const mongo = require('mongoose');
-const db = require('./db/db.json');
+const mongoose = require("mongoose"); 
+const db = require("./db/db.json");
 const authRoutes = require("./routes/auth.route.js");
+const skillRoutes = require("./routes/skill.route.js");
 const passport = require("passport");
-dotenv.config(); // Charger les variables d'environnement à partir du fichier .env
+const crypto = require("crypto");
 
-const app = express(); 
-const crypto = require('crypto');
-const PORT = process.env.PORT || 5000; // Définir le port
-// Connect to the database
-mongo.connect(db.url)
-    .then(() => console.log('Database connected'))
-    .catch((err) => console.log(err));
+dotenv.config(); // Charger les variables d'environnement
 
-app.use(express.json()); // Middleware pour analyser les payloads JSON entrants
-app.use("/api/auth", authRoutes); // Middleware pour les routes d'authentification
-app.use(passport.initialize()); // Initialiser Passport pour l'authentification
-require('./security/passport')(passport)
-// Lancer le serveur
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Connexion à la base de données
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("Database connected"))
+  .catch((err) => console.error("Database connection error:", err));
+
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}));
+
+app.use(express.json());
+app.use(passport.initialize());
+require("./security/passport")(passport); // Charger la configuration de Passport
+
+app.use("/api/auth", authRoutes);
+app.use("/api/skill", skillRoutes);
+
 app.listen(PORT, () => {
-    console.log("Server is running on port:", PORT);
-    // connectDB(); // Connecter à la base de données après le démarrage du serveur
+    console.log(`Server is running on port: ${PORT}`);
 });
