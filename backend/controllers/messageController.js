@@ -26,15 +26,15 @@ const getUsersForSidebar = async (req, res) => {
         return res.status(400).json({ error: "Missing user ID" });
       }
   
-      console.log("📨 My ID (connected user):", myId);
-      console.log("📨 Chat with user ID:", userToChatId);
+      console.log(" My ID (connected user):", myId);
+      console.log(" Chat with user ID:", userToChatId);
   
       const messages = await Message.find({
         $or: [
           { senderId: myId, receiverId: userToChatId },
           { senderId: userToChatId, receiverId: myId },
         ],
-      }).sort({ createdAt: 1 }); // ✅ Trie les messages par date
+      }).sort({ createdAt: 1 }); //  Trie les messages par date
   
       res.status(200).json(messages);
     } catch (error) {
