@@ -13,6 +13,11 @@ export const useAuthStore = create((set) => ({
     isLoading: false,
     isCheckingAuth: true,
     message: null,
+    isUpdatingProfile: false,
+    onlineUsers: [],
+    socket: null,
+  
+
 
     signup: async (name,email,  phone, role,password) => {
         set({ isLoading: true, error: null, message: null });
@@ -97,5 +102,77 @@ export const useAuthStore = create((set) => ({
             
 		}
 	},
+    forgotPassword: async (email) => {
+		set({ isLoading: true, error: null });
+		try {
+			const response = await axios.post(`${API_URL}/forget-password`, { email });
+			set({ message: response.data.message, isLoading: false });
+		} catch (error) {
+			set({ isLoading: false, error: error.response?.data?.message || "Error sending reset password email" });
+			throw error;
+		}
+	},
+	resetPassword: async (token, password) => {
+		set({ isLoading: true, error: null });
+		try {
+			const response = await axios.post(`${API_URL}/reset-password/${token}`, { password });
+			set({ message: response.data.message, isLoading: false });
+		} catch (error) {
+			set({ isLoading: false, error: error.response?.data?.message || "Error resetting password" });
+			throw error;
+		}
+	},
 
+    
+    resendVerificationCode: async () => {
+        set({ isLoading: true, error: null, message: null });
+    
+        try {
+            const { user } = useAuthStore.getState(); 
+            if (!user?.email) {
+                set({ error: "User email not found", isLoading: false });
+                return;
+            }
+    
+            const response = await axios.post(`${API_URL}/resend-verification-code`, {
+                email: user.email,
+            });
+    
+            set({
+                isLoading: false,
+                message: "New verification code sent successfully",
+            });
+    
+            return response.data;
+        } catch (error) {
+            set({
+                error: error.response?.data?.message || "Error while resending the code",
+                isLoading: false,
+            });
+            throw error;
+        }
+    },
+    
+    updateProfile: async (data) => {
+        set({ isUpdatingProfile: true });
+        try {
+          const res = await axiosInstance.put(`${API_URL}/update-profile`, data);
+          set({ user: res.data });
+          toast.success("Profile updated successfully");
+        } catch (error) {
+          console.log("error in update profile:", error);
+          toast.error(error.response.data.message);
+        } finally {
+          set({ isUpdatingProfile: false });
+        }
+      },
 }));
+
+
+
+	
+    
+
+	
+
+

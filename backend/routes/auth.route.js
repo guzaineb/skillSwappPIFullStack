@@ -4,14 +4,14 @@ const { ROLES, inRole } = require("../security/Rolemiddelware");
 const verifyToken = require("../middleware/verifyToken");
 
 
-const router = express.Router(); // Créer un routeur
-const { signup, login, logout, verifyEmail,register, checkAuth, verifyEmailOtp,Test,Educator,} = require("../controllers/authController");
+const router = express.Router();
+const { signup,resendVerificationCode,updateProfile, login, logout, verifyEmail, checkAuth, verifyEmailOtp,Test,Educator,forgetPassWord, resetPassword,} = require("../controllers/authController");
 const { AddProfile, GetAllProfiles, GetProfile, DeleteProfile } = require("../controllers/profile.controllers");
 
 router.post('/signup', signup);
-
-router.post('/register', register);
-
+router.put("/update-profile", verifyToken, updateProfile);
+router.post("/forget-password",forgetPassWord);
+router.post("/reset-password/:token",resetPassword);
 router.post('/login', login);
 router.post("/logout", logout);
 router.post("/verify-email", verifyEmail);
@@ -33,6 +33,7 @@ router.get("/profiles",inRole(ROLES.ADMIN),GetAllProfiles);//récupérer tous le
     
 router.get("/profile", GetProfile);//récupérer un profile
 router.delete("/profiles/:id",inRole(ROLES.ADMIN),DeleteProfile);//supprimer un profile
+router.post('/resend-verification-code', resendVerificationCode);
 
 
 module.exports = router; 

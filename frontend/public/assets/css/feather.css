@@ -106,6 +106,7 @@
 .feather-battery:before {
 	content: "\e91c";
 }
+<<<<<<< HEAD
 /* styles.css */
 body.dark-mode {
 	background-color: #121212;
@@ -116,6 +117,8 @@ body.dark-mode {
 	background-color: #ffffff;
 	color: #000000;
   }
+=======
+>>>>>>> ForgetPassWord
 .feather-battery-charging:before {
 	content: "\e91d";
 }
