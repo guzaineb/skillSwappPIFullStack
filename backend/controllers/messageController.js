@@ -20,8 +20,7 @@ const getUsersForSidebar = async (req, res) => {
   const getMessages = async (req, res) => {
     try {
       const { id: userToChatId } = req.params;
-      const myId = req.user._id || req.user.id; // ✅ Supporte _id ou id
-  
+      const myId = req.user._id || req.user.id; 
       if (!myId || !userToChatId) {
         return res.status(400).json({ error: "Missing user ID" });
       }
@@ -43,14 +42,10 @@ const getUsersForSidebar = async (req, res) => {
     }
   };
   
-  
-  
-
-  
 const sendMessage = async (req, res) => {
   try {
-    const { text, image, receiverId } = req.body; // receiverId vient du body
-    const { senderId } = req.params; // senderId vient de l'URL
+    const { text, image, receiverId } = req.body;
+    const { senderId } = req.params; 
 
     console.log("Sender ID from URL:", senderId);
     console.log("Receiver ID from body:", receiverId);
@@ -86,9 +81,4 @@ const sendMessage = async (req, res) => {
   }
 };
 
-
-  
-  
-  
-  
-  module.exports = {getUsersForSidebar, getMessages, sendMessage};
+ module.exports = {getUsersForSidebar, getMessages, sendMessage};
