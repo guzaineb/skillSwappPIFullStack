@@ -2,7 +2,7 @@ const Message = require('../models/message.model');
 const User = require('../models/user.model');
 const mongoose = require('mongoose');
 const cloudinary = require('../lib/cloudinary');
-const { getReceiverSocketId, io } = require('../index');  // Assure-toi que le chemin est correct
+const { getReceiverSocketId, io } = require('../lib/socket');  // Assure-toi que le chemin est correct
 
 
 const getUsersForSidebar = async (req, res) => {
@@ -37,16 +37,63 @@ const getUsersForSidebar = async (req, res) => {
 };
 
   
+const sendMessage = async (req, res) => {
+  try {
+    const { text, image, receiverId } = req.body; // receiverId vient du body
+    const { senderId } = req.params; // senderId vient de l'URL
+
+    console.log("Sender ID from URL:", senderId);
+    console.log("Receiver ID from body:", receiverId);
+
+    if (!senderId || !receiverId) {
+      return res.status(400).json({ error: 'Sender or receiver ID is missing' });
+    }
+
+    let imageUrl;
+    if (image) {
+      const uploadResponse = await cloudinary.uploader.upload(image);
+      imageUrl = uploadResponse.secure_url;
+    }
+
+    const newMessage = new Message({
+      senderId,
+      receiverId,
+      text,
+      image: imageUrl,
+    });
+
+    await newMessage.save();
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('newMessage', newMessage);
+    }
+
+    res.status(201).json(newMessage);
+  } catch (error) {
+    console.log('Error in sendMessage controller: ', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
   // const sendMessage = async (req, res) => {
   //   try {
   //     const { text, image } = req.body;
-  //     const { id: receiverId } = req.params;
-  //     const senderId = req.user._id;
+  //     const { senderId, receiverId } = req.params; // 👈 Récupère les deux IDs depuis l'URL
+  
+  //     console.log("Sender ID from URL:", senderId);
+  //     console.log("Receiver ID from URL:", receiverId);
+  
+  //     if (!senderId || !receiverId) {
+  //       return res.status(400).json({ error: 'Sender or receiver ID is missing' });
+  //     }
   
   //     let imageUrl;
   //     if (image) {
-  //       // Upload base64 image to Cloudinary
   //       const uploadResponse = await cloudinary.uploader.upload(image);
+  //       console.log("Cloudinary upload response:", uploadResponse);
   //       imageUrl = uploadResponse.secure_url;
   //     }
   
@@ -57,64 +104,24 @@ const getUsersForSidebar = async (req, res) => {
   //       image: imageUrl,
   //     });
   
-  //     await newMessage.save();
+  //     const savedMessage = await newMessage.save();
+  //     console.log("Saved message:", savedMessage);
   
   //     const receiverSocketId = getReceiverSocketId(receiverId);
   //     if (receiverSocketId) {
-  //       io.to(receiverSocketId).emit("newMessage", newMessage);
+  //       io.to(receiverSocketId).emit("newMessage", savedMessage);
   //     }
   
-  //     res.status(201).json(newMessage);
+  //     res.status(201).json(savedMessage);
   //   } catch (error) {
-  //     console.log("Error in sendMessage controller: ", error.message);
+  //     console.log("Error in sendMessage controller:", error);
   //     res.status(500).json({ error: "Internal server error" });
   //   }
   // };
-
-
-  const sendMessage = async (req, res) => {
-    try {
-      console.log("User in sendMessage:", req.user);  // Vérifie si req.user contient bien l'utilisateur
-      const { text, image } = req.body;
-      const { id: receiverId } = req.params;
   
-      // Vérification si senderId est correctement récupéré
-      const senderId = req.user?.id || req.user?._id;
-      console.log("Sender ID:", senderId);  // Vérifie le senderId ici
   
-      if (!senderId) {
-        return res.status(400).json({ error: 'Sender ID is missing' });
-      }
   
-      let imageUrl;
-      if (image) {
-        // Vérifier l'upload de l'image
-        const uploadResponse = await cloudinary.uploader.upload(image);
-        console.log("Cloudinary upload response:", uploadResponse); // Vérifie la réponse de Cloudinary
-        imageUrl = uploadResponse.secure_url;
-      }
   
-      const newMessage = new Message({
-        senderId,
-        receiverId,
-        text,
-        image: imageUrl,
-      });
-  
-      const savedMessage = await newMessage.save(); // Vérifie la sauvegarde du message
-      console.log("Saved message:", savedMessage);
-  
-      const receiverSocketId = getReceiverSocketId(receiverId); // Utilisation de la fonction getReceiverSocketId
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit("newMessage", savedMessage); // Envoi du message via WebSocket
-      }
-  
-      res.status(201).json(savedMessage);
-    } catch (error) {
-      console.log("Error in sendMessage controller:", error);  // Affiche l'erreur complète
-      res.status(500).json({ error: "Internal server error" });
-    }
-  };
   
   
   module.exports = {getUsersForSidebar, getMessages, sendMessage};

@@ -6,7 +6,7 @@ const verifyToken = require("../middleware/verifyToken");
 router.get("/users", verifyToken, getUsersForSidebar);
 router.get("/:id", verifyToken, getMessages);
 
-router.post("/send/:id", verifyToken, sendMessage);
+router.post('/send/:senderId',verifyToken, sendMessage);
 
 
 
