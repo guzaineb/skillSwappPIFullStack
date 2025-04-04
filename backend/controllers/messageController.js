@@ -19,22 +19,32 @@ const getUsersForSidebar = async (req, res) => {
 
   const getMessages = async (req, res) => {
     try {
-        const { id: userToChatId } = req.params;
-        const myId = req.user._id; // Ici, on accède à l'utilisateur connecté via req.user
-
-        const messages = await Message.find({
-            $or: [
-                { senderId: myId, receiverId: userToChatId },
-                { senderId: userToChatId, receiverId: myId },
-            ],
-        });
-
-        res.status(200).json(messages);
+      const { id: userToChatId } = req.params;
+      const myId = req.user._id || req.user.id; // ✅ Supporte _id ou id
+  
+      if (!myId || !userToChatId) {
+        return res.status(400).json({ error: "Missing user ID" });
+      }
+  
+      console.log("📨 My ID (connected user):", myId);
+      console.log("📨 Chat with user ID:", userToChatId);
+  
+      const messages = await Message.find({
+        $or: [
+          { senderId: myId, receiverId: userToChatId },
+          { senderId: userToChatId, receiverId: myId },
+        ],
+      }).sort({ createdAt: 1 }); // ✅ Trie les messages par date
+  
+      res.status(200).json(messages);
     } catch (error) {
-        console.log("Error in getMessages controller: ", error.message);
-        res.status(500).json({ error: "Internal server error" });
+      console.log("❌ Error in getMessages controller:", error.message);
+      res.status(500).json({ error: "Internal server error" });
     }
-};
+  };
+  
+  
+  
 
   
 const sendMessage = async (req, res) => {
@@ -77,49 +87,6 @@ const sendMessage = async (req, res) => {
 };
 
 
-
-  // const sendMessage = async (req, res) => {
-  //   try {
-  //     const { text, image } = req.body;
-  //     const { senderId, receiverId } = req.params; // 👈 Récupère les deux IDs depuis l'URL
-  
-  //     console.log("Sender ID from URL:", senderId);
-  //     console.log("Receiver ID from URL:", receiverId);
-  
-  //     if (!senderId || !receiverId) {
-  //       return res.status(400).json({ error: 'Sender or receiver ID is missing' });
-  //     }
-  
-  //     let imageUrl;
-  //     if (image) {
-  //       const uploadResponse = await cloudinary.uploader.upload(image);
-  //       console.log("Cloudinary upload response:", uploadResponse);
-  //       imageUrl = uploadResponse.secure_url;
-  //     }
-  
-  //     const newMessage = new Message({
-  //       senderId,
-  //       receiverId,
-  //       text,
-  //       image: imageUrl,
-  //     });
-  
-  //     const savedMessage = await newMessage.save();
-  //     console.log("Saved message:", savedMessage);
-  
-  //     const receiverSocketId = getReceiverSocketId(receiverId);
-  //     if (receiverSocketId) {
-  //       io.to(receiverSocketId).emit("newMessage", savedMessage);
-  //     }
-  
-  //     res.status(201).json(savedMessage);
-  //   } catch (error) {
-  //     console.log("Error in sendMessage controller:", error);
-  //     res.status(500).json({ error: "Internal server error" });
-  //   }
-  // };
-  
-  
   
   
   
