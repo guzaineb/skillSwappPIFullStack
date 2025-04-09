@@ -3,7 +3,7 @@ import { useAuthStore } from "../../store/authStore"; // Importation du store (Z
 import  { useState } from 'react';
 
 import { Camera } from 'lucide-react';
-import HeaderBack from './HeaderBack';
+import Header from './Header';
 import Footer from './Footer';
 function Profile() {
   const { user, isUpdatingProfile, updateProfile } = useAuthStore();
@@ -29,7 +29,24 @@ function Profile() {
     <>
     <div className="main-wrapper">
   {/* Header */}
- <HeaderBack />
+ <Header />
+ <div className="breadcrumb-bar breadcrumb-bar-info">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12 col-12">
+              <div className="breadcrumb-list">
+                <h2 className="breadcrumb-title">Settings</h2>
+                <nav aria-label="breadcrumb" className="page-breadcrumb">
+                  <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                    <li className="breadcrumb-item active" aria-current="page">Edit Profile</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
   {/* /Breadcrumb */}	
   {/* Page Content */}
   <div className="page-content">
@@ -172,20 +189,20 @@ function Profile() {
                       </div>
                   </div>
                  
-                  <div className="col-sm-6">
-                    <div className="contact-info">
-                      <h6>Phone</h6>
-                      <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{user?.phone}</p>
-                    </div>
-                  </div>
+        
                   <div className="col-sm-6">
                     <div className="contact-info">
                       <h6>Email</h6>
                       <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{user?.email}</p>
                     </div>
                   </div>
-                 
-                 
+                  <div className="col-sm-6">
+                    <div className="contact-info">
+                      <h6>Phone Number</h6>
+                      <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{user?.phone}</p>
+                    </div>
+                  </div>
+                  
                 </div>
               </div>
             </div>

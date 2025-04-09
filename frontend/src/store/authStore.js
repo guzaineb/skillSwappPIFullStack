@@ -272,6 +272,22 @@ updateProfile: async (data) => {
     }
   },
 
+  updateUser: async (userId, data) => {
+    set({ isUpdatingProfile: true });
+    try {
+      const response = await axios.put(`http://localhost:5000/api/user/update/${userId}`, data);
+      set({ user: response.data });
+      toast.success("User updated successfully");
+    } catch (error) {
+      console.log("error in update user:", error);
+      toast.error(
+        error.response?.data?.message || "Error updating user"
+      );
+    } finally {
+      set({ isUpdatingProfile: false });
+    }
+  },
+  
 
 
   // initializeSocket: (userId) => {
