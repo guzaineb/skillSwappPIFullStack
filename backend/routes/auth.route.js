@@ -1,0 +1,39 @@
+var express = require('express');
+var passport = require('passport');
+const { ROLES, inRole } = require("../security/Rolemiddelware");
+const verifyToken = require("../middleware/verifyToken");
+
+
+const router = express.Router();
+const { signup,resendVerificationCode,updateProfile, login, logout, verifyEmail, checkAuth, verifyEmailOtp,Test,Educator,forgetPassWord, resetPassword,} = require("../controllers/authController");
+const { AddProfile, GetAllProfiles, GetProfile, DeleteProfile } = require("../controllers/profile.controllers");
+
+router.post('/signup', signup);
+router.put("/update-profile", verifyToken, updateProfile);
+router.post("/forget-password",forgetPassWord);
+router.post("/reset-password/:token",resetPassword);
+router.post('/login', login);
+router.post("/logout", logout);
+router.post("/verify-email", verifyEmail);
+router.get("/check-auth", verifyToken, checkAuth);
+// router.get("/test", passport.authenticate('jwt', { session: false }),
+//     inRole(ROLES.LEARNER),
+//     Test);
+
+//  router.get("/educator", passport.authenticate('jwt', { session: false }),
+// inRole(ROLES.EDUCATOR),
+// Educator);
+// // Route pour admin
+// router.get("/admin", passport.authenticate('jwt', { session: false }), inRole(ROLES.ADMIN), Admin);
+
+
+router.post("/profiles",AddProfile);//ajouter un profile
+
+router.get("/profiles",inRole(ROLES.ADMIN),GetAllProfiles);//récupérer tous les profiles
+    
+router.get("/profile", GetProfile);//récupérer un profile
+router.delete("/profiles/:id",inRole(ROLES.ADMIN),DeleteProfile);//supprimer un profile
+router.post('/resend-verification-code', resendVerificationCode);
+
+
+module.exports = router; 
