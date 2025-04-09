@@ -103,45 +103,7 @@ async function verifyEmail(req, res) {
 	}
 };
 
-// async function login(req, res) {
-// 	const { errors, isValid } = ValidateLogin(req.body);
-// 	try {
-// 		if (!isValid) {
-// 			res.status(404).json(errors);
-// 		} else {
-// 			User.findOne({ email: req.body.email })
-// 				.then(user => {
-// 					if (!user) {
-// 						errors.email = "not found user";
-// 						res.status(404).json(errors);
-// 					} else {
-// 						bcrypt.compare(req.body.password, user.password)
-// 							.then(isMatch => {
-// 								if (!isMatch) {
-// 									errors.password = "incorrect password";
-// 									res.status(404).json(errors);
-// 								} else {
 
-// 									const token = jwt.sign({ 
-// 										id: user._id,
-// 										name: user.name,
-// 										email: user.email,
-// 										role: user.role
-
-// 									}, process.env.JWT_SECRET, { expiresIn: '2h' });
-// 									res.status(200).json({
-// 										message: "success"
-
-// 									});
-// 								}
-// 							});
-// 					}
-// 				});
-// 		}
-// 	} catch (error) {
-// 		res.status(404).json(error.message);
-// 	}
-// }
 
 
 async function login(req, res) {
@@ -205,6 +167,19 @@ async function Educator(req, res) {
 async function Admin(req, res) {
 	res.send("welcome admin");
 }
+
+async function updateUser(req,res){ ///bech nrodha asyncrone lazem nzid m3aha await
+    try{
+       
+        const user= await User.findByIdAndUpdate(req.params.id,req.body,{new:true},); ////5aterupdate au niveau du body new:true bech yaffichili ba3d l modification 
+res .status(200).json(user);
+    }
+    catch(err){
+console.log(err)
+    }
+}
+
+
 
 // const checkAuth = async (req, res) => {
 // 	try{
@@ -418,5 +393,5 @@ const updateProfile = async (req, res) => {
   
 
 
-module.exports = { signup,resendVerificationCode,updateProfile, verifyEmail, login, Test, Admin, logout, Educator, forgetPassWord, resetPassword ,checkAuth};
+module.exports = { signup,resendVerificationCode,updateProfile, verifyEmail, login, Test,updateUser, Admin, logout, Educator, forgetPassWord, resetPassword ,checkAuth};
 

@@ -94,7 +94,7 @@ export const useChatStore = create((set, get) => ({
     }
 
     const messageHandler = (newMessage) => {
-      if (newMessage.senderId === selectedUser.id) {
+      if (newMessage.senderId === selectedUser._id) {
         set(state => ({
           messages: [...state.messages, newMessage]
         }));

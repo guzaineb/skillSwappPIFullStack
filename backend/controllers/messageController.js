@@ -69,42 +69,74 @@ const getUsersForSidebar = async (req, res) => {
 
 
 
+
+
+// const sendMessage = async (req, res) => {
+//   try {
+//     const { text, image, receiverId } = req.body;
+//     const { senderId } = req.params; 
+
+//     console.log("Sender ID from URL:", senderId);
+//     console.log("Receiver ID from body:", receiverId);
+
+//     if (!senderId || !receiverId) {
+//       return res.status(400).json({ error: 'Sender or receiver ID is missing' });
+//     }
+
+//     let imageUrl;
+//     if (image) {
+//       const uploadResponse = await cloudinary.uploader.upload(image);
+//       imageUrl = uploadResponse.secure_url;
+//     }
+
+//     const newMessage = new Message({
+//       senderId,
+//       receiverId,
+//       text,
+//       image: imageUrl,
+//     });
+
+//     await newMessage.save();
+
+//     const receiverSocketId = getReceiverSocketId(receiverId);
+//     if (receiverSocketId) {
+//       io.to(receiverSocketId).emit('newMessage', newMessage);
+//     }
+
+//     res.status(201).json(newMessage);
+//   } catch (error) {
+//     console.log('Error in sendMessage controller: ', error.message);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
+
 const sendMessage = async (req, res) => {
   try {
-    const { text, image, receiverId } = req.body;
-    const { senderId } = req.params; 
+    // Récupérer les données envoyées dans le corps de la requête
+    const { senderId, receiverId, content } = req.body;
 
-    console.log("Sender ID from URL:", senderId);
-    console.log("Receiver ID from body:", receiverId);
-
-    if (!senderId || !receiverId) {
-      return res.status(400).json({ error: 'Sender or receiver ID is missing' });
+    // Vérifie que toutes les informations nécessaires sont présentes
+    if (!senderId || !receiverId || !content) {
+      return res.status(400).json({ error: "Tous les champs sont requis" });
     }
 
-    let imageUrl;
-    if (image) {
-      const uploadResponse = await cloudinary.uploader.upload(image);
-      imageUrl = uploadResponse.secure_url;
-    }
-
+    // Créer un nouveau message dans la base de données
     const newMessage = new Message({
-      senderId,
-      receiverId,
-      text,
-      image: imageUrl,
+      senderId,   // ID de l'expéditeur
+      receiverId, // ID du destinataire
+      content,    // Contenu du message
+      timestamp: Date.now(), // Timestamp du message
     });
 
+    // Sauvegarder le message dans la base de données
     await newMessage.save();
 
-    const receiverSocketId = getReceiverSocketId(receiverId);
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit('newMessage', newMessage);
-    }
-
-    res.status(201).json(newMessage);
+    // Répondre avec un message de succès
+    res.status(200).json({ message: "Message envoyé avec succès", data: newMessage });
   } catch (error) {
-    console.log('Error in sendMessage controller: ', error.message);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Erreur lors de l'envoi du message:", error);
+    res.status(500).json({ error: "Erreur interne du serveur" });
   }
 };
 

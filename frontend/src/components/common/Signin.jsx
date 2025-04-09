@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
@@ -74,7 +73,7 @@ export default function Signin() {
                     </div>
                   </div>
                   <div className="forgot">
-                    <span><a className="forgot-link" href="/ForgetPassWord">Forgot Password?</a></span>
+                    <span><a className="forgot-link" href="/forgot-password">Forgot Password?</a></span>
                   </div>
                   <div className="remember-me">
                     <label className="custom_check mr-2 mb-0 d-inline-flex remember-me"> Remember me

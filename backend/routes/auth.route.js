@@ -5,9 +5,9 @@ const verifyToken = require("../middleware/verifyToken");
 
 
 const router = express.Router();
-const { signup,resendVerificationCode,updateProfile, login, logout, verifyEmail, checkAuth, verifyEmailOtp,Test,Educator,forgetPassWord, resetPassword,} = require("../controllers/authController");
+const { signup,resendVerificationCode,updateProfile, login, logout, verifyEmail, checkAuth, updateUser,Test,Educator,forgetPassWord, resetPassword,} = require("../controllers/authController");
 const { AddProfile, GetAllProfiles, GetProfile, DeleteProfile } = require("../controllers/profile.controllers");
-
+router.put("/update/:id", updateUser);
 router.post('/signup', signup);
 router.put("/update-profile", verifyToken, updateProfile);
 router.post("/forget-password",forgetPassWord);
