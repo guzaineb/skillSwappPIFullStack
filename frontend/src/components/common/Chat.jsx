@@ -11,31 +11,29 @@ const Chat = () => {
     const { selectedUser } = useChatStore();
 
     return (
-        
-    <>
-    <Header />
-    <br></br>
-    <br></br>
-    <br></br>
-        
-    <br></br>
-    <br></br>
-    <br></br>
+        <>
+            <Header />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
 
-      <div className="h-screen bg-base-200">
-        <div className="flex items-center justify-center pt-20 px-4">
-          <div className="bg-base-100 rounded-lg shadow-cl w-full max-w-6xl h-[calc(100vh-8rem)]">
-            <div className="flex h-full rounded-lg overflow-hidden">
-                <Sidebar />
-              {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
+            <div className="vh-100 bg-light">
+                <div className="d-flex justify-content-center pt-5 px-4">
+                    <div className="bg-white rounded-lg shadow w-100 max-w-xxl" style={{ height: 'calc(100vh - 8rem)' }}>
+                        <div className="d-flex h-100 rounded-lg overflow-hidden">
+                            <Sidebar />
+                            {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <Footer />
-      </>
+            <Footer />
+        </>
     );
-  };
-  
- export default Chat;
+};
+
+export default Chat;

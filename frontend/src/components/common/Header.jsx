@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from "../../store/authStore";
 import ProfileIcon from './ProfileIcon';
 
-
 function Header() {
   const { user, isAuthenticated, checkAuth } = useAuthStore();
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
@@ -26,16 +25,12 @@ function Header() {
 
   return (
     <div className="header-fixed">
-      <nav className="navbar navbar-expand-lg header-nav scroll-sticky">
-        <div className="container">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light header-nav sticky-top">
+        <div className="container-fluid">
           {/* Logo et Bouton Mobile */}
           <div className="navbar-header">
-            <button id="mobile_btn" className="btn">
-              <span className="bar-icon">
-                <span />
-                <span />
-                <span />
-              </span>
+            <button id="mobile_btn" className="btn navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span className="navbar-toggler-icon"></span>
             </button>
             <a href="index-2.html" className="navbar-brand logo">
               <img src="assets/img/logo.svg" className="img-fluid" alt="Logo" />
@@ -43,133 +38,77 @@ function Header() {
           </div>
 
           {/* Menu Principal */}
-          <div className="main-menu-wrapper">
-            <div className="menu-header">
-              <a href="index-2.html" className="menu-logo">
-                <img src="assets/img/logo.svg" className="img-fluid" alt="Logo" />
-              </a>
-              <button id="menu_close" className="menu-close btn">
-                <i className="fas fa-times" />
-              </button>
-            </div>
-
-            <ul className="main-nav">
-              <li className="has-submenu">
-                <a href="#">Home <i className="fas fa-chevron-down" /></a>
-                <ul className="submenu">
-                  <li><a href="index-2.html">Home</a></li>
-                  <li><a href="index-two.html">Home Two</a></li>
-                  <li><a href="index-three.html">Home Three</a></li>
-                  <li><a href="index-four.html">Home Four</a></li>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto">
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="homeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Home
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="homeDropdown">
+                  <li><a className="dropdown-item" href="#">Home</a></li>
                 </ul>
               </li>
-              <li class="has-submenu">
-									<a href="#">Instructor <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="has-submenu">
-											<a href="instructor-list.html">Instructor</a>
-											<ul class="submenu">
-												<li><a href="instructor-list.html">List</a></li>
-												<li><a href="instructor-grid.html">Grid</a></li>
-											</ul>
-										</li>
-										<li><a href="instructor-dashboard.html">Dashboard</a></li>
-										<li><a href="instructor-profile.html">My Profile</a></li>
-										<li><a href="instructor-course.html">My Course</a></li>
-										<li><a href="instructor-wishlist.html">Wishlist</a></li>
-										<li><a href="instructor-reviews.html">Reviews</a></li>
-										<li><a href="instructor-quiz.html">My Quiz Attempts</a></li>
-										<li><a href="instructor-orders.html">Orders</a></li>
-										<li><a href="instructor-qa.html">Question & Answer</a></li>
-										<li><a href="instructor-referral.html">Referrals</a></li>
-										<li><a href="instructor-chat.html">Messages</a></li>
-										<li><a href="instructor-tickets.html">Support Ticket</a></li>
-										<li><a href="instructor-notifications.html">Notifications</a></li>
-										<li><a href="instructor-settings.html">Settings</a></li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Student <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu first-submenu">
-										<li class="has-submenu">
-											<a href="students-list.html">Student</a>
-											<ul class="submenu">
-												<li><a href="students-list.html">List</a></li>
-												<li><a href="students-grid.html">Grid</a></li>
-											</ul>
-										</li>
-										<li><a href="student-dashboard.html">Student Dashboard</a></li>
-										<li><a href="student-profile.html">My Profile</a></li>
-										<li><a href="student-courses.html">Enrolled Courses</a></li>
-										<li><a href="student-wishlist.html">Wishlist</a></li>
-										<li><a href="student-reviews.html">Reviews</a></li>
-										<li><a href="student-quiz.html">My Quiz Attempts</a></li>
-										<li><a href="student-order-history.html">Orders</a></li>
-										<li><a href="student-qa.html">Question & Answer</a></li>
-										<li><a href="student-referral.html">Referrals</a></li>
-										<li><a href="student-messages.html">Messages</a></li>
-										<li><a href="student-tickets.html">Support Ticket</a></li>
-										<li><a href="student-settings.html">Settings</a></li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Pages <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li><a href="notifications.html">Notification</a></li>
-										<li><a href="pricing-plan.html">Pricing Plan</a></li>
-										<li><a href="wishlist.html">Wishlist</a></li>
-										<li class="has-submenu">
-											<a href="course-list.html">Course</a>
-											<ul class="submenu">
-												<li><a href="add-course.html">Add Course</a></li>
-												<li><a href="course-list.html">Course List</a></li>
-												<li><a href="course-grid.html">Course Grid</a></li>
-												<li><a href="course-details.html">Course Details</a></li>
-											</ul>
-										</li>
-										<li class="has-submenu">
-											<a href="come-soon.html">Error</a>
-											<ul class="submenu">
-												<li><a href="come-soon.html">Coming Soon</a></li>
-												<li><a href="error-404.html">404</a></li>
-												<li><a href="error-500.html">500</a></li>
-												<li><a href="under-construction.html">Under Construction</a></li>
-											</ul>
-										</li>
-										<li><a href="faq.html">FAQ</a></li>
-										<li><a href="support.html">Support</a></li>
-										<li><a href="job-category.html">Category</a></li>
-										<li><a href="cart.html">Cart</a></li>
-										<li><a href="checkout.html">Checkout</a></li>
-										<li><a href="login.html">Login</a></li>
-										<li><a href="register.html">Register</a></li>
-										<li><a href="forgot-password.html">Forgot Password</a></li>
-									</ul>
-								</li>
-								<li class="has-submenu">
-									<a href="#">Blog <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li><a href="blog-list.html">Blog List</a></li>
-										<li><a href="blog-grid.html">Blog Grid</a></li>
-										<li><a href="blog-masonry.html">Blog Masonry</a></li>
-										<li><a href="blog-modern.html">Blog Modern</a></li>
-										<li><a href="blog-details.html">Blog Details</a></li>
-									</ul>
-								</li>
+
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="instructorDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Instructor
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="instructorDropdown">
+                  <li><a className="dropdown-item" href="instructor-list.html">Instructor</a></li>
+                  <li><a className="dropdown-item" href="instructor-dashboard.html">Dashboard</a></li>
+                  <li><a className="dropdown-item" href="instructor-profile.html">My Profile</a></li>
+                  <li><a className="dropdown-item" href="instructor-course.html">My Course</a></li>
+                  {/* Add more items as needed */}
+                </ul>
+              </li>
+
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="studentDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Student
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="studentDropdown">
+                  <li><a className="dropdown-item" href="students-list.html">Student</a></li>
+                  <li><a className="dropdown-item" href="student-dashboard.html">Student Dashboard</a></li>
+                  {/* Add more items as needed */}
+                </ul>
+              </li>
+
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Pages
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="pagesDropdown">
+                  <li><a className="dropdown-item" href="notifications.html">Notification</a></li>
+                  <li><a className="dropdown-item" href="pricing-plan.html">Pricing Plan</a></li>
+                  <li><a className="dropdown-item" href="wishlist.html">Wishlist</a></li>
+                  <li><a className="dropdown-item" href="course-list.html">Course List</a></li>
+                  {/* Add more items as needed */}
+                </ul>
+              </li>
+
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="blogDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Blog
+                </a>
+                <ul className="dropdown-menu" aria-labelledby="blogDropdown">
+                  <li><a className="dropdown-item" href="blog-list.html">Blog List</a></li>
+                  <li><a className="dropdown-item" href="blog-grid.html">Blog Grid</a></li>
+                  {/* Add more items as needed */}
+                </ul>
+              </li>
+
               {/* Other menu items */}
             </ul>
-
-            
           </div>
 
           {/* Barre de droite : Dark Mode & Profil */}
-          <ul className="nav header-navbar-rht">
+          <ul className="navbar-nav ms-3">
             <li className="nav-item">
-              <button id="dark-mode-toggle" className="dark-mode-toggle btn">
-                <i className="fa-solid fa-moon" />
+              <button id="dark-mode-toggle" className="btn btn-light" aria-label="Toggle Dark Mode">
+                <i className="fa-solid fa-moon"></i>
               </button>
-              <button id="light-mode-toggle" className="dark-mode-toggle btn">
-                <i className="fa-solid fa-sun" />
+              <button id="light-mode-toggle" className="btn btn-light" aria-label="Toggle Light Mode">
+                <i className="fa-solid fa-sun"></i>
               </button>
             </li>
 
@@ -179,8 +118,8 @@ function Header() {
                 <ProfileIcon />
               ) : (
                 <>
-                  <a className="nav-link header-sign" href="/signin">Signin</a>
-                  <a className="nav-link header-login" href="/signup">Signup</a>
+                  <a className="nav-link" href="/signin">Signin</a>
+                  <a className="nav-link" href="/signup">Signup</a>
                 </>
               )}
             </li>

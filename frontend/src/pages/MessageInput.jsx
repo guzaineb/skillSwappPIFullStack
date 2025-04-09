@@ -48,32 +48,31 @@ const MessageInput = () => {
   };
 
   return (
-    <div className="p-4 w-full">
+    <div className="p-3 w-100">
       {imagePreview && (
-        <div className="mb-3 flex items-center gap-2">
-          <div className="relative">
+        <div className="mb-3 d-flex align-items-center gap-2">
+          <div className="position-relative">
             <img
               src={imagePreview}
               alt="Preview"
-              className="w-20 h-20 object-cover rounded-lg border border-zinc-700"
+              className="w-25 h-25 object-cover rounded-3 border border-muted"
             />
             <button
               onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
-              flex items-center justify-center"
+              className="position-absolute top-0 end-0 btn btn-sm btn-danger rounded-circle"
               type="button"
             >
-              <X className="size-3" />
+              <X className="size-12" />
             </button>
           </div>
         </div>
       )}
 
-      <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-        <div className="flex-1 flex gap-2">
+      <form onSubmit={handleSendMessage} className="d-flex align-items-center gap-2">
+        <div className="d-flex flex-grow-1 gap-2">
           <input
             type="text"
-            className="w-full input input-bordered rounded-lg input-sm sm:input-md"
+            className="form-control form-control-sm"
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -81,15 +80,14 @@ const MessageInput = () => {
           <input
             type="file"
             accept="image/*"
-            className="hidden"
+            className="d-none"
             ref={fileInputRef}
             onChange={handleImageChange}
           />
 
           <button
             type="button"
-            className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
+            className={`btn btn-outline-secondary btn-sm ${imagePreview ? "text-success" : "text-muted"}`}
             onClick={() => fileInputRef.current?.click()}
           >
             <Image size={20} />
@@ -97,7 +95,7 @@ const MessageInput = () => {
         </div>
         <button
           type="submit"
-          className="btn btn-sm btn-circle"
+          className="btn btn-primary btn-sm"
           disabled={!text.trim() && !imagePreview}
         >
           <Send size={22} />
@@ -106,4 +104,5 @@ const MessageInput = () => {
     </div>
   );
 };
+
 export default MessageInput;

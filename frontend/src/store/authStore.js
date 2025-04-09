@@ -225,37 +225,6 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-//   updateProfile: async (data) => {
-//     set({ isUpdatingProfile: true });
-//     try {
-//       const res = await axiosInstance.put(`/update-profile`, data);
-//       set({ user: res.data });
-//       toast.success("Profile updated successfully");
-//     } catch (error) {
-//       console.log("error in update profile:", error);
-//       toast.error(
-//         error.response?.data?.message || "Error updating profile"
-//       );
-//     } finally {
-//       set({ isUpdatingProfile: false });
-//     }
-//   },
-
-// updateProfile: async (data) => {
-//     set({ isUpdatingProfile: true });
-//     try {
-//       const res = await axiosInstance.put(`/update-profile`, data);
-//       set({ user: res.data }); // Assure-toi que la réponse contient bien l'URL de l'image mise à jour
-//       toast.success("Profile updated successfully");
-//     } catch (error) {
-//       console.log("error in update profile:", error);
-//       toast.error(
-//         error.response?.data?.message || "Error updating profile"
-//       );
-//     } finally {
-//       set({ isUpdatingProfile: false });
-//     }
-//   },
 
 updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
