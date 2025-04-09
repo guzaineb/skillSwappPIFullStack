@@ -1,48 +1,134 @@
-import axios from 'axios';
+import axios from "axios";
+import { create } from "zustand";
+import { toast } from "react-toastify";
+import { useAuthStore } from "./authStore";
+import { io } from "socket.io-client";
 
-const API_URL = 'http://localhost:5000/api/messages'; // 🔁 Remplace PORT par ton port backend
+const API_URL =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:5000/api/message"
+    : "/api/message";
 
-// 1. Get Users for Sidebar
-export const getUsersForSidebar = async (token) => {
-  try {
-    const response = await axios.get(`${API_URL}/users`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
+});
+
+export const useChatStore = create((set, get) => ({
+  users: [],
+  messages: [],
+  selectedUser: null,
+  isUsersLoading: false,
+  isMessagesLoading: false,
+  socketInstance: null,  // Ajout d'une instance de socket dédiée au chat
+
+  // Initialisation du socket
+  initializeSocket: () => {
+    const socket = io('http://localhost:5000', {
+      withCredentials: true,
+      autoConnect: true
     });
-    return response.data;
-  } catch (err) {
-    console.error('❌ Error fetching users:', err.message);
-    return [];
-  }
-};
+    set({ socketInstance: socket });
+    return socket;
+  },
 
-// 2. Get Messages between me and another user
-export const getMessages = async (userToChatId, token) => {
-  try {
-    const response = await axios.get(`${API_URL}/${userToChatId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (err) {
-    console.error('❌ Error fetching messages:', err.message);
-    return [];
-  }
-};
+  getUsers: async () => {
+    set({ isUsersLoading: true });
+    try {
+      const res = await axios.get(`${API_URL}/users`);
+      set({ users: res.data });
+    } catch (error) {
+      const msg = error.response?.data?.message || "Failed to load users";
+      toast.error(msg);
+    } finally {
+      set({ isUsersLoading: false });
+    }
+  },
 
-// 3. Send a message (text/image)
-export const sendMessage = async (senderId, messageData, token) => {
-  try {
-    const response = await axios.post(`${API_URL}/send/${senderId}`, messageData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (err) {
-    console.error('❌ Error sending message:', err.message);
-    return null;
-  }
-};
+  getMessages: async (userId) => {
+    set({ isMessagesLoading: true });
+    try {
+      const res = await axios.get(`/${userId}`);
+      set({ messages: res.data });
+    } catch (error) {
+      const msg = error.response?.data?.message || "Failed to load messages";
+      toast.error(msg);
+    } finally {
+      set({ isMessagesLoading: false });
+    }
+  },
+
+  sendMessage: async (messageData) => {
+    const { selectedUser, messages, socketInstance } = get();
+    try {
+      const res = await axios.post(`${API_URL}/send/${selectedUser._id}`, messageData);
+      const newMessage = res.data;
+      
+      // Mise à jour locale immédiate
+      set({ messages: [...messages, newMessage] });
+      
+      // Émission via socket si disponible
+      if (socketInstance) {
+        socketInstance.emit('sendMessage', newMessage);
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || "Failed to send message";
+      toast.error(msg);
+    }
+  },
+
+  subscribeToMessages: () => {
+    const { selectedUser, socketInstance } = get();
+    
+    if (!selectedUser) {
+      console.warn('No selected user for message subscription');
+      return () => {};
+    }
+
+    const socket = socketInstance || useAuthStore.getState().socket;
+    
+    if (!socket) {
+      console.error('Socket connection not available');
+      return () => {};
+    }
+
+    const messageHandler = (newMessage) => {
+      if (newMessage.senderId === selectedUser.id) {
+        set(state => ({
+          messages: [...state.messages, newMessage]
+        }));
+      }
+    };
+
+    socket.on("newMessage", messageHandler);
+
+    // Retourne une fonction de nettoyage
+    return () => {
+      socket.off("newMessage", messageHandler);
+    };
+  },
+
+  unsubscribeFromMessages: () => {
+    const { socketInstance } = get();
+    const socket = socketInstance || useAuthStore.getState().socket;
+    
+    if (socket) {
+      socket.off("newMessage");
+    }
+  },
+
+  cleanupSocket: () => {
+    const { socketInstance } = get();
+    if (socketInstance) {
+      socketInstance.disconnect();
+      set({ socketInstance: null });
+    }
+  },
+
+  setSelectedUser: (selectedUser) => {
+    // Désabonnement des messages précédents avant de changer d'utilisateur
+    get().unsubscribeFromMessages();
+    set({ selectedUser });
+  },
+}));

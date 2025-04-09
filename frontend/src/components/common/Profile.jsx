@@ -1,201 +1,35 @@
 import React from 'react'
+import { useAuthStore } from "../../store/authStore"; // Importation du store (Zustand ou autre)
+import  { useState } from 'react';
 
+import { Camera } from 'lucide-react';
+import HeaderBack from './HeaderBack';
+import Footer from './Footer';
 function Profile() {
+  const { user, isUpdatingProfile, updateProfile } = useAuthStore();
+  const [selectedImg, setSelectedImg] = useState(null);
+  
+  const handleImageUpload = async (e) => {
+     const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      setSelectedImg(base64Image);
+      await updateProfile({ profilePic: base64Image });
+    };
+  };
+
+  
   return (
     <>
     <div className="main-wrapper">
   {/* Header */}
-  <header className="header header-page">
-    <div className="header-fixed">
-      <nav className="navbar navbar-expand-lg header-nav scroll-sticky">
-        <div className="container">
-          <div className="navbar-header">
-            <a id="mobile_btn" href="javascript:void(0);">
-              <span className="bar-icon">
-                <span />
-                <span />
-                <span />
-              </span>
-            </a>
-            <a href="index-2.html" className="navbar-brand logo">
-              <img src="assets/img/logo.svg" className="img-fluid" alt="Logo" />
-            </a>
-          </div>
-          <div className="main-menu-wrapper">
-            <div className="menu-header">
-              <a href="index-2.html" className="menu-logo">
-                <img src="assets/img/logo.svg" className="img-fluid" alt="Logo" />
-              </a>
-              <a id="menu_close" className="menu-close" href="javascript:void(0);">
-                <i className="fas fa-times" />
-              </a>
-            </div>
-            <ul className="main-nav">
-              <li className="has-submenu">
-                <a href="#">Home <i className="fas fa-chevron-down" /></a>
-                <ul className="submenu">
-                  <li><a href="index-2.html">Home</a></li>
-                  <li><a href="index-two.html">Home Two</a></li>
-                  <li><a href="index-three.html">Home Three</a></li>
-                  <li><a href="index-four.html">Home Four</a></li>
-                </ul>
-              </li>
-              <li className="has-submenu">
-                <a href="#">Instructor <i className="fas fa-chevron-down" /></a>
-                <ul className="submenu">
-                  <li className="has-submenu">
-                    <a href="instructor-list.html">Instructor</a>
-                    <ul className="submenu">
-                      <li><a href="instructor-list.html">List</a></li>
-                      <li><a href="instructor-grid.html">Grid</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="instructor-dashboard.html">Dashboard</a></li>
-                  <li><a href="instructor-profile.html">My Profile</a></li>
-                  <li><a href="instructor-course.html">My Course</a></li>
-                  <li><a href="instructor-wishlist.html">Wishlist</a></li>
-                  <li><a href="instructor-reviews.html">Reviews</a></li>
-                  <li><a href="instructor-quiz.html">My Quiz Attempts</a></li>
-                  <li><a href="instructor-orders.html">Orders</a></li>
-                  <li><a href="instructor-qa.html">Question &amp; Answer</a></li>
-                  <li><a href="instructor-referral.html">Referrals</a></li>
-                  <li><a href="instructor-chat.html">Messages</a></li>
-                  <li><a href="instructor-tickets.html">Support Ticket</a></li>
-                  <li><a href="instructor-notifications.html">Notifications</a></li>
-                  <li><a href="instructor-settings.html">Settings</a></li>
-                </ul>
-              </li>	
-              <li className="has-submenu active">
-                <a href="#">Student <i className="fas fa-chevron-down" /></a>
-                <ul className="submenu first-submenu">
-                  <li className="has-submenu">
-                    <a href="students-list.html">Student</a>
-                    <ul className="submenu">
-                      <li><a href="students-list.html">List</a></li>
-                      <li><a href="students-grid.html">Grid</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="student-dashboard.html">Student Dashboard</a></li>
-                  <li className="active"><a href="student-profile.html">My Profile</a></li>
-                  <li><a href="student-courses.html">Enrolled Courses</a></li>
-                  <li><a href="student-wishlist.html">Wishlist</a></li>
-                  <li><a href="student-reviews.html">Reviews</a></li>
-                  <li><a href="student-quiz.html">My Quiz Attempts</a></li>
-                  <li><a href="student-order-history.html">Orders</a></li>
-                  <li><a href="student-qa.html">Question &amp; Answer</a></li>
-                  <li><a href="student-referral.html">Referrals</a></li>
-                  <li><a href="student-messages.html">Messages</a></li>
-                  <li><a href="student-tickets.html">Support Ticket</a></li>
-                  <li><a href="student-settings.html">Settings</a></li>
-                </ul>
-              </li>	
-              <li className="has-submenu">
-                <a href="#">Pages <i className="fas fa-chevron-down" /></a>
-                <ul className="submenu">
-                  <li><a href="notifications.html">Notification</a></li>
-                  <li><a href="pricing-plan.html">Pricing Plan</a></li>
-                  <li><a href="wishlist.html">Wishlist</a></li>
-                  <li className="has-submenu">
-                    <a href="course-list.html">Course</a>
-                    <ul className="submenu">
-                      <li><a href="add-course.html">Add Course</a></li>
-                      <li><a href="course-list.html">Course List</a></li>
-                      <li><a href="course-grid.html">Course Grid</a></li>
-                      <li><a href="course-details.html">Course Details</a></li>
-                    </ul>
-                  </li>
-                  <li className="has-submenu">
-                    <a href="come-soon.html">Error</a>
-                    <ul className="submenu">
-                      <li><a href="come-soon.html">Coming Soon</a></li>
-                      <li><a href="error-404.html">404</a></li>
-                      <li><a href="error-500.html">500</a></li>
-                      <li><a href="under-construction.html">Under Construction</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="faq.html">FAQ</a></li>
-                  <li><a href="support.html">Support</a></li>
-                  <li><a href="job-category.html">Category</a></li>
-                  <li><a href="cart.html">Cart</a></li>
-                  <li><a href="checkout.html">Checkout</a></li>
-                  <li><a href="login.html">Login</a></li>
-                  <li><a href="register.html">Register</a></li>
-                  <li><a href="forgot-password.html">Forgot Password</a></li>
-                </ul>
-              </li>
-              <li className="has-submenu">
-                <a href="#">Blog <i className="fas fa-chevron-down" /></a>
-                <ul className="submenu">
-                  <li><a href="blog-list.html">Blog List</a></li>
-                  <li><a href="blog-grid.html">Blog Grid</a></li>
-                  <li><a href="blog-masonry.html">Blog Masonry</a></li>
-                  <li><a href="blog-modern.html">Blog Modern</a></li>
-                  <li><a href="blog-details.html">Blog Details</a></li>
-                </ul>
-              </li>
-              <li className="login-link">
-                <a href="login.html">Login / Signup</a>
-              </li>
-            </ul>		 
-          </div>
-          <ul className="nav header-navbar-rht">
-            <li className="nav-item user-nav">
-              <div>
-                <a href="javascript:void(0);" id="dark-mode-toggle" className="dark-mode-toggle  ">
-                  <i className="fa-solid fa-moon" />
-                </a>
-                <a href="javascript:void(0);" id="light-mode-toggle" className="dark-mode-toggle ">
-                  <i className="fa-solid fa-sun" />
-                </a>
-              </div>
-            </li>
-            <li className="nav-item user-nav">
-              <a href="#" className="dropdown-toggle" data-bs-toggle="dropdown">
-                <span className="user-img">
-                  <img src="assets/img/user/user16.jpg" alt="Img" />
-                  <span className="status online" />
-                </span>
-              </a>
-              <div className="users dropdown-menu dropdown-menu-right" data-popper-placement="bottom-end">
-                <div className="user-header">
-                  <div className="avatar avatar-sm">
-                    <img src="assets/img/user/user16.jpg" alt="User Image" className="avatar-img rounded-circle" />
-                  </div>
-                  <div className="user-text">
-                    <h6>Rolands R</h6>
-                    <p className="text-muted mb-0">Student</p>
-                  </div>
-                </div>
-                <a className="dropdown-item" href="student-dashboard.html"><i className="feather-home me-1" /> Dashboard</a>
-                <a className="dropdown-item" href="student-settings.html"><i className="feather-user me-1" /> Profile</a>
-                <a className="dropdown-item" href="setting-student-subscription.html"><i className="feather-star me-1" /> Subscription</a>
-                <a className="dropdown-item" href="index-2.html"><i className="feather-log-out me-1" /> Logout</a>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-  </header>
-  {/* /Header */}
-  {/* Breadcrumb */}
-  <div className="breadcrumb-bar breadcrumb-bar-info">
-    <div className="container">
-      <div className="row">
-        <div className="col-md-12 col-12">
-          <div className="breadcrumb-list">
-            <h2 className="breadcrumb-title">My Profile</h2>
-            <nav aria-label="breadcrumb" className="page-breadcrumb">
-              <ol className="breadcrumb">
-                <li className="breadcrumb-item"><a href="index-2.html">Home</a></li>
-                <li className="breadcrumb-item active" aria-current="page">My Profile</li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <HeaderBack />
   {/* /Breadcrumb */}	
   {/* Page Content */}
   <div className="page-content">
@@ -206,12 +40,39 @@ function Profile() {
           <div className="settings-widget dash-profile">
             <div className="settings-menu">
               <div className="profile-bg">
-                <div className="profile-img">
-                  <a href="student-profile.html"><img src="assets/img/user/user16.jpg" alt="Img" /></a>
-                </div>
+              <div className="profile-img">
+  <a href="student-profile.html">
+    <img src={selectedImg || user?.profilePic || "/avatar.png"} alt="Img" />
+  </a>
+</div>
+
               </div>
+              <label
+                htmlFor="avatar-upload"
+                className={`
+                  absolute bottom-0 right-0 
+                  bg-base-content hover:scale-105
+                  p-2 rounded-full cursor-pointer 
+                  transition-all duration-200
+                  ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}
+                `}
+              >
+                <Camera className="w-5 h-5 text-base-200" />
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isUpdatingProfile}
+                />
+              </label>
+              <p className="text-sm text-zinc-400">
+              {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
+            </p>
               <div className="profile-group">
                 <div className="profile-name text-center">
+
                   <h4><a href="student-profile.html">Rolands Richard</a></h4>
                   <p>Student</p>
                 </div>
@@ -306,40 +167,25 @@ function Profile() {
                 <div className="row">
                   <div className="col-sm-6">
                     <div className="contact-info">
-                      <h6>First Name</h6>
-                      <p>Ronald</p>
-                    </div>
+                      <h6>Name</h6>
+                      <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{user?.name}</p>
+                      </div>
                   </div>
+                 
                   <div className="col-sm-6">
                     <div className="contact-info">
-                      <h6>Last Name</h6>
-                      <p>Richard</p>
-                    </div>
-                  </div>
-                  <div className="col-sm-6">
-                    <div className="contact-info">
-                      <h6>User Name</h6>
-                      <p>studentdemo</p>
+                      <h6>Phone</h6>
+                      <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{user?.phone}</p>
                     </div>
                   </div>
                   <div className="col-sm-6">
                     <div className="contact-info">
                       <h6>Email</h6>
-                      <p><a href="https://dreamslms.dreamstechnologies.com/cdn-cgi/l/email-protection" className="__cf_email__" data-cfemail="2350575647464d5747464e4c63465b424e534f460d404c4e">[email&nbsp;protected]</a></p>
+                      <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{user?.email}</p>
                     </div>
                   </div>
-                  <div className="col-sm-6">
-                    <div className="contact-info">
-                      <h6>Phone Number</h6>
-                      <p>90154-91036</p>
-                    </div>
-                  </div>
-                  <div className="col-sm-12">
-                    <div className="contact-info mb-0">
-                      <h6>Bio</h6>
-                      <p>Hello! I'm Ronald Richard. I'm passionate about developing innovative software solutions, analyzing classic literature. I aspire to become a software developer, work as an editor. In my free time, I enjoy coding, reading, hiking etc.</p>
-                    </div>
-                  </div>
+                 
+                 
                 </div>
               </div>
             </div>
@@ -351,107 +197,7 @@ function Profile() {
   </div>	
   {/* /Page Content */}
   {/* Footer */}
-  <footer className="footer">
-    {/* Footer Top */}
-    <div className="footer-top">
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-4 col-md-6">
-            {/* Footer Widget */}
-            <div className="footer-widget footer-about">
-              <div className="footer-logo">
-                <img src="assets/img/logo.svg" alt="logo" />
-              </div>
-              <div className="footer-about-content">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris</p>
-              </div>
-            </div>
-            {/* /Footer Widget */}
-          </div>
-          <div className="col-lg-2 col-md-6">
-            {/* Footer Widget */}
-            <div className="footer-widget footer-menu">
-              <h2 className="footer-title">For Instructor</h2>
-              <ul>
-                <li><a href="instructor-profile.html">Profile</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-                <li><a href="instructor-list.html">Instructor</a></li>
-                <li><a href="instructor-dashboard.html"> Dashboard</a></li>
-              </ul>
-            </div>
-            {/* /Footer Widget */}
-          </div>
-          <div className="col-lg-2 col-md-6">
-            {/* Footer Widget */}
-            <div className="footer-widget footer-menu">
-              <h2 className="footer-title">For Student</h2>
-              <ul>
-                <li><a href="student-profile.html">Profile</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-                <li><a href="students-list.html">Student</a></li>
-                <li><a href="student-dashboard.html"> Dashboard</a></li>
-              </ul>
-            </div>
-            {/* /Footer Widget */}
-          </div>
-          <div className="col-lg-4 col-md-6">
-            {/* Footer Widget */}
-            <div className="footer-widget footer-contact">
-              <h2 className="footer-title">News letter</h2>
-              <div className="news-letter">
-                <form>
-                  <input type="text" className="form-control" placeholder="Enter your email address" name="email" />
-                </form>
-              </div>
-              <div className="footer-contact-info">
-                <div className="footer-address">
-                  <img src="assets/img/icon/icon-20.svg" alt="Img" className="img-fluid" />
-                  <p> 3556  Beech Street, San Francisco,<br /> California, CA 94108 </p>
-                </div>
-                <p>
-                  <img src="assets/img/icon/icon-19.svg" alt="Img" className="img-fluid" />
-                  <a href="https://dreamslms.dreamstechnologies.com/cdn-cgi/l/email-protection" className="__cf_email__" data-cfemail="57332532363a243b3a2417322f363a273b327934383a">[email&nbsp;protected]</a>
-                </p>
-                <p className="mb-0">
-                  <img src="assets/img/icon/icon-21.svg" alt="Img" className="img-fluid" />
-                  +19 123-456-7890
-                </p>
-              </div>
-            </div>
-            {/* /Footer Widget */}
-          </div>
-        </div>
-      </div>
-    </div>
-    {/* /Footer Top */}
-    {/* Footer Bottom */}
-    <div className="footer-bottom">
-      <div className="container">
-        {/* Copyright */}
-        <div className="copyright">
-          <div className="row">
-            <div className="col-md-6">
-              <div className="privacy-policy">
-                <ul>
-                  <li><a href="term-condition.html">Terms</a></li>
-                  <li><a href="privacy-policy.html">Privacy</a></li>
-                </ul>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="copyright-text">
-                <p className="mb-0">© 2024 DreamsLMS. All rights reserved.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* /Copyright */}
-      </div>
-    </div>
-    {/* /Footer Bottom */}
-  </footer>
+ <Footer />
   {/* /Footer */}
 </div>
 

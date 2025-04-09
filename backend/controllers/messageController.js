@@ -17,31 +17,58 @@ const getUsersForSidebar = async (req, res) => {
     }
   };
 
+
+
+  
+  // const getMessages = async (req, res) => {
+  //   try {
+  //     const { id: userToChatId } = req.params;
+  //     const myId = req.user._id || req.user.id; 
+  //     if (!myId || !userToChatId) {
+  //       return res.status(400).json({ error: "Missing user ID" });
+  //     }
+  
+  //     console.log(" My ID (connected user):", myId);
+  //     console.log(" Chat with user ID:", userToChatId);
+  
+  //     const messages = await Message.find({
+  //       $or: [
+  //         { senderId: myId, receiverId: userToChatId },
+  //         { senderId: userToChatId, receiverId: myId },
+  //       ],
+  //     }).sort({ createdAt: 1 }); //  Trie les messages par date
+  
+  //     res.status(200).json(messages);
+  //   } catch (error) {
+  //     console.log("❌ Error in getMessages controller:", error.message);
+  //     res.status(500).json({ error: "Internal server error" });
+  //   }
+  // };
+  
+
   const getMessages = async (req, res) => {
-    try {
-      const { id: userToChatId } = req.params;
-      const myId = req.user._id || req.user.id; 
-      if (!myId || !userToChatId) {
-        return res.status(400).json({ error: "Missing user ID" });
-      }
-  
-      console.log(" My ID (connected user):", myId);
-      console.log(" Chat with user ID:", userToChatId);
-  
-      const messages = await Message.find({
-        $or: [
-          { senderId: myId, receiverId: userToChatId },
-          { senderId: userToChatId, receiverId: myId },
-        ],
-      }).sort({ createdAt: 1 }); //  Trie les messages par date
-  
-      res.status(200).json(messages);
-    } catch (error) {
-      console.log("❌ Error in getMessages controller:", error.message);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  };
-  
+  try {
+    const { id: userToChatId } = req.params; // Récupère l'ID du destinataire du chat
+    const myId = req.user._id; // Récupère l'ID de l'utilisateur connecté
+
+    // Recherche des messages entre l'utilisateur connecté et l'autre utilisateur
+    const messages = await Message.find({
+      $or: [
+        { senderId: myId, receiverId: userToChatId }, // Messages envoyés par l'utilisateur connecté
+        { senderId: userToChatId, receiverId: myId }, // Messages envoyés par l'autre utilisateur
+      ],
+    });
+
+    // Retourne les messages trouvés
+    res.status(200).json(messages);
+  } catch (error) {
+    console.log("Error in getMessages controller: ", error.message); // Log de l'erreur
+    res.status(500).json({ error: "Internal server error" }); // Retourne une erreur 500 en cas d'échec
+  }
+};
+
+
+
 const sendMessage = async (req, res) => {
   try {
     const { text, image, receiverId } = req.body;

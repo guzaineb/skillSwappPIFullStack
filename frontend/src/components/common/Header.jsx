@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from "../../store/authStore";
 import ProfileIcon from './ProfileIcon';
 
+
 function Header() {
   const { user, isAuthenticated, checkAuth } = useAuthStore();
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);

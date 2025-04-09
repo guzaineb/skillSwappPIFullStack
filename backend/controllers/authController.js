@@ -142,6 +142,8 @@ async function verifyEmail(req, res) {
 // 		res.status(404).json(error.message);
 // 	}
 // }
+
+
 async function login(req, res) {
 	const { errors, isValid } = ValidateLogin(req.body);
 	try {
@@ -162,7 +164,7 @@ async function login(req, res) {
 
 		// Générer un token et l'envoyer en cookie sécurisé
 		const token = jwt.sign(
-			{ id: user._id, name: user.name, email: user.email, role: user.role },
+			{ id: user._id, name: user.name, email: user.email, role: user.role ,},
 			process.env.JWT_SECRET,
 			{ expiresIn: "2h" }
 		);
@@ -179,7 +181,11 @@ async function login(req, res) {
 		user.lastLogin = new Date();
 		await user.save();
 
-		return res.status(200).json({ success: true, message: "Login successful" });
+		return res.status(200).json({ id: user._id,
+			name: user.name,
+			email: user.email,
+			role: user.role,
+			profilePic: user.profilePic });
 
 	} catch (error) {
 		console.error("❌ Error in login:", error);
@@ -231,6 +237,27 @@ const logout = async (req, res) => {
 		return res.status(500).json({ success: false, message: "Logout failed" });
 	}
 };
+// const checkAuth = async (req, res) => {
+// 	try {
+// 		const token = req.cookies.token;
+// 		if (!token) {
+// 			return res.status(401).json({ success: false, message: "Unauthorized" });
+// 		}
+
+// 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+// 		const user = await User.findById(decoded.id).select("-password");
+
+// 		if (!user) {
+// 			return res.status(404).json({ success: false, message: "User not found" });
+// 		}
+
+// 		return res.status(200).json({ success: true, user });
+// 	} catch (error) {
+// 		console.error("❌ Error in checkAuth:", error);
+// 		return res.status(401).json({ success: false, message: "Invalid token" });
+// 	}
+// };
+
 const checkAuth = async (req, res) => {
 	try {
 		const token = req.cookies.token;
@@ -245,13 +272,23 @@ const checkAuth = async (req, res) => {
 			return res.status(404).json({ success: false, message: "User not found" });
 		}
 
-		return res.status(200).json({ success: true, user });
+		// 👇 On retourne uniquement ce qu'on veut (tu peux personnaliser)
+		const userData = {
+			id: user._id,
+			name: user.name,
+			email: user.email,
+			role: user.role,
+			profilePic: user.profilePic, // 👈 Ici on ajoute l'image
+			isVerified: user.isVerified,
+			phone: user.phone,
+		};
+
+		return res.status(200).json({ success: true, user: userData });
 	} catch (error) {
 		console.error("❌ Error in checkAuth:", error);
 		return res.status(401).json({ success: false, message: "Invalid token" });
 	}
 };
-
 
 
 async function forgetPassWord(req, res) {
@@ -353,50 +390,32 @@ async function resendVerificationCode(req, res) {
     }
 }
 
-
 const updateProfile = async (req, res) => {
-    try {
-        const { profilePic } = req.body;
-
-        console.log(" Profile pic received:", profilePic);
-        console.log(" User in request:", req.user);
-
-        if (!req.user || !req.user.id) {  // Vérifie si req.user et req.user.id existent
-            return res.status(401).json({ message: "Unauthorized: User not found in request" });
-        }
-
-        const userId = req.user.id;  // Récupère l'ID depuis `req.user.id`
-        console.log(" User ID:", userId);
-
-        if (!profilePic) {
-            return res.status(400).json({ message: "Profile pic is required" });
-        }
-
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
-        if (!uploadResponse.secure_url) {
-            return res.status(500).json({ message: "Failed to upload profile picture" });
-        }
-
-        console.log(" Cloudinary Upload URL:", uploadResponse.secure_url);
-
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { profilePic: uploadResponse.secure_url },
-            { new: true }
-        );
-
-        console.log(" Updated user:", updatedUser);
-
-        if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json(updatedUser);
-    } catch (error) {
-        console.log(" Error in updateProfile:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-};
+	try {
+	  const { profilePic } = req.body;
+	  const userId = req.user.id;  // Assure-toi que req.user est bien défini (authentification)
+  
+	  if (!profilePic) {
+		return res.status(400).json({ message: "Profile picture is required" });
+	  }
+  
+	  const uploadResponse = await cloudinary.uploader.upload(profilePic);
+  
+	  const updatedUser = await User.findByIdAndUpdate(
+		userId,
+		{ profilePic: uploadResponse.secure_url }, 
+		{ new: true }
+	  );
+  
+	  res.status(200).json(updatedUser);  // Renvoie l'utilisateur mis à jour
+  
+	} catch (error) {
+	  console.log("Error in updateProfile:", error);
+	  res.status(500).json({ message: "Internal server error" });
+	}
+  };
+  
+  
 
 
 module.exports = { signup,resendVerificationCode,updateProfile, verifyEmail, login, Test, Admin, logout, Educator, forgetPassWord, resetPassword ,checkAuth};

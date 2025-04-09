@@ -1,40 +1,45 @@
-// Immediately apply the theme based on localStorage
-
 (function() {
-    const darkMode = localStorage.getItem('darkMode');
-    const themeClass = darkMode === 'enabled' ? 'dark' : 'light';
+    function initTheme() {
+        const darkMode = localStorage.getItem('darkMode');
+        const themeClass = darkMode === 'enabled' ? 'dark' : 'light';
+        document.documentElement.className = themeClass;
 
-    // Apply the theme class to the document immediately
-    document.documentElement.className = themeClass;
+        // Attendre que le DOM soit chargé
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupThemeButtons);
+        } else {
+            setupThemeButtons();
+        }
+    }
 
-    // Wait for DOMContentLoaded to set up event listeners
-    document.addEventListener('DOMContentLoaded', () => {
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const lightModeToggle = document.getElementById('light-mode-toggle');
+    function setupThemeButtons() {
+        const darkBtn = document.getElementById('dark-mode-toggle');
+        const lightBtn = document.getElementById('light-mode-toggle');
+
+        if (!darkBtn || !lightBtn) {
+            console.warn('Boutons de thème non trouvés - Vérifiez vos IDs');
+            return;
+        }
 
         const toggleMode = (isDarkMode) => {
-            document.documentElement.classList.toggle('dark', isDarkMode);
+            document.documentElement.className = isDarkMode ? 'dark' : 'light';
             localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
-            updateToggleButtons(isDarkMode);
+            updateButtons(isDarkMode);
         };
 
-        const updateToggleButtons = (isDarkMode) => {
-            if (isDarkMode) {
-                darkModeToggle.classList.remove('activate');
-                lightModeToggle.classList.add('activate');
-            } else {
-                lightModeToggle.classList.remove('activate');
-                darkModeToggle.classList.add('activate');
-            }
+        const updateButtons = (isDarkMode) => {
+            darkBtn.classList.toggle('hidden', isDarkMode);
+            lightBtn.classList.toggle('hidden', !isDarkMode);
         };
 
-        // Initial activation based on current theme
-        updateToggleButtons(themeClass === 'dark');
+        // Initialisation
+        const isDark = document.documentElement.className === 'dark';
+        updateButtons(isDark);
 
-        // Add event listeners if elements are present
-        if (darkModeToggle && lightModeToggle) {
-            darkModeToggle.addEventListener('click', () => toggleMode(true));
-            lightModeToggle.addEventListener('click', () => toggleMode(false));
-        }
-    });
+        // Écouteurs d'événements
+        darkBtn.addEventListener('click', () => toggleMode(true));
+        lightBtn.addEventListener('click', () => toggleMode(false));
+    }
+
+    initTheme();
 })();
