@@ -2,10 +2,14 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const passportsetup=require("./service/passport.js")
+
 const passport = require("passport");
+
 const authRoutes = require("./routes/auth.route.js");
 const skillRoutes = require("./routes/skill.route.js");
 const messageRoutes = require("./routes/message.route.js");
+const googleRoutes = require("./routes/auth.go.js");
 
 const db = require("./db/db.json");
 const cookieParser = require("cookie-parser");
@@ -33,12 +37,12 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
-require("./security/passport")(passport); // Charger la configuration de Passport
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/skill", skillRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/auth", googleRoutes);
 
 
 // Lancement du serveur

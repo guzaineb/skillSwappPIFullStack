@@ -3,8 +3,7 @@ import { useAuthStore } from '../../store/authStore';
 
 export default function ProfileIcon() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const { logout } = useAuthStore();
-  const { user } = useAuthStore();
+  const { logout, user } = useAuthStore();
 
   const handleLogout = async () => {
     try {
@@ -15,6 +14,11 @@ export default function ProfileIcon() {
     }
   };
 
+  // Force reload of profile image by appending timestamp
+  const profilePicUrl = user?.profilePic
+    ? `${user.profilePic}?t=${new Date().getTime()}`
+    : "/avatar.png";
+
   return (
     <div className="nav-item user-nav">
       <a 
@@ -23,24 +27,21 @@ export default function ProfileIcon() {
         onClick={() => setDropdownOpen(!isDropdownOpen)}
       >
         <span className="user-img">
-        <img src={user?.profilePic || "/avatar.png"} alt="Profile" />
-        <span className="status online" />
+          <img src={profilePicUrl} alt="Profile" />
+          <span className="status online" />
         </span>
       </a>
       <div className={`users dropdown-menu dropdown-menu-right ${isDropdownOpen ? 'show' : ''}`}>
         <div className="user-header">
-          <div className="avatar avatar-sm">
-            <img src="assets/img/user/user-17.jpg" alt="User" className="avatar-img rounded-circle" />
-          </div>
           <div className="user-text">
-            <h6>Eugene Andre</h6>
-            <p className="text-muted mb-0">Instructor</p>
+            <h4>{user?.name}</h4>
+            <p>{user?.role}</p>
           </div>
         </div>
-        <a className="dropdown-item" href="instructor-dashboard.html">
+        <a className="dropdown-item" href="/Dah">
           <i className="feather-home me-1" /> Dashboard
         </a>
-        <a className="dropdown-item" href="instructor-settings.html">
+        <a className="dropdown-item" href="/Profile">
           <i className="feather-star me-1" /> Edit Profile
         </a>
         <button className="dropdown-item" onClick={handleLogout}>

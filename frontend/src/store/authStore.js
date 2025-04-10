@@ -259,21 +259,21 @@ updateProfile: async (data) => {
   
 
 
-  // initializeSocket: (userId) => {
-  //   const socket = io("http://localhost:5000", {
-  //     query: { userId },
-  //   });
+  initializeSocket: (userId) => {
+    const socket = io("http://localhost:5000", {
+      query: { userId },
+    });
 
-  //   socket.on("connect", () => {
-  //     console.log("Connected to socket server");
-  //   });
+    socket.on("connect", () => {
+      console.log("Connected to socket server");
+    });
 
-  //   socket.on("getOnlineUsers", (onlineUsers) => {
-  //     set({ onlineUsers });
-  //   });
+    socket.on("getOnlineUsers", (onlineUsers) => {
+      set({ onlineUsers });
+    });
 
-  //   set({ socket });
-  // },
+    set({ socket });
+  },
 
 
 

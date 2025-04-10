@@ -18,6 +18,14 @@ export default function Signin() {
     }
   };
 
+  const google = () => {
+    window.open("http://localhost:5000/auth/google", "_self");
+  };
+
+  const github = () => {
+    window.open("http://localhost:5000/auth/github", "_self");
+  };
+
   return (
     <div className="main-wrapper log-wrap">
       <div className="row">
@@ -93,8 +101,8 @@ export default function Signin() {
               <span><a href="#">Or sign in with</a></span>
               <div className="sign-google">
                 <ul>
-                  <li><a href="#"><img src="assets/img/net-icon-01.png" alt="Google" /> Sign In using Google</a></li>
-                  <li><a href="#"><img src="assets/img/net-icon-02.png" alt="Facebook" /> Sign In using Facebook</a></li>
+                  <li><a href="#"><img src="assets/img/net-icon-01.png" onClick={google} alt="Google" /> Sign In using Google</a></li>
+                  <li><a href="#"><img src="assets/img/net-icon-02.png" onClick={github} alt="Facebook" /> Sign In using Facebook</a></li>
                 </ul>
               </div>
               <p className="mb-0">New User? <a href="/signup">Create an Account</a></p>

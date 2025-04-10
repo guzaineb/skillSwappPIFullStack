@@ -45,7 +45,7 @@ function Header() {
                   Home
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="homeDropdown">
-                  <li><a className="dropdown-item" href="#">Home</a></li>
+                  <li><a className="dropdown-item" href="/index">Home</a></li>
                 </ul>
               </li>
 
@@ -103,18 +103,10 @@ function Header() {
 
           {/* Barre de droite : Dark Mode & Profil */}
           <ul className="navbar-nav ms-3">
-            <li className="nav-item">
-              <button id="dark-mode-toggle" className="btn btn-light" aria-label="Toggle Dark Mode">
-                <i className="fa-solid fa-moon"></i>
-              </button>
-              <button id="light-mode-toggle" className="btn btn-light" aria-label="Toggle Light Mode">
-                <i className="fa-solid fa-sun"></i>
-              </button>
-            </li>
-
+           
             {/* Conditional Rendering of Profile or SignIn/SignUp */}
             <li className="nav-item">
-              {isLoggedIn ? (
+              {isAuthenticated ? (
                 <ProfileIcon />
               ) : (
                 <>

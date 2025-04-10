@@ -21,56 +21,62 @@ const Sidebar = () => {
 
   return (
     <aside className="h-100 w-20 w-lg-72 border-end border-light d-flex flex-column">
-      <div className="border-bottom border-light w-100 p-4">
+      <div className="border-bottom border-light w-100 p-3">
         <div className="d-flex align-items-center gap-2">
-          <Users className="w-6 h-6" />
+          <Users className="w-5 h-5" />
           <span className="font-weight-medium d-none d-lg-block">Contacts</span>
         </div>
 
-        {/* TODO: Online filter toggle */}
-        <div className="mt-3 d-none d-lg-flex align-items-center gap-2">
-          <label className="cursor-pointer d-flex align-items-center gap-2">
+        {/* Online filter toggle */}
+        <div className="mt-2 d-none d-lg-flex align-items-center gap-2">
+          <label className="cursor-pointer d-flex align-items-center gap-1">
             <input
               type="checkbox"
               checked={showOnlineOnly}
               onChange={(e) => setShowOnlineOnly(e.target.checked)}
               className="form-check-input"
             />
-            <span className="text-sm">Show online only</span>
+            <span className="text-sm" style={{ fontSize: "0.8rem" }}>Show online only</span>
           </label>
-          <span className="text-xs text-muted">({onlineUsers.length - 1} online)</span>
+          <span className="text-muted" style={{ fontSize: "0.75rem" }}>
+            ({onlineUsers.length - 1} online)
+          </span>
         </div>
       </div>
 
-      <div className="overflow-auto w-100 py-3">
+      <div className="overflow-auto w-100 py-2">
         {filteredUsers.map((user) => (
           <button
             key={user._id}
             onClick={() => setSelectedUser(user)}
             className={`
-              w-100 p-3 d-flex align-items-center gap-3
+              w-100 p-2 d-flex align-items-center gap-2
               hover:bg-light transition-colors
               ${selectedUser?._id === user._id ? "bg-light border-1 border-light" : ""}
             `}
+            style={{ fontSize: "0.85rem" }}
           >
-            <div className="relative mx-auto mx-lg-0">
+            <div className="position-relative mx-auto mx-lg-0">
               <img
                 src={user.profilePic || "/avatar.png"}
                 alt={user.name}
-                className="w-10 h-10 object-cover rounded-circle"  // Réduction de la taille de l'image
+                className="w-8 h-8 object-cover rounded-circle"
+                style={{ width: "32px", height: "32px" }}
               />
               {onlineUsers.includes(user._id) && (
                 <span
-                  className="position-absolute bottom-0 end-0 w-2.5 h-2.5 bg-success 
-                  rounded-circle border-2 border-light"
+                  className="position-absolute bottom-0 end-0 bg-success rounded-circle border border-light"
+                  style={{ width: "8px", height: "8px" }}
                 />
               )}
             </div>
 
-            {/* Info utilisateur - visible uniquement sur les grands écrans */}
+            {/* User info visible only on large screens */}
             <div className="d-none d-lg-block text-start min-w-0">
-              <div className="font-weight-medium text-truncate">{user.fullName}</div>
-              <div className="text-sm text-muted">
+              <div className="text-truncate" style={{ fontSize: "0.85rem", fontWeight: "500" }}>
+                {user.fullName}
+              </div>
+              <div className="text-muted" style={{ fontSize: "0.75rem" }}>
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
               </div>
             </div>
@@ -78,7 +84,9 @@ const Sidebar = () => {
         ))}
 
         {filteredUsers.length === 0 && (
-          <div className="text-center text-muted py-4">No online users</div>
+          <div className="text-center text-muted py-4" style={{ fontSize: "0.85rem" }}>
+            No online users
+          </div>
         )}
       </div>
     </aside>
