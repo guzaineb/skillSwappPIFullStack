@@ -1,65 +1,1236 @@
 import React, { useEffect } from 'react';
-import { useSkillStore } from '../../store/skillStore'
-import StatusBadge from "./StatusBadge";
-
-
-
+import { useSkillStore } from './../../store/skillStore';
+import Footer from './Footer';
+import Header from './Header'; 
 const SkillList = () => {
-  const { skills, fetchSkills, deleteSkill, isLoading, error } = useSkillStore();
+  const { skills, fetchSkills, isLoading, error } = useSkillStore();
 
+  // Fetch skills when the component is mounted
   useEffect(() => {
     fetchSkills();
-  }, []);
+  }, [fetchSkills]);
 
-  if (isLoading) return <p>Chargement des compétences...</p>;
-  if (error) return <p>Erreur : {error}</p>;
+  // Handle loading and error states
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+
 
   return (
-    <div className="col-xl-9 col-lg-9">
-    <div className="settings-widget card-info">
-      <div className="settings-menu p-0">
-        <div className="profile-heading">
-          <h3>Mes Compétences</h3>
-          <p>Gérez vos compétences et leur classification</p>
+    <>
+    <Header/>
+    <div className="page-content">
+    <div className="row">
+      {skills.map((skill) => (
+        <div key={skill._id} className="col-lg-12 col-md-12 d-flex">
+          <div className="course-box course-design list-course d-flex">
+            <div className>
+              <div className>
+                <a href="#">
+                  <img
+                    className="img-fluid"
+                    alt="Skill Image"
+                    src={skill.image || 'default-image.jpg'} // Assure-toi que l'image existe
+                  />
+                </a>
+                <div className="price">
+                  <h3>
+                    {skill.pricingType === 'free' ? 'Free' : `${skill.price}`} 
+                  </h3>
+                </div>
+              </div>
+              <div className="product-content">
+                <div className="head-course-title">
+                  <h3 className="title">
+                    <a href="#">{skill.skillname}</a>
+                  </h3>
+                </div>
+                <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                  <div className="rating-img d-flex align-items-center">
+                    <p>{skill.level}</p>
+                  </div>
+                  <div className="course-view d-flex align-items-center">
+                    <p>{skill.category}</p>
+                  </div>
+                </div>
+                <div className="rating">
+                  <i className="fas fa-star filled"></i>
+                  <i className="fas fa-star filled"></i>
+                  <i className="fas fa-star filled"></i>
+                  <i className="fas fa-star filled"></i>
+                  <i className="fas fa-star"></i>
+                  <span className="d-inline-block average-rating">
+                    <span>4.0</span> (15)
+                  </span>
+                </div>
+                <div className="course-group d-flex mb-0">
+                  <div className="course-group-img d-flex">
+                    <a href="#">
+                      <img
+                        src="assets/img/user/user1.jpg"
+                        alt="Instructor"
+                        className="img-fluid"
+                      />
+                    </a>
+                    <div className="course-name">
+                      <h4>Instructor Name</h4>
+                      <p>Instructor</p>
+                    </div>
+                  </div>
+                  <div className="course-share d-flex align-items-center justify-content-center">
+                    <a href="#rate">
+                      <i className="fa-regular fa-heart"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="checkout-form pb-0">
-          <div className="row">
-            {skills.map((skill) => (
-              <div className="col-xxl-4 col-md-6 d-flex" key={skill._id}>
-                <div className="course-box flex-fill">
+      ))}
+    </div>
+    </div>
+    <div>
+                      <li>
+                        <div className="media">
+                          <div className="d-flex media-wide">
+                            <div className="avatar">
+                              <a href="course-details.html">
+                                <img alt="Img" src="assets/img/course/course-14.jpg" />
+                              </a>
+                            </div>
+                            <div className="media-body">
+                              <h6><a href="course-details.html">Build Responsive
+                                  Real...</a></h6>
+                              <p>Jenis R.</p>
+                              <h5>$200 <span>$99.00</span></h5>
+                            </div>
+                          </div>
+                          <div className="remove-btn">
+                            <a href="#" className="btn">Remove</a>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="media">
+                          <div className="d-flex media-wide">
+                            <div className="avatar">
+                              <a href="course-details.html">
+                                <img alt="Img" src="assets/img/course/course-15.jpg" />
+                              </a>
+                            </div>
+                            <div className="media-body">
+                              <h6><a href="course-details.html">C# Developers Double
+                                  ...</a></h6>
+                              <p>Jesse Stevens</p>
+                              <h5>$200 <span>$99.00</span></h5>
+                            </div>
+                          </div>
+                          <div className="remove-btn">
+                            <a href="#" className="btn">Remove</a>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                    <div className="total-item">
+                      <h6>Subtotal : $ 600</h6>
+                      <h5>Total : $ 600</h5>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li className="nav-item wish-nav">
+                <a href="#" className="dropdown-toggle" data-bs-toggle="dropdown">
+                  <img src="assets/img/icon/wish.svg" alt="img" />
+                </a>
+                <div className="wishes-list dropdown-menu dropdown-menu-right">
+                  <div className="wish-content">
+                    <ul>
+                      <li>
+                        <div className="media">
+                          <div className="d-flex media-wide">
+                            <div className="avatar">
+                              <a href="course-details.html">
+                                <img alt="Img" src="assets/img/course/course-04.jpg" />
+                              </a>
+                            </div>
+                            <div className="media-body">
+                              <h6><a href="course-details.html">Learn Angular...</a></h6>
+                              <p>By Dave Franco</p>
+                              <h5>$200 <span>$99.00</span></h5>
+                              <div className="remove-btn">
+                                <a href="#" className="btn">Add to cart</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="media">
+                          <div className="d-flex media-wide">
+                            <div className="avatar">
+                              <a href="course-details.html">
+                                <img alt="Img" src="assets/img/course/course-14.jpg" />
+                              </a>
+                            </div>
+                            <div className="media-body">
+                              <h6><a href="course-details.html">Build Responsive
+                                  Real...</a></h6>
+                              <p>Jenis R.</p>
+                              <h5>$200 <span>$99.00</span></h5>
+                              <div className="remove-btn">
+                                <a href="#" className="btn">Add to cart</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="media">
+                          <div className="d-flex media-wide">
+                            <div className="avatar">
+                              <a href="course-details.html">
+                                <img alt="Img" src="assets/img/course/course-15.jpg" />
+                              </a>
+                            </div>
+                            <div className="media-body">
+                              <h6><a href="course-details.html">C# Developers Double
+                                  ...</a></h6>
+                              <p>Jesse Stevens</p>
+                              <h5>$200 <span>$99.00</span></h5>
+                              <div className="remove-btn">
+                                <a href="#" className="btn">Remove</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+              <li className="nav-item noti-nav">
+                <a href="#" className="dropdown-toggle" data-bs-toggle="dropdown">
+                  <img src="assets/img/icon/notification.svg" alt="img" />
+                </a>
+                <div className="notifications dropdown-menu dropdown-menu-right">
+                  <div className="topnav-dropdown-header">
+                    <span className="notification-title">Notifications
+                      <select>
+                        <option>All</option>
+                        <option>Unread</option>
+                      </select>
+                    </span>
+                    <a href="javascript:void(0)" className="clear-noti">Mark all as read <i className="fa-solid fa-circle-check" /></a>
+                  </div>
+                  <div className="noti-content">
+                    <ul className="notification-list">
+                      <li className="notification-message">
+                        <div className="media d-flex">
+                          <div>
+                            <a href="notifications.html" className="avatar">
+                              <img className="avatar-img" alt="Img" src="assets/img/user/user1.jpg" />
+                            </a>
+                          </div>
+                          <div className="media-body">
+                            <h6><a href="notifications.html">Lex Murphy requested
+                                <span>access to</span> UNIX directory tree hierarchy
+                              </a></h6>
+                            <button className="btn btn-accept">Accept</button>
+                            <button className="btn btn-reject">Reject</button>
+                            <p>Today at 9:42 AM</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li className="notification-message">
+                        <div className="media d-flex">
+                          <div>
+                            <a href="notifications.html" className="avatar">
+                              <img className="avatar-img" alt="Img" src="assets/img/user/user2.jpg" />
+                            </a>
+                          </div>
+                          <div className="media-body">
+                            <h6><a href="notifications.html">Ray Arnold left 6
+                                <span>comments on</span> Isla Nublar SOC2 compliance
+                                report</a></h6>
+                            <p>Yesterday at 11:42 PM</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li className="notification-message">
+                        <div className="media d-flex">
+                          <div>
+                            <a href="notifications.html" className="avatar">
+                              <img className="avatar-img" alt="Img" src="assets/img/user/user3.jpg" />
+                            </a>
+                          </div>
+                          <div className="media-body">
+                            <h6><a href="notifications.html">Dennis Nedry <span>commented
+                                  on</span> Isla Nublar SOC2 compliance report</a>
+                            </h6>
+                            <p className="noti-details">“Oh, I finished de-bugging the phones,
+                              but the system's compiling for eighteen minutes, or twenty.
+                              So, some minor systems may go on and off for a while.”</p>
+                            <p>Yesterday at 5:42 PM</p>
+                          </div>
+                        </div>
+                      </li>
+                      <li className="notification-message">
+                        <div className="media d-flex">
+                          <div>
+                            <a href="notifications.html" className="avatar">
+                              <img className="avatar-img" alt="Img" src="assets/img/user/user1.jpg" />
+                            </a>
+                          </div>
+                          <div className="media-body">
+                            <h6><a href="notifications.html">John Hammond
+                                <span>created</span> Isla Nublar SOC2 compliance report
+                              </a></h6>
+                            <p>Last Wednesday at 11:15 AM</p>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+              <li className="nav-item user-nav">
+                <a href="#" className="dropdown-toggle" data-bs-toggle="dropdown">
+                  <span className="user-img">
+                    <img src="assets/img/user/user11.jpg" alt="Img" />
+                    <span className="status online" />
+                  </span>
+                </a>
+                <div className="users dropdown-menu dropdown-menu-right" data-popper-placement="bottom-end">
+                  <div className="user-header">
+                    <div className="avatar avatar-sm">
+                      <img src="assets/img/user/user11.jpg" alt="User Image" className="avatar-img rounded-circle" />
+                    </div>
+                    <div className="user-text">
+                      <h6>Rolands R</h6>
+                      <p className="text-muted mb-0">Student</p>
+                    </div>
+                  </div>
+                  <a className="dropdown-item" href="setting-edit-profile.html"><i className="feather-user me-1" /> Profile</a>
+                  <a className="dropdown-item" href="setting-student-subscription.html"><i className="feather-star me-1" /> Subscription</a>
+                  <a className="dropdown-item" href="index-2.html"><i className="feather-log-out me-1" />
+                    Logout</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    {/* /Header */}
+    {/* Breadcrumb */}
+    <div className="breadcrumb-bar">
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12 col-12">
+            <div className="breadcrumb-list">
+              <nav aria-label="breadcrumb" className="page-breadcrumb">
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item"><a href="index-2.html">Home</a></li>
+                  <li className="breadcrumb-item" aria-current="page">Courses</li>
+                  <li className="breadcrumb-item active" aria-current="page">All Courses</li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {/* /Breadcrumb */}
+    {/* Course */}
+    <section className="course-content">
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-9">
+            {/* Filter */}
+            <div className="showing-list">
+              <div className="row">
+                <div className="col-lg-6">
+                  <div className="d-flex align-items-center">
+                    <div className="view-icons">
+                      <a href="course-grid.html" className="grid-view"><i className="feather-grid" /></a>
+                      <a href="course-list.html" className="list-view active"><i className="feather-list" /></a>
+                    </div>
+                    <div className="show-result">
+                      <h4>Showing 1-9 of 50 results</h4>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="show-filter add-course-info ">
+                    <form action="#">
+                      <div className="row gx-2 align-items-center">
+                        <div className="col-md-6 col-item">
+                          <div className=" search-group">
+                            <i className="feather-search" />
+                            <input type="text" className="form-control" placeholder="Search our courses" />
+                          </div>
+                        </div>
+                        <div className="col-md-6 col-lg-6 col-item">
+                          <div className="input-block select-form mb-0">
+                            <select className="form-select select" name="sellist1">
+                              <option>Newly published </option>
+                              <option>published 1</option>
+                              <option>published 2</option>
+                              <option>published 3</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* /Filter */}
+            <div className="row">
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
                   <div className="product">
                     <div className="product-img">
-                      <img className="img-fluid" alt="Skill Icon" src="assets/img/icon/icon-01.svg" />
-                      <div className="price combo">
-                        <h3>{skill.pricingType}</h3>
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-10.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
                       </div>
                     </div>
                     <div className="product-content">
-                      <h3 className="title instructor-text">{skill.skillname}</h3>
-                      <div className="course-info d-flex align-items-center">
-                        <div className="rating-img d-flex align-items-center">
-                        <StatusBadge status={skill.status}
-                        level={skill.level} />
-
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">Information About UI/UX
+                            Design Degree</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
                         </div>
                       </div>
-                      <div className="course-edit-btn d-flex align-items-center justify-content-between">
-                        <a href="#"><i className="bx bx-edit me-2" />Modifier</a>
-                        <button className="btn btn-link p-0 text-danger" onClick={() => deleteSkill(skill._id)}>
-                          <i className="bx bx-trash me-2" />Supprimer
-                        </button>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user1.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">Rolands R</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
+                  <div className="product">
+                    <div className="product-img">
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-11.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">Sketch from A to Z
+                            (2024): Become an app designer</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
+                        </div>
+                      </div>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user2.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">Jesse Stevens</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
+                  <div className="product">
+                    <div className="product-img">
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-12.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">Learn Angular
+                            Fundamentals From beginning to advance lavel</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
+                        </div>
+                      </div>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user3.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">Jesse Stevens</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
+                  <div className="product">
+                    <div className="product-img">
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-13.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">Build Responsive Real
+                            World Websites with HTML5 and CSS3</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
+                        </div>
+                      </div>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user3.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">John Smith</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
+                  <div className="product">
+                    <div className="product-img">
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-14.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">C# Developers Double
+                            Your Coding Speed with Visual Studio</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
+                        </div>
+                      </div>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user4.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">Stella Johnson</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
+                  <div className="product">
+                    <div className="product-img">
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-15.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">Learn JavaScript and
+                            Express to become a professional JavaScript</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
+                        </div>
+                      </div>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user5.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">John Michael</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
+                  <div className="product">
+                    <div className="product-img">
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-16.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">Learn and Understand
+                            AngularJS to become a professional developer</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
+                        </div>
+                      </div>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user6.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">Nicole Brown</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
+                  <div className="product">
+                    <div className="product-img">
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-13.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">Responsive Web Design
+                            Essentials HTML5 CSS3 and Bootstrap</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
+                        </div>
+                      </div>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user4.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">Monroe Parker</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-12 col-md-12 d-flex">
+                <div className="course-box course-design list-course d-flex">
+                  <div className="product">
+                    <div className="product-img">
+                      <a href="course-details.html">
+                        <img className="img-fluid" alt="Img" src="assets/img/course/course-17.jpg" />
+                      </a>
+                      <div className="price">
+                        <h3>$300 <span>$99.00</span></h3>
+                      </div>
+                    </div>
+                    <div className="product-content">
+                      <div className="head-course-title">
+                        <h3 className="title"><a href="course-details.html">The Complete App Design
+                            Course - UX, UI and Design Thinking</a></h3>
+                        <div className="all-btn all-category d-flex align-items-center">
+                          <a href="checkout.html" className="btn btn-primary">BUY NOW</a>
+                        </div>
+                      </div>
+                      <div className="course-info border-bottom-0 pb-0 d-flex align-items-center">
+                        <div className="rating-img d-flex align-items-center">
+                          <img src="assets/img/icon/icon-01.svg" alt="Img" />
+                          <p>12+ Lesson</p>
+                        </div>
+                        <div className="course-view d-flex align-items-center">
+                          <img src="assets/img/icon/icon-02.svg" alt="Img" />
+                          <p>9hr 30min</p>
+                        </div>
+                      </div>
+                      <div className="rating">
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star filled" />
+                        <i className="fas fa-star" />
+                        <span className="d-inline-block average-rating"><span>4.0</span> (15)</span>
+                      </div>
+                      <div className="course-group d-flex mb-0">
+                        <div className="course-group-img d-flex">
+                          <a href="instructor-profile.html"><img src="assets/img/user/user6.jpg" alt="Img" className="img-fluid" /></a>
+                          <div className="course-name">
+                            <h4><a href="instructor-profile.html">Lavern M.</a></h4>
+                            <p>Instructor</p>
+                          </div>
+                        </div>
+                        <div className="course-share d-flex align-items-center justify-content-center">
+                          <a href="#rate"><i className="fa-regular fa-heart" /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* /pagination */}
+            <div className="row">
+              <div className="col-md-12">
+                <ul className="pagination lms-page">
+                  <li className="page-item prev">
+                    <a className="page-link" href="javascript:void(0)" tabIndex={-1}><i className="fas fa-angle-left" /></a>
+                  </li>
+                  <li className="page-item first-page active">
+                    <a className="page-link" href="javascript:void(0)">1</a>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link" href="javascript:void(0)">2</a>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link" href="javascript:void(0)">3</a>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link" href="javascript:void(0)">4</a>
+                  </li>
+                  <li className="page-item">
+                    <a className="page-link" href="javascript:void(0)">5</a>
+                  </li>
+                  <li className="page-item next">
+                    <a className="page-link" href="javascript:void(0)"><i className="fas fa-angle-right" /></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            {/* /pagination */}
+          </div>
+          <div className="col-lg-3 theiaStickySidebar">
+            <div className="filter-clear">
+              <div className="clear-filter d-flex align-items-center">
+                <h4><i className="feather-filter" />Filters</h4>
+                <div className="clear-text">
+                  <p>CLEAR</p>
+                </div>
+              </div>
+              {/* Search Filter */}
+              <div className="card search-filter categories-filter-blk">
+                <div className="card-body">
+                  <div className="filter-widget mb-0">
+                    <div className="categories-head d-flex align-items-center">
+                      <h4>Course categories</h4>
+                      <i className="fas fa-angle-down" />
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> Backend (3)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> CSS (2)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> Frontend (2)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" defaultChecked />
+                        <span className="checkmark" /> General (2)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" defaultChecked />
+                        <span className="checkmark" /> IT &amp; Software (2)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> Photography (2)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> Programming Language (3)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check mb-0">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> Technology (2)
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* /Search Filter */}
+              {/* Search Filter */}
+              <div className="card search-filter">
+                <div className="card-body">
+                  <div className="filter-widget mb-0">
+                    <div className="categories-head d-flex align-items-center">
+                      <h4>Instructors</h4>
+                      <i className="fas fa-angle-down" />
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> Keny White (10)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> Hinata Hyuga (5)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check">
+                        <input type="checkbox" name="select_specialist" />
+                        <span className="checkmark" /> John Doe (3)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check mb-0">
+                        <input type="checkbox" name="select_specialist" defaultChecked />
+                        <span className="checkmark" /> Nicole Brown
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* /Search Filter */}
+              {/* Search Filter */}
+              <div className="card search-filter ">
+                <div className="card-body">
+                  <div className="filter-widget mb-0">
+                    <div className="categories-head d-flex align-items-center">
+                      <h4>Price</h4>
+                      <i className="fas fa-angle-down" />
+                    </div>
+                    <div>
+                      <label className="custom_check custom_one">
+                        <input type="radio" name="select_specialist" />
+                        <span className="checkmark" /> All (18)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check custom_one">
+                        <input type="radio" name="select_specialist" />
+                        <span className="checkmark" /> Free (3)
+                      </label>
+                    </div>
+                    <div>
+                      <label className="custom_check custom_one mb-0">
+                        <input type="radio" name="select_specialist" defaultChecked />
+                        <span className="checkmark" /> Paid (15)
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* /Search Filter */}
+              {/* Latest Posts */}
+              <div className="card post-widget ">
+                <div className="card-body">
+                  <div className="latest-head">
+                    <h4 className="card-title">Latest Courses</h4>
+                  </div>
+                  <ul className="latest-posts">
+                    <li>
+                      <div className="post-thumb">
+                        <a href="course-details.html">
+                          <img className="img-fluid" src="assets/img/blog/blog-01.jpg" alt="Img" />
+                        </a>
+                      </div>
+                      <div className="post-info free-color">
+                        <h4>
+                          <a href="course-details.html">Introduction LearnPress – LMS
+                            plugin</a>
+                        </h4>
+                        <p>FREE</p>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="post-thumb">
+                        <a href="course-details.html">
+                          <img className="img-fluid" src="assets/img/blog/blog-02.jpg" alt="Img" />
+                        </a>
+                      </div>
+                      <div className="post-info">
+                        <h4>
+                          <a href="course-details.html">Become a PHP Master and Make Money</a>
+                        </h4>
+                        <p>$200</p>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="post-thumb">
+                        <a href="#">
+                          <img className="img-fluid" src="assets/img/blog/blog-03.jpg" alt="Img" />
+                        </a>
+                      </div>
+                      <div className="post-info free-color">
+                        <h4>
+                          <a href="blog-details.html">Learning jQuery Mobile for Beginners</a>
+                        </h4>
+                        <p>FREE</p>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="post-thumb">
+                        <a href="course-details.html">
+                          <img className="img-fluid" src="assets/img/blog/blog-01.jpg" alt="Img" />
+                        </a>
+                      </div>
+                      <div className="post-info">
+                        <h4>
+                          <a href="course-details.html.html">Improve Your CSS Workflow with
+                            SASS</a>
+                        </h4>
+                        <p>$200</p>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="post-thumb ">
+                        <a href="course-details.html">
+                          <img className="img-fluid" src="assets/img/blog/blog-02.jpg" alt="Img" />
+                        </a>
+                      </div>
+                      <div className="post-info free-color">
+                        <h4>
+                          <a href="course-details.html">HTML5/CSS3 Essentials in 4-Hours</a>
+                        </h4>
+                        <p>FREE</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              {/* /Latest Posts */}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+    {/* /Course */}
+    {/* Footer */}
+    <footer className="footer">
+      {/* Footer Top */}
+      <div className="footer-top">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-4 col-md-6">
+              {/* Footer Widget */}
+              <div className="footer-widget footer-about">
+                <div className="footer-logo">
+                  <img src="assets/img/logo.svg" alt="logo" />
+                </div>
+                <div className="footer-about-content">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris</p>
+                </div>
+              </div>
+              {/* /Footer Widget */}
+            </div>
+            <div className="col-lg-2 col-md-6">
+              {/* Footer Widget */}
+              <div className="footer-widget footer-menu">
+                <h2 className="footer-title">For Instructor</h2>
+                <ul>
+                  <li><a href="instructor-profile.html">Profile</a></li>
+                  <li><a href="login.html">Login</a></li>
+                  <li><a href="register.html">Register</a></li>
+                  <li><a href="instructor-list.html">Instructor</a></li>
+                  <li><a href="instructor-dashboard.html"> Dashboard</a></li>
+                </ul>
+              </div>
+              {/* /Footer Widget */}
+            </div>
+            <div className="col-lg-2 col-md-6">
+              {/* Footer Widget */}
+              <div className="footer-widget footer-menu">
+                <h2 className="footer-title">For Student</h2>
+                <ul>
+                  <li><a href="student-profile.html">Profile</a></li>
+                  <li><a href="login.html">Login</a></li>
+                  <li><a href="register.html">Register</a></li>
+                  <li><a href="students-list.html">Student</a></li>
+                  <li><a href="student-dashboard.html"> Dashboard</a></li>
+                </ul>
+              </div>
+              {/* /Footer Widget */}
+            </div>
+            <div className="col-lg-4 col-md-6">
+              {/* Footer Widget */}
+              <div className="footer-widget footer-contact">
+                <h2 className="footer-title">News letter</h2>
+                <div className="news-letter">
+                  <form>
+                    <input type="text" className="form-control" placeholder="Enter your email address" name="email" />
+                  </form>
+                </div>
+                <div className="footer-contact-info">
+                  <div className="footer-address">
+                    <img src="assets/img/icon/icon-20.svg" alt="Img" className="img-fluid" />
+                    <p> 3556 Beech Street, San Francisco,<br /> California, CA 94108 </p>
+                  </div>
+                  <p>
+                    <img src="assets/img/icon/icon-19.svg" alt="Img" className="img-fluid" />
+                    <a href="https://dreamslms.dreamstechnologies.com/cdn-cgi/l/email-protection" className="__cf_email__" data-cfemail="9ffbedfafef2ecf3f2ecdffae7fef2eff3fab1fcf0f2">[email&nbsp;protected]</a>
+                  </p>
+                  <p className="mb-0">
+                    <img src="assets/img/icon/icon-21.svg" alt="Img" className="img-fluid" />
+                    +19 123-456-7890
+                  </p>
+                </div>
+              </div>
+              {/* /Footer Widget */}
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* /Footer Top */}
+      {/* Footer Bottom */}
+      <div className="footer-bottom">
+        <div className="container">
+          {/* Copyright */}
+          <div className="copyright">
+            <div className="row">
+              <div className="col-md-6">
+                <div className="privacy-policy">
+                  <ul>
+                    <li><a href="term-condition.html">Terms</a></li>
+                    <li><a href="privacy-policy.html">Privacy</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="copyright-text">
+                  <p className="mb-0">© 2024 DreamsLMS. All rights reserved.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* /Copyright */}
+        </div>
+      </div>
+      {/* /Footer Bottom */}
+    </footer>
+    {/* /Footer */}
   </div>
-  );  
+  {/* /Main Wrapper */}
+  {/* jQuery */}
+  {/* Bootstrap Core JS */}
+  {/* Select2 JS */}
+  {/* Sticky Sidebar JS */}
+  {/* Custom JS */}
+  {/* Mirrored from dreamslms.dreamstechnologies.com/html/course-list.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 25 Feb 2025 15:30:21 GMT */}
+</div>
+
+    </>
+  );
 };
 
 export default SkillList;

@@ -537,9 +537,7 @@ function DashboardUser() {
   </div>
   {/* /Page Content */}
 
-</div>
-
-    
+</div>   
     </>
   )
 }

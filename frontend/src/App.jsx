@@ -17,7 +17,9 @@ import UpdateProfile from "./components/common/updateProfile";
 import Footer from "./components/common/Footer";
 import SkillList from "./components/common/SkillList";
 import StatusBdge from "./components/common/StatusBadge";
-
+import  {SkillGrid}  from './components/common/SkillGrid';
+import { SkillForm } from './components/common/SkillForm';
+import { CategorieSkill } from './components/common/CategorieSkill';
 const RedirectAuthenticatedUser = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
@@ -48,9 +50,12 @@ function App() {
         <Route path="/Profile" element={<Profile/>} />
         <Route path="/Chat" element={<Chat/>} />
         <Route path="/profileUpdate" element={<UpdateProfile />} />
-
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-
+       <Route path="/reset-password/:token" element={<ResetPassword />} />
+       <Route path="/SkillList" element={<SkillList />} />
+        <Route path="/skills" element={<SkillGrid />} />
+        <Route path="/skills/new" element={<SkillForm />} />
+        <Route path="/skills/edit/:id" element={<SkillForm />} />
+        <Route path="/CategorieSkill" element={<CategorieSkill />} />
 
       </Routes>
       
