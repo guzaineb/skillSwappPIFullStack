@@ -7,6 +7,29 @@ export const useSkillStore = create((set) => ({
   skills: [],
   isLoading: false,
   error: null,
+
+
+  search: async (searchTerm) => {
+    set({ isLoading: true, error: null });
+    try {
+      // Correction de l'URL : utilisation du paramètre de recherche
+      const response = await axios.get(`${API_URL}/search`, {
+        params: { searchTerm }
+      });
+
+      if (Array.isArray(response.data)) {
+        set({ skills: response.data });
+      } else {
+        set({ error: 'Les données reçues ne sont pas un tableau valide.' });
+      }
+    } catch (err) {
+      set({ error: err.message || 'Une erreur est survenue lors de la recherche de compétences.' });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+
 // Fetch all skills
   fetchSkills: async () => {
     set({ isLoading: true, error: null });
@@ -89,4 +112,5 @@ export const useSkillStore = create((set) => ({
       set({ isLoading: false });
     }
   },
-}));
+
+ }));

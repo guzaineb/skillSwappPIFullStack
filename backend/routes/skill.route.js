@@ -3,7 +3,7 @@ var express = require('express');
 
 const router = express.Router();
 
-const { findAll, findOneByName, showByID, showAllByName, update, deleteSkill, findByCategory,addSkillWithLessons,participateToSkill,getAllUsersByRole } = require('../controllers/skillController');
+const { findAll, findOneByName, showByID, showAllByName, update, deleteSkill,advancedSearch, findByCategory,addSkillWithLessons,participateToSkill,getAllUsersByRole } = require('../controllers/skillController');
 //router.post("/add-skill",add);
 router.get("/skills",findAll);
 router.get("/skill/:skillname",findOneByName);
@@ -15,5 +15,7 @@ router.get("/skills/category/:category",findByCategory);
 router.post('/add',addSkillWithLessons);
 router.post('/participate',participateToSkill);
 router.get('/users',getAllUsersByRole);
+// Dans votre fichier de routes
+router.get('/search', advancedSearch);
 
 module.exports = router; 

@@ -155,10 +155,48 @@ async function addSkillWithLessons(req, res) {
       res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs' });
     }
   }
-  
+  async function advancedSearch(req, res) {
+    try {
+        const { skillname, category, level, pricingType, priceRange } = req.query;
+
+        // Construire un objet de requête dynamique
+        let query = {};
+
+        if (skillname) {
+            query.skillname = { $regex: skillname, $options: 'i' }; // Recherche insensible à la casse
+        }
+        if (category) {
+            query.category = category;
+        }
+        if (level) {
+            query.level = level;
+        }
+        if (pricingType) {
+            query.pricingType = pricingType;
+        }
+        if (priceRange) {
+            const [minPrice, maxPrice] = priceRange.split(':').map(Number);
+            if (minPrice || maxPrice) {
+                query.price = {};
+                if (minPrice) query.price.$gte = minPrice;
+                if (maxPrice) query.price.$lte = maxPrice;
+            }
+        }
+
+        // Effectuer la recherche
+        const skills = await Skill.find(query);
+
+        res.status(200).json(skills);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Erreur lors de la recherche' });
+    }
+}
+
   module.exports = {
     addSkillWithLessons,
     participateToSkill,
     getAllUsersByRole,
+    advancedSearch,
   
   deleteSkill,update,showByID,showAllByName,findOneByName,findAll,findByCategory   };
