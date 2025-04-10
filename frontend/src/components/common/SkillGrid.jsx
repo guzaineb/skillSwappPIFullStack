@@ -37,7 +37,7 @@ export const SkillGrid = () => {
 
               <div className="product-content">
                 <h3 className="title instructor-text">
-                  <Link to={`/skills/${skill._id}`}>{skill.skillname}</Link>
+                  <Link to={`/course-details/${skill._id}`}>{skill.skillname}</Link>
                 </h3>
 
                 <div className="course-info d-flex align-items-center">
@@ -59,8 +59,8 @@ export const SkillGrid = () => {
                     onClick={() => deleteSkill(skill._id)}
                     className="btn btn-link text-danger"
                   >
-                    <i  className="bx bx-trash me-2"></i>Supprimer
-                   
+                    <i className="bx bx-trash me-2"></i>Supprimer
+
                   </button>
                 </div>
               </div>

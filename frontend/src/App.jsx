@@ -20,6 +20,7 @@ import StatusBdge from "./components/common/StatusBadge";
 import  {SkillGrid}  from './components/common/SkillGrid';
 import { SkillForm } from './components/common/SkillForm';
 import { CategorieSkill } from './components/common/CategorieSkill';
+import {CourseDetails} from "./components/common/CourseDetails";
 const RedirectAuthenticatedUser = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
@@ -56,7 +57,7 @@ function App() {
         <Route path="/skills/new" element={<SkillForm />} />
         <Route path="/skills/edit/:id" element={<SkillForm />} />
         <Route path="/CategorieSkill" element={<CategorieSkill />} />
-
+<Route path="/skills/:id" element={<CourseDetails />} />
       </Routes>
       
 
