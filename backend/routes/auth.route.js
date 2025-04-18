@@ -6,7 +6,9 @@ const verifyToken = require("../middleware/verifyToken");
 
 const router = express.Router();
 const { signup,resendVerificationCode,updateProfile, login, logout, verifyEmail, checkAuth, updateUser,Test,Educator,forgetPassWord, resetPassword,} = require("../controllers/authController");
-const { AddProfile, GetAllProfiles, GetProfile, DeleteProfile } = require("../controllers/profile.controllers");
+const { AddProfile, GetAllProfiles, GetProfile, DeleteProfile ,getSkills,
+    getUnobtainedSkills,
+    addSkill,} = require("../controllers/profile.controllers");
 router.put("/update/:id", updateUser);
 router.post('/signup', signup);
 router.put("/update-profile", verifyToken, updateProfile);
@@ -30,6 +32,9 @@ router.get("/check-auth", verifyToken, checkAuth);
 router.post("/profiles",AddProfile);//ajouter un profile
 
 router.get("/profiles",inRole(ROLES.ADMIN),GetAllProfiles);//récupérer tous les profiles
+router.post("/profile/:id/add-skill", addSkill); //récupérer un profile
+router.get("/profile/:id/skills", getSkills);
+router.get("/profile/:id/unobtained-skills", getUnobtainedSkills);
     
 router.get("/profile", GetProfile);//récupérer un profile
 router.delete("/profiles/:id",inRole(ROLES.ADMIN),DeleteProfile);//supprimer un profile

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from "../../store/authStore";
 import ProfileIcon from './ProfileIcon';
+ // Assuming you have a CSS file for styles
 
 function Header() {
   const { user, isAuthenticated, checkAuth } = useAuthStore();
@@ -25,7 +26,7 @@ function Header() {
 
   return (
     <div className="header-fixed">
-      <nav className="navbar navbar-expand-lg navbar-light bg-light header-nav sticky-top">
+      <nav className="navbar navbar-expand-lg navbar-white bg-white header sticky-top">
         <div className="container-fluid">
           {/* Logo et Bouton Mobile */}
           <div className="navbar-header">
@@ -110,9 +111,18 @@ function Header() {
                 <ProfileIcon />
               ) : (
                 <>
-                  <a className="nav-link" href="/signin">Signin</a>
-                  <a className="nav-link" href="/signup">Signup</a>
+                  {/* <a className="nav-link" href="/signin">Signin</a>
+                  <a className="nav-link" href="/signup">Signup</a> */}
+  <ul className="nav header-navbar-rht">
+                  <li className="nav-item">
+            <a className="nav-link header-sign" href="/signin">Signin</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link header-login" href="/signup">Signup</a>
+          </li>
+          </ul>
                 </>
+
               )}
             </li>
           </ul>

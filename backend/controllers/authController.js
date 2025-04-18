@@ -142,12 +142,18 @@ async function login(req, res) {
 		// Mettre à jour le dernier login
 		user.lastLogin = new Date();
 		await user.save();
-
-		return res.status(200).json({ id: user._id,
+		const userData = {
+			id: user._id,
 			name: user.name,
 			email: user.email,
 			role: user.role,
-			profilePic: user.profilePic });
+			profilePic: user.profilePic,
+			avatar: user.avatar, 
+			isVerified: user.isVerified,
+			phone: user.phone,
+		};
+
+		return res.status(200).json({ success: true, user: userData });
 
 	} catch (error) {
 		console.error("❌ Error in login:", error);
@@ -181,23 +187,7 @@ console.log(err)
 
 
 
-// const checkAuth = async (req, res) => {
-// 	try{
-// 	  const user = await User.findById(req.userId).select("-password");
-// 		  if (!user) {
-// 			  return res.status(400).json({ success: false, message: "User not found" });
-// 		  }
-  
-// 		  res.status(200).json({ success: true, user });
-// 	}catch(error){
-// 	  console.log("Error in checkAuth ", error);
-// 		  res.status(400).json({ success: false, message: error.message });
-// 	}
-//   }
-//   const logout = async (req,res) => {
-// 	res.clearCookie("token");
-// 	  res.status(200).json({ success: true, message: "Logged out successfully" });
-//   }
+
 const logout = async (req, res) => {
 	try {
 		res.clearCookie("token", {
@@ -212,26 +202,6 @@ const logout = async (req, res) => {
 		return res.status(500).json({ success: false, message: "Logout failed" });
 	}
 };
-// const checkAuth = async (req, res) => {
-// 	try {
-// 		const token = req.cookies.token;
-// 		if (!token) {
-// 			return res.status(401).json({ success: false, message: "Unauthorized" });
-// 		}
-
-// 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
-// 		const user = await User.findById(decoded.id).select("-password");
-
-// 		if (!user) {
-// 			return res.status(404).json({ success: false, message: "User not found" });
-// 		}
-
-// 		return res.status(200).json({ success: true, user });
-// 	} catch (error) {
-// 		console.error("❌ Error in checkAuth:", error);
-// 		return res.status(401).json({ success: false, message: "Invalid token" });
-// 	}
-// };
 
 const checkAuth = async (req, res) => {
 	try {
@@ -247,21 +217,29 @@ const checkAuth = async (req, res) => {
 			return res.status(404).json({ success: false, message: "User not found" });
 		}
 
-		// 👇 On retourne uniquement ce qu'on veut (tu peux personnaliser)
+		// Modifier la structure pour inclure _id
 		const userData = {
-			id: user._id,
+			_id: user._id, // Ajout de _id
+			id: user._id,  // Garder id pour la compatibilité
 			name: user.name,
 			email: user.email,
 			role: user.role,
-			profilePic: user.profilePic, // 👈 Ici on ajoute l'image
+			profilePic: user.profilePic,
+			avatar: user.avatar,
 			isVerified: user.isVerified,
 			phone: user.phone,
 		};
 
-		return res.status(200).json({ success: true, user: userData });
+		return res.status(200).json({
+			success: true,
+			user: userData
+		});
 	} catch (error) {
-		console.error("❌ Error in checkAuth:", error);
-		return res.status(401).json({ success: false, message: "Invalid token" });
+		console.error("CheckAuth error:", error);
+		return res.status(401).json({ 
+			success: false, 
+			message: "Authentication failed" 
+		});
 	}
 };
 
@@ -330,24 +308,26 @@ async function resetPassword(req, res) {
 };
 async function resendVerificationCode(req, res) {
     const { email } = req.body;
+    
+    if (!email) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Email is required" 
+        });
+    }
 
     try {
-        if (!email) {
-            return res.status(400).json({ success: false, message: "L'email est requis" });
-        }
-
         const user = await User.findOne({ email });
-
+        
         if (!user) {
-            return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
-        }
-
-        if (user.isVerified) {
-            return res.status(400).json({ success: false, message: "L'email est déjà vérifié" });
+            return res.status(404).json({ 
+                success: false, 
+                message: "User not found" 
+            });
         }
 
         const newVerificationToken = Math.floor(100000 + Math.random() * 900000).toString();
-        const newVerificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // Expire dans 24h
+        const newVerificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24h expiry
 
         user.verificationToken = newVerificationToken;
         user.verificationTokenExpires = newVerificationTokenExpires;
@@ -357,11 +337,14 @@ async function resendVerificationCode(req, res) {
 
         res.status(200).json({
             success: true,
-            message: "Nouveau code de vérification envoyé avec succès",
+            message: "New verification code sent successfully",
         });
     } catch (error) {
-        console.error("Erreur lors du renvoi du code de vérification :", error);
-        res.status(500).json({ success: false, message: "Erreur serveur" });
+        console.error("Error resending verification code:", error);
+        res.status(500).json({ 
+            success: false, 
+            message: "Server error" 
+        });
     }
 }
 

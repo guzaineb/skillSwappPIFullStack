@@ -20,32 +20,7 @@ const getUsersForSidebar = async (req, res) => {
 
 
   
-  // const getMessages = async (req, res) => {
-  //   try {
-  //     const { id: userToChatId } = req.params;
-  //     const myId = req.user._id || req.user.id; 
-  //     if (!myId || !userToChatId) {
-  //       return res.status(400).json({ error: "Missing user ID" });
-  //     }
-  
-  //     console.log(" My ID (connected user):", myId);
-  //     console.log(" Chat with user ID:", userToChatId);
-  
-  //     const messages = await Message.find({
-  //       $or: [
-  //         { senderId: myId, receiverId: userToChatId },
-  //         { senderId: userToChatId, receiverId: myId },
-  //       ],
-  //     }).sort({ createdAt: 1 }); //  Trie les messages par date
-  
-  //     res.status(200).json(messages);
-  //   } catch (error) {
-  //     console.log("❌ Error in getMessages controller:", error.message);
-  //     res.status(500).json({ error: "Internal server error" });
-  //   }
-  // };
-  
-
+ 
   const getMessages = async (req, res) => {
   try {
     const { id: userToChatId } = req.params; // Récupère l'ID du destinataire du chat
@@ -68,76 +43,45 @@ const getUsersForSidebar = async (req, res) => {
 };
 
 
-
-
-
-// const sendMessage = async (req, res) => {
-//   try {
-//     const { text, image, receiverId } = req.body;
-//     const { senderId } = req.params; 
-
-//     console.log("Sender ID from URL:", senderId);
-//     console.log("Receiver ID from body:", receiverId);
-
-//     if (!senderId || !receiverId) {
-//       return res.status(400).json({ error: 'Sender or receiver ID is missing' });
-//     }
-
-//     let imageUrl;
-//     if (image) {
-//       const uploadResponse = await cloudinary.uploader.upload(image);
-//       imageUrl = uploadResponse.secure_url;
-//     }
-
-//     const newMessage = new Message({
-//       senderId,
-//       receiverId,
-//       text,
-//       image: imageUrl,
-//     });
-
-//     await newMessage.save();
-
-//     const receiverSocketId = getReceiverSocketId(receiverId);
-//     if (receiverSocketId) {
-//       io.to(receiverSocketId).emit('newMessage', newMessage);
-//     }
-
-//     res.status(201).json(newMessage);
-//   } catch (error) {
-//     console.log('Error in sendMessage controller: ', error.message);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
-
-
 const sendMessage = async (req, res) => {
   try {
-    // Récupérer les données envoyées dans le corps de la requête
-    const { senderId, receiverId, content } = req.body;
+    const { content } = req.body;
+    const image = req.file?.path; // Assurez-vous que multer est configuré correctement
+    const receiverId = req.params.id;
+    const senderId = req.user?.id;
 
-    // Vérifie que toutes les informations nécessaires sont présentes
-    if (!senderId || !receiverId || !content) {
-      return res.status(400).json({ error: "Tous les champs sont requis" });
+    if (!senderId || !receiverId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Both sender and receiver IDs are required" 
+      });
     }
 
-    // Créer un nouveau message dans la base de données
-    const newMessage = new Message({
-      senderId,   // ID de l'expéditeur
-      receiverId, // ID du destinataire
-      content,    // Contenu du message
-      timestamp: Date.now(), // Timestamp du message
-    });
+    const messageData = {
+      senderId,
+      receiverId,
+      content: content || "",
+      image: image || "",
+      delivered: true
+    };
 
-    // Sauvegarder le message dans la base de données
+    const newMessage = new Message(messageData);
     await newMessage.save();
 
-    // Répondre avec un message de succès
-    res.status(200).json({ message: "Message envoyé avec succès", data: newMessage });
+    const populatedMessage = await Message.findById(newMessage._id)
+      .populate('senderId', 'fullName profilePic')
+      .populate('receiverId', 'fullName profilePic');
+
+    return res.status(201).json(populatedMessage);
+
   } catch (error) {
-    console.error("Erreur lors de l'envoi du message:", error);
-    res.status(500).json({ error: "Erreur interne du serveur" });
+    console.error("Error in sendMessage:", error);
+    return res.status(400).json({ 
+      success: false, 
+      message: error.message || "Failed to send message"
+    });
   }
 };
+
 
  module.exports = {getUsersForSidebar, getMessages, sendMessage};

@@ -11,8 +11,15 @@ export default function Signin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(email, password);
-      navigate("/Dash"); 
+      const result = await login(email, password);
+      // Redirection basée sur le rôle
+      if (result?.user?.role === 'learner') {
+        navigate("/profile1");
+      } else if (result?.user?.role === 'educator') {
+        navigate("/profile");
+      } else {
+        navigate("/Dash"); // Fallback pour les autres rôles (comme admin)
+      }
     } catch (err) {
       console.error("Erreur de connexion :", err);
     }
@@ -37,7 +44,6 @@ export default function Signin() {
             </div>
             <div className="mentor-course text-center">
               <h2>Welcome to <br />SkillSwap.</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </div>
           </div>
         </div>
@@ -102,7 +108,17 @@ export default function Signin() {
               <div className="sign-google">
                 <ul>
                   <li><a href="#"><img src="assets/img/net-icon-01.png" onClick={google} alt="Google" /> Sign In using Google</a></li>
-                  <li><a href="#"><img src="assets/img/net-icon-02.png" onClick={github} alt="Facebook" /> Sign In using Facebook</a></li>
+                  <li>
+  <a href="#" onClick={github} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+    <img
+      src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+      alt="GitHub"
+      style={{ width: "30px", height: "30px" }}
+    />
+    Sign In using GitHub
+  </a>
+</li>
+
                 </ul>
               </div>
               <p className="mb-0">New User? <a href="/signup">Create an Account</a></p>

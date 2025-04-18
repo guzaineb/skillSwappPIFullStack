@@ -1,11 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo,useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/authStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { 
+    getUsers, 
+    users, 
+    selectedUser, 
+    setSelectedUser, 
+    isUsersLoading 
+  } = useChatStore();
+  
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
@@ -13,9 +20,17 @@ const Sidebar = () => {
     getUsers();
   }, [getUsers]);
 
-  const filteredUsers = showOnlineOnly
-    ? users.filter((user) => onlineUsers.includes(user._id))
-    : users;
+  // Optimisation avec useMemo
+  const filteredUsers = useMemo(() => {
+    return showOnlineOnly
+      ? users.filter(user => onlineUsers.includes(user._id))
+      : users;
+  }, [users, onlineUsers, showOnlineOnly]);
+
+  // Vérification plus robuste du statut
+  const isUserOnline = (userId) => {
+    return onlineUsers.some(id => id.toString() === userId.toString());
+  };
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
@@ -27,7 +42,6 @@ const Sidebar = () => {
           <span className="font-weight-medium d-none d-lg-block">Contacts</span>
         </div>
 
-        {/* Online filter toggle */}
         <div className="mt-2 d-none d-lg-flex align-items-center gap-2">
           <label className="cursor-pointer d-flex align-items-center gap-1">
             <input
@@ -36,11 +50,12 @@ const Sidebar = () => {
               onChange={(e) => setShowOnlineOnly(e.target.checked)}
               className="form-check-input"
             />
-            <span className="text-sm" style={{ fontSize: "0.8rem" }}>Show online only</span>
+            <span className="text-sm" style={{ fontSize: "0.8rem" }}>
+              Show online only
+            </span>
+            <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
+
           </label>
-          <span className="text-muted" style={{ fontSize: "0.75rem" }}>
-            ({onlineUsers.length - 1} online)
-          </span>
         </div>
       </div>
 
@@ -63,21 +78,38 @@ const Sidebar = () => {
                 className="w-8 h-8 object-cover rounded-circle"
                 style={{ width: "32px", height: "32px" }}
               />
-              {onlineUsers.includes(user._id) && (
+              {isUserOnline(user._id) && (
                 <span
-                  className="position-absolute bottom-0 end-0 bg-success rounded-circle border border-light"
-                  style={{ width: "8px", height: "8px" }}
+                  className="position-absolute bottom-0 end-0 translate-middle p-1 bg-success border border-light rounded-circle"
+                  style={{ 
+                    width: "10px", 
+                    height: "10px",
+                    animation: "pulse 1.5s infinite"
+                  }}
                 />
               )}
             </div>
 
-            {/* User info visible only on large screens */}
             <div className="d-none d-lg-block text-start min-w-0">
-              <div className="text-truncate" style={{ fontSize: "0.85rem", fontWeight: "500" }}>
-                {user.fullName}
+              <div 
+                className="text-truncate" 
+                style={{ 
+                  fontSize: "0.85rem", 
+                  fontWeight: "500",
+                  color: isUserOnline(user._id) ? "#4CAF50" : "inherit"
+                }}
+              >
+                {user.name}
               </div>
-              <div className="text-muted" style={{ fontSize: "0.75rem" }}>
-                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+              <div 
+                className="text-muted" 
+                style={{ fontSize: "0.75rem" }}
+              >
+                {isUserOnline(user._id) ? (
+                  <span className="text-success">Online</span>
+                ) : (
+                  <span className="text-muted">Offline</span>
+                )}
               </div>
             </div>
           </button>
@@ -85,10 +117,19 @@ const Sidebar = () => {
 
         {filteredUsers.length === 0 && (
           <div className="text-center text-muted py-4" style={{ fontSize: "0.85rem" }}>
-            No online users
+            {showOnlineOnly ? "No online users" : "No contacts available"}
           </div>
         )}
       </div>
+
+      {/* Animation CSS */}
+      <style jsx>{`
+        @keyframes pulse {
+          0% { transform: scale(0.95); opacity: 0.8; }
+          50% { transform: scale(1.1); opacity: 1; }
+          100% { transform: scale(0.95); opacity: 0.8; }
+        }
+      `}</style>
     </aside>
   );
 };

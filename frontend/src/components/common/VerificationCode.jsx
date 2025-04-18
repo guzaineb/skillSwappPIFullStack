@@ -146,7 +146,7 @@ export default function VerificationCode() {
   const [resendCooldown, setResendCooldown] = useState(0);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
-  const { verifyEmail, resendVerificationCode, error, message, isLoading } = useAuthStore();
+  const { verifyEmail, resendVerificationCode, error, message, isLoading, user } = useAuthStore();
 
   useEffect(() => {
     let timer;
@@ -197,7 +197,7 @@ export default function VerificationCode() {
 
     setIsResending(true);
     try {
-      await resendVerificationCode();
+      await resendVerificationCode(user.email); // Pass the email
       setResendCooldown(60);
     } catch (error) {
       console.error("Erreur lors du renvoi:", error);

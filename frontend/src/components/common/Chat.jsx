@@ -12,7 +12,6 @@ const Chat = () => {
 
     return (
         <>
-            <Header />
             <br />
             <br />
             <br />
@@ -31,7 +30,6 @@ const Chat = () => {
                 </div>
             </div>
 
-            <Footer />
         </>
     );
 };

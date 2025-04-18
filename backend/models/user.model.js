@@ -56,7 +56,7 @@ avatar:{
     profilePic: {
         type: String,
       },
-
+     
     resetPasswordToken:String,
     resetPasswordExpires:Date,
     verificationToken:String,

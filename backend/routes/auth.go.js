@@ -22,28 +22,28 @@ router.get('/google',
     }),
     (req, res) => {
       const user = req.user;
-    // Générer un token et l'envoyer en cookie sécurisé
-        const token = jwt.sign(
-            { id: user._id, name: user.name, email: user.email, role: user.role ,},
-            process.env.JWT_SECRET,
-            { expiresIn: "2h" }
-        );
+      const token = jwt.sign(
+        { id: user._id, name: user.name, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "2h" }
+      );
 
-        // Définir le cookie avec des paramètres sécurisés
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 2 * 60 * 60 * 1000, // 2 heures
-        });
-  
-      // Redirige avec le token si tu veux en URL (sinon il est déjà en cookie)
-      res.redirect("http://localhost:5173/index");
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 2 * 60 * 60 * 1000,
+      });
+
+      // Redirection basée sur le rôle
+      const redirectUrl = user.role === 'learner' 
+        ? 'http://localhost:5173/profile1'
+        : user.role === 'educator'
+        ? 'http://localhost:5173/profile'
+        : 'http://localhost:5173/Dash';
+
+      res.redirect(redirectUrl);
     }
-
-
-
-    
   );
 // Déclenche le login
 router.get("/github", passport.authenticate("github", { session: false, 
@@ -53,31 +53,35 @@ router.get("/github", passport.authenticate("github", { session: false,
   }));
   
   // Callback
-  router.get("/github/callback", passport.authenticate("github", {
-    session: false,
-    failureRedirect: "http://localhost:5173/signin",
-  }), (req, res) => {
-    const user = req.user;
-  
-    // Générer un token et l'envoyer en cookie sécurisé
-    const token = jwt.sign(
-        { id: user._id, name: user.name, email: user.email, role: user.role ,},
+  router.get("/github/callback",
+    passport.authenticate("github", {
+      session: false,
+      failureRedirect: "http://localhost:5173/signin",
+    }),
+    (req, res) => {
+      const user = req.user;
+      const token = jwt.sign(
+        { id: user._id, name: user.name, email: user.email, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: "2h" }
-    );
+      );
 
-    // Définir le cookie avec des paramètres sécurisés
-    res.cookie("token", token, {
+      res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 2 * 60 * 60 * 1000, // 2 heures
-    });
+        maxAge: 2 * 60 * 60 * 1000,
+      });
 
-    
-    // Redirection frontend
-    res.redirect("http://localhost:5173/index");
-  });
+      const redirectUrl = user.role === 'learner' 
+        ? 'http://localhost:5173/profile1'
+        : user.role === 'educator'
+        ? 'http://localhost:5173/profile'
+        : 'http://localhost:5173/Dash';
+
+      res.redirect(redirectUrl);
+    }
+  );
 
 
 

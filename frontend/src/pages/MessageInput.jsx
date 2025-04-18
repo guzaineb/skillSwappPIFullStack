@@ -11,6 +11,8 @@ const MessageInput = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
+    
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
@@ -34,7 +36,7 @@ const MessageInput = () => {
 
     try {
       await sendMessage({
-        text: text.trim(),
+        content: text.trim(),
         image: imagePreview,
       });
 
@@ -44,27 +46,27 @@ const MessageInput = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       console.error("Failed to send message:", error);
+      toast.error("Failed to send message");
     }
   };
 
   return (
     <div className="p-3 w-100">
       {imagePreview && (
-        <div className="mb-3 d-flex align-items-center gap-2">
-          <div className="position-relative">
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-25 h-25 object-cover rounded-3 border border-muted"
-            />
-            <button
-              onClick={removeImage}
-              className="position-absolute top-0 end-0 btn btn-sm btn-danger rounded-circle"
-              type="button"
-            >
-              <X className="size-12" />
-            </button>
-          </div>
+        <div className="mb-3 position-relative">
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="rounded"
+            style={{ maxWidth: "200px", maxHeight: "200px" }}
+          />
+          <button
+            onClick={removeImage}
+            className="position-absolute top-0 end-0 btn btn-sm btn-danger rounded-circle"
+            style={{ transform: "translate(50%, -50%)" }}
+          >
+            <X size={16} />
+          </button>
         </div>
       )}
 
@@ -72,7 +74,7 @@ const MessageInput = () => {
         <div className="d-flex flex-grow-1 gap-2">
           <input
             type="text"
-            className="form-control form-control-sm"
+            className="form-control"
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -87,7 +89,7 @@ const MessageInput = () => {
 
           <button
             type="button"
-            className={`btn btn-outline-secondary btn-sm ${imagePreview ? "text-success" : "text-muted"}`}
+            className="btn btn-outline-secondary"
             onClick={() => fileInputRef.current?.click()}
           >
             <Image size={20} />
@@ -95,10 +97,10 @@ const MessageInput = () => {
         </div>
         <button
           type="submit"
-          className="btn btn-primary btn-sm"
+          className="btn btn-primary"
           disabled={!text.trim() && !imagePreview}
         >
-          <Send size={22} />
+          <Send size={20} />
         </button>
       </form>
     </div>
@@ -106,3 +108,7 @@ const MessageInput = () => {
 };
 
 export default MessageInput;
+
+
+
+

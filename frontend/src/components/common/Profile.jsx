@@ -1,70 +1,105 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useAuthStore } from "../../store/authStore";
-import ProfileIcon from './ProfileIcon';
+import { Camera } from 'lucide-react';
+import Header from './Header';
+import Footer from './Footer';
 
-function Header() {
-  const { user, isAuthenticated, checkAuth } = useAuthStore();
+function Profile() {
+  const { user, isUpdatingProfile,isAuthenticated, updateProfile,checkAuth } = useAuthStore();
+  const [selectedImg, setSelectedImg] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
-
-  useEffect(() => {
-    const verifyUser = async () => {
-      try {
-        const result = await checkAuth();
-        console.log("Response from checkAuth:", result);
-        setIsLoggedIn(result.success);
-      } catch (error) {
-        console.error("Auth check failed:", error);
-        setIsLoggedIn(false);
+    useEffect(() => {
+      const verifyUser = async () => {
+        try {
+          const result = await checkAuth();
+          console.log("Response from checkAuth:", result); // Debugging log
+          setIsLoggedIn(result.success);
+        } catch (error) {
+          console.error("Erreur lors de la vérification de l'authentification :", error);
+          setIsLoggedIn(false); // Handle errors by setting logged in status to false
+        }
+      };
+  
+      if (!isAuthenticated) { // Check only if user is not authenticated already
+        verifyUser();
       }
+    }, [isAuthenticated, checkAuth]); 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      setSelectedImg(base64Image);
+      await updateProfile({ profilePic: base64Image });
     };
-
-    verifyUser();
-  }, [checkAuth]);
-
-  const toggleDarkMode = () => {
-    document.body.classList.add("dark-mode");
-    document.body.classList.remove("light-mode");
   };
-
-  const toggleLightMode = () => {
-    document.body.classList.add("light-mode");
-    document.body.classList.remove("dark-mode");
-  };
-
+   console.log({user});
+   
   return (
-    <div className="header-fixed">
-      <nav className="navbar navbar-expand-lg navbar-light bg-light header-nav sticky-top">
-        <div className="container-fluid">
-          {/* ... other navbar code ... */}
+    <>
+  
+              {/* Student Profile */}
+              <div className="col-xl-9 col-lg-9">
+                <div className="settings-widget card-details mb-0">
+                  <div className="settings-menu p-0">
+                    <div className="profile-heading">
+                      <h3>My Profile</h3>
+                    </div>
 
-          {/* Right Side Buttons */}
-          <ul className="navbar-nav ms-3">
-            {/* Dark Mode Toggle */}
-            <li className="nav-item d-flex align-items-center">
-              <button className="btn btn-light me-2" onClick={toggleDarkMode}>
-                <i className="fa-solid fa-moon"></i>
-              </button>
-              <button className="btn btn-light" onClick={toggleLightMode}>
-                <i className="fa-solid fa-sun"></i>
-              </button>
-            </li>
+                    <div className="course-group profile-upload-group mb-0 d-flex">
+                      <div className="course-group-img profile-edit-field d-flex align-items-center">
+                        <a href="student-profile.html" className="profile-pic">
+                          <img src={selectedImg || user?.profilePic ||user?.avatar ||"/avatar.png"} alt="Img" className="img-fluid" />
+                        </a>
+                        <div className="profile-upload-head">
+                          <h4><a href="student-profile.html">Your avatar</a></h4>
+                          <p>PNG or JPG no bigger than 800px width and height</p>
+                          <div className="new-employee-field">
+                            <div className="d-flex align-items-center mt-2">
+                              <div className="image-upload mb-0">
+                                <input type="file" className="form-control" />
+                                
+                              </div>
+                             
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-            {/* Profile or Auth */}
-            <li className="nav-item ms-3">
-              {isLoggedIn ? (
-                <ProfileIcon user={user} />
-              ) : (
-                <>
-                  <a className="nav-link" href="/signin">Signin</a>
-                  <a className="nav-link" href="/signup">Signup</a>
-                </>
-              )}
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
+                    <div className="checkout-form personal-address">
+                      <div className="row">
+                        <div className="col-sm-6">
+                          <div className="contact-info">
+                            <h6>Name</h6>
+                            <p className="px-4 py-2 bg-light rounded border">{user?.name}</p>
+                          </div>
+                        </div>
+                        <div className="col-sm-6">
+                          <div className="contact-info">
+                            <h6>Email</h6>
+                            <p className="px-4 py-2 bg-light rounded border">{user?.email}</p>
+                          </div>
+                        </div>
+                        <div className="col-sm-6">
+                          <div className="contact-info">
+                            <h6>Phone Number</h6>
+                            <p className="px-4 py-2 bg-light rounded border">{user?.phone}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* /Student Profile */}
+           
+    </>
   );
 }
 
-export default Header;
+export default Profile;

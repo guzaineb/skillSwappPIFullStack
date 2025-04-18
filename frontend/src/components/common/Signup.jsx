@@ -107,16 +107,7 @@ function Signup() {
                 </div>
               </form>
             </div>
-            <div className="google-bg text-center">
-              <span><a href="#">Or sign in with</a></span>
-              <div className="sign-google">
-                <ul>
-                  <li><a href="#"><img src="assets/img/net-icon-01.png" className="img-fluid" alt="Logo" /> Sign In using Google</a></li>
-                  <li><a href="#"><img src="assets/img/net-icon-02.png" className="img-fluid" alt="Logo" />Sign In using Facebook</a></li>
-                </ul>
-              </div>
-              <p className="mb-0">Already have an account? <a href="/signin">Sign in</a></p>
-            </div>
+          
           </div>
         </div>
       </div>

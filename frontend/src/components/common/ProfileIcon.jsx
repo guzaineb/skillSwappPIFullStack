@@ -1,9 +1,26 @@
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
 
 export default function ProfileIcon() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const { logout, user } = useAuthStore();
+  const { user, logout, isAuthenticated, checkAuth } = useAuthStore();
+
+  useEffect(() => {
+    const verifyAuth = async () => {
+      try {
+        console.log("Verifying authentication...");
+        const result = await checkAuth();
+        console.log("Authentication result:", result);
+      } catch (error) {
+        console.error("Authentication verification failed:", error);
+      }
+    };
+
+    if (!isAuthenticated || !user?._id) {
+      verifyAuth();
+    }
+  }, [isAuthenticated, user, checkAuth]);
 
   const handleLogout = async () => {
     try {
@@ -16,7 +33,7 @@ export default function ProfileIcon() {
 
   // Force reload of profile image by appending timestamp
   const profilePicUrl = user?.profilePic
-    ? `${user.profilePic}?t=${new Date().getTime()}`
+    ? user?.avatar
     : "/avatar.png";
 
   return (
@@ -27,7 +44,7 @@ export default function ProfileIcon() {
         onClick={() => setDropdownOpen(!isDropdownOpen)}
       >
         <span className="user-img">
-          <img src={profilePicUrl} alt="Profile" />
+          <img src={ user?.profilePic || user?.avatar || "/avatar.png"} alt="Profile" />
           <span className="status online" />
         </span>
       </a>
