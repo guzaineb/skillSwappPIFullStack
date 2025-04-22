@@ -176,5 +176,4 @@ const SkillList = ({ user }) => {
     </div>
   );
 };
-
 export default SkillList;
