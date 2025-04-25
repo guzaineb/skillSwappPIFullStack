@@ -12,6 +12,7 @@ pipeline {
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://localhost:9000'
         PORT = '5000'
+        DOCKER_BUILDKIT: '1' // Enable Docker BuildKit for better builds
     }
 
     stages {
