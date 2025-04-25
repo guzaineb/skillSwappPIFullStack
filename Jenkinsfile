@@ -60,7 +60,7 @@ pipeline {
     steps {
         script {
             sh 'docker-compose build'
-            sh 'docker tag localhost:8081/skill-app:latest 172.23.96.107:5000/skill-app:latest
+            sh 'docker tag localhost:8081/skill-app:latest 172.23.96.107:5000/skill-app:latest'
         }
     }
 }
@@ -69,7 +69,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry("http://${REGISTRY}", REGISTRY_CREDENTIALS) {
-                        sh 'docker push 172.23.96.107:5000/skill-app:latest
+                        sh 'docker push 172.23.96.107:5000/skill-app:latest'
                     }
                 }
             }
