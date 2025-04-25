@@ -16,7 +16,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: backend/Dockerfile
+      dockerfile: ./backend/Dockerfile
     image: localhost:8083/skill-app:latest
     container_name: skill-app
     restart: always
