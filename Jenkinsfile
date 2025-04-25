@@ -8,7 +8,7 @@ pipeline {
     environment {
         DB_HOST = 'db'
         DB_NAME = 'SkillAppp'
-        REGISTRY = 'localhost:8083'
+        REGISTRY = '172.23.96.107:8083'
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://localhost:9000'
         PORT = '5000'
@@ -57,13 +57,13 @@ pipeline {
         }
 
         stage('Build Docker Images') {
-            steps {
-                script {
-                    sh 'docker-compose build'
-                    sh 'docker tag localhost:8083/skill-app:latest ${REGISTRY}/skill-app:latest'
-                }
-            }
+    steps {
+        script {
+            sh 'docker-compose build'
+            sh 'docker tag localhost:8083/skill-app:latest ${REGISTRY}/skill-app:latest'
         }
+    }
+}
 
         stage('Deploy to Nexus') {
             steps {
