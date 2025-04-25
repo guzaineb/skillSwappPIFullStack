@@ -5,7 +5,7 @@ pipeline {
         DB_HOST = 'db'
         DB_NAME = 'SkillAppp'
         REGISTRY = 'localhost:8081' 
-        REGISTRY_CREDENTIALS = 'nexus'
+        REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://localhost:9000'
         PORT = '5000'
     }
@@ -13,8 +13,25 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'DevOpsPI',  
-                    url: 'https://github.com/guzaineb/skillSwappPIFullStack.git' 
+                git branch: 'DevOpsPI',
+                    credentialsId: 'dockerhub-credentials', 
+                    url: 'https://github.com/guzaineb/skillSwappPIFullStack.git'
+            }
+        }
+
+        stage('Setup Node.js') {
+            steps {
+                script {
+                    // Install Node.js if not present
+                    sh '''
+                        if ! command -v node &> /dev/null; then
+                            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+                            sudo apt-get install -y nodejs
+                        fi
+                        node --version
+                        npm --version
+                    '''
+                }
             }
         }
 
@@ -36,10 +53,15 @@ pipeline {
         
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar') {
+                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                     script {
                         def scannerHome = tool 'SonarQube Scanner'
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.host.url=${SONAR_HOST_URL}"
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN} \
+                            -Dsonar.projectKey=skill-app-backend
+                        """
                     }
                 }
             }
@@ -75,11 +97,18 @@ pipeline {
     }
 
     post {
+        always {
+            script {
+                // Cleanup resources if needed
+                sh 'docker-compose down || true'
+            }
+        }
         success {
-            echo "Pipeline executed successfully!"
+            echo "✅ Pipeline executed successfully!"
+            echo "Application should be running at: http://localhost:5000"
         }
         failure {
-            echo "Pipeline failed. Check the logs for errors."
+            echo "❌ Pipeline failed. Check the logs for errors."
         }
     }
 }
