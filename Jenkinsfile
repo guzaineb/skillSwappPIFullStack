@@ -75,10 +75,11 @@ pipeline {
     }
 
     post {
-        always {
-            script {
-                // Cleanup if needed
-            }
+        success {
+            echo "Pipeline executed successfully!"
+        }
+        failure {
+            echo "Pipeline failed. Check the logs for errors."
         }
     }
 }
