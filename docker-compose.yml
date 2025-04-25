@@ -1,1 +1,31 @@
 
+version: '3.8'
+services:
+  db:
+    image: mongo:4.2
+    container_name: db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 0000
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build: .
+    image: localhost:8083/skill-app:latest
+    restart: always
+    container_name: skill-app
+    ports:
+      - '5000:5000'
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: SkillAppp
+      PORT: 5000
+
+volumes:
+  mongo-data:
