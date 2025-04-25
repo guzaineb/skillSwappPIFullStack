@@ -19,15 +19,17 @@ pipeline {
             }
         }
 
-        
-
         stage('Install Dependencies') {
+            tools {
+                nodejs 'Node 18'
+            }
             steps {
                 script {
                     sh 'npm install'
                 }
             }
         }
+
         
         stage('Unit Tests') {
             steps {
