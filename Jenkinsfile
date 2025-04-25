@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'Node 20'  // Update to use Node 20
+        nodejs 'Node 18'
     }
 
     environment {
