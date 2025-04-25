@@ -60,7 +60,7 @@ pipeline {
     steps {
         script {
             sh 'docker-compose build'
-            sh 'docker tag localhost:8083/skill-app:latest ${REGISTRY}/skill-app:latest'
+            sh 'docker tag localhost:8081/skill-app:latest ${REGISTRY}/skill-app:latest'
         }
     }
 }
