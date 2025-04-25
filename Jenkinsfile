@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'Node 18'
+    }
+
     environment {
         DB_HOST = 'db'
         DB_NAME = 'SkillAppp'
@@ -20,9 +24,6 @@ pipeline {
         }
 
         stage('Install Dependencies') {
-            tools {
-                nodejs 'Node 18'
-            }
             steps {
                 script {
                     sh 'npm install'
