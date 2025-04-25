@@ -8,7 +8,7 @@ pipeline {
     environment {
         DB_HOST = 'db'
         DB_NAME = 'SkillAppp'
-        REGISTRY = 'http://172.23.96.107:8081'
+        REGISTRY = '172.23.96.107:8081'
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://172.23.96.107:9000'
         PORT = '5000'
