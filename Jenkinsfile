@@ -8,7 +8,7 @@ pipeline {
     environment {
         DB_HOST = 'db'
         DB_NAME = 'SkillAppp'
-        REGISTRY = 'localhost:8081' 
+        REGISTRY = 'localhost:8083'
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://localhost:9000'
         PORT = '5000'
@@ -18,28 +18,27 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'DevOpsPI',
-                    credentialsId: 'dockerhub-credentials', 
+                    credentialsId: 'dockerhub-credentials',
                     url: 'https://github.com/guzaineb/skillSwappPIFullStack.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                script {
+                dir('backend') {
                     sh 'npm install'
                 }
             }
         }
 
-        
         stage('Unit Tests') {
             steps {
-                script {
+                dir('backend') {
                     sh 'npm test'
                 }
             }
         }
-        
+
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
@@ -47,9 +46,10 @@ pipeline {
                         def scannerHome = tool 'SonarQube Scanner'
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=skill-app-backend \
+                            -Dsonar.sources=./backend \
                             -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            -Dsonar.projectKey=skill-app-backend
+                            -Dsonar.login=${SONAR_TOKEN}
                         """
                     }
                 }
@@ -60,11 +60,11 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose build'
-                    sh 'docker tag skill-app ${REGISTRY}/skill-app:latest'
+                    sh 'docker tag localhost:8083/skill-app:latest ${REGISTRY}/skill-app:latest'
                 }
             }
         }
-        
+
         stage('Deploy to Nexus') {
             steps {
                 script {
@@ -74,7 +74,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Run Application') {
             steps {
                 script {
@@ -88,16 +88,15 @@ pipeline {
     post {
         always {
             script {
-                // Cleanup resources if needed
                 sh 'docker-compose down || true'
             }
         }
         success {
             echo "✅ Pipeline executed successfully!"
-            echo "Application should be running at: http://localhost:5000"
+            echo "App should be running at: http://localhost:5000"
         }
         failure {
-            echo "❌ Pipeline failed. Check the logs for errors."
+            echo "❌ Pipeline failed. Check logs for more info."
         }
     }
 }
