@@ -12,6 +12,7 @@ pipeline {
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://172.23.96.107:9000'
         PORT = '5000'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') 
     }
 
     stages {
@@ -55,15 +56,39 @@ pipeline {
                 }
             }
         }
-
-        stage('Build Docker Images') {
-    steps {
-        script {
-            sh 'docker-compose build'
-            sh 'docker tag localhost:8081/skill-app:latest ${REGISTRY}/skill-app:latest'
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def imageName = "saraiguess/DevOpsPI:${env.BUILD_NUMBER}"
+                    
+                    sh "docker build -t ${imageName} ."
+                    
+                    env.DOCKER_IMAGE_NAME = imageName
+                }
+            }
         }
-    }
-}
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKERHUB_USER',
+                        passwordVariable: 'DOCKERHUB_PASS'
+                    )]) {
+                        sh "echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USER} --password-stdin"
+                    }
+                    
+                    sh "docker push ${env.DOCKER_IMAGE_NAME}"
+                    
+                    def baseImageName = env.DOCKER_IMAGE_NAME.split(':')[0]
+                    sh """
+                        docker tag ${env.DOCKER_IMAGE_NAME} ${baseImageName}:latest
+                        docker push ${baseImageName}:latest
+                    """
+                }
+            }
+        }
 
         
 
