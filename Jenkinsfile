@@ -65,15 +65,7 @@ pipeline {
     }
 }
 
-        stage('Deploy to Nexus') {
-            steps {
-                script {
-                    docker.withRegistry("http://${REGISTRY}", REGISTRY_CREDENTIALS) {
-                        sh 'docker push ${REGISTRY}/skill-app:latest'
-                    }
-                }
-            }
-        }
+        
 
         stage('Run Application') {
             steps {
