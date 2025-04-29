@@ -11,9 +11,9 @@ pipeline {
         REGISTRY = '172.23.96.107:8081'
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://172.23.96.107:9000'
-        DOCKERHUB_REGISTRY = 'docker.io'
-        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials' 
-        DOCKERHUB_REPO = 'saraiguess/skill-app' 
+        DOCKERHUB_USER = 'saraiguess'
+        DOCKERHUB_REPO = 'skill-app'
+        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
         PORT = '5000'
     }
 
@@ -71,8 +71,8 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry("https://${DOCKERHUB_REGISTRY}", DOCKERHUB_CREDENTIALS) {
-                        sh 'docker push ${DOCKERHUB_REPO}:latest'
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
+                        sh 'docker push ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:latest'
                     }
                 }
             }
