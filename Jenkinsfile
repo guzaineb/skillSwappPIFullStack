@@ -11,6 +11,7 @@ pipeline {
         REGISTRY = '172.23.96.107:8081'
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://172.23.96.107:9000'
+        DOCKERHUB_REGISTRY = 'docker.io'
         DOCKERHUB_CREDENTIALS = 'dockerhub-credentials' 
         DOCKERHUB_REPO = 'saraiguess/skill-app' 
         PORT = '5000'
