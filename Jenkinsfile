@@ -68,15 +68,6 @@ pipeline {
     }
 }
 
-        stage('Push to Docker Hub') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKERHUB_CREDENTIALS) {
-                        sh 'docker push ${DOCKERHUB_USER}/${DOCKERHUB_REPO}:latest'
-                    }
-                }
-            }
-        }
 
         stage('Run Application') {
             steps {
