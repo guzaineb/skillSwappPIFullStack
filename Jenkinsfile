@@ -14,6 +14,7 @@ pipeline {
         DOCKERHUB_USER = 'saraiguess'
         DOCKERHUB_REPO = 'skill-app'
         DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
+        DOCKER_IMAGE = "saraiguess/skill-app:latest"
         PORT = '5000'
     }
 
@@ -59,14 +60,31 @@ pipeline {
             }
         }
         
-        stage('Build Docker Images') {
-    steps {
-        script {
-            sh 'docker-compose build'
-            sh 'docker tag localhost:8081/skill-app:latest ${REGISTRY}/skill-app:latest'
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'DOCKER', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh '''
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        docker build -t $DOCKER_IMAGE .
+                        '''
+                    }
+                }
+            }
         }
-    }
-}
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'DOCKER', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh '''
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        docker push $DOCKER_IMAGE
+                        '''
+                    }
+                }
+            }
+        }
 
 
         stage('Run Application') {
