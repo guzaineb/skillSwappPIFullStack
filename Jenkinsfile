@@ -11,6 +11,8 @@ pipeline {
         REGISTRY = '172.23.96.107:8081'
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://172.23.96.107:9000'
+        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials' 
+        DOCKERHUB_REPO = 'saraiguess/skill-app' 
         PORT = '5000'
     }
 
@@ -65,7 +67,15 @@ pipeline {
     }
 }
 
-        
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry("https://${DOCKERHUB_REGISTRY}", DOCKERHUB_CREDENTIALS) {
+                        sh 'docker push ${DOCKERHUB_REPO}:latest'
+                    }
+                }
+            }
+        }
 
         stage('Run Application') {
             steps {
