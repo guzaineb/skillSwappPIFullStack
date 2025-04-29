@@ -56,14 +56,26 @@ pipeline {
             }
         }
         
-        stage('Build Docker Images') {
+        stage('Build & Push Docker Image') {
     steps {
         script {
+            // Build image
             sh 'docker-compose build'
-            sh 'docker tag localhost:8081/skill-app:latest ${REGISTRY}/skill-app:latest'
+
+            // Tag pour Docker Hub
+            sh 'docker tag localhost:8081/skill-app:latest saraiguess/skill-app:latest'
+
+            // Pousser sur Docker Hub
+            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker push saraiguess/skill-app:latest
+                '''
+            }
         }
     }
 }
+
 
         
 
