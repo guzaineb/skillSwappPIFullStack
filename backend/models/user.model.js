@@ -52,7 +52,16 @@ avatar:{
         type:Number,
         required:true,
     },
-
+    isBlocked: {
+        type: Boolean,
+        default: false
+      }
+,     
+    blockedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }]
+,     
     profilePic: {
         type: String,
       },
@@ -64,6 +73,8 @@ avatar:{
     
     
 }, { timestamps: true });
+
+  
 
 
 

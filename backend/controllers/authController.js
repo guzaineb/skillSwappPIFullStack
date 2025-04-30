@@ -370,11 +370,48 @@ const updateProfile = async (req, res) => {
 	} catch (error) {
 	  console.log("Error in updateProfile:", error);
 	  res.status(500).json({ message: "Internal server error" });
-	}
-  };
+	}};
+
+	const  blockStudent= async (req, res) => {
+		try {
+		  const { educatorId, studentId } = req.body;
+	  
+		  const educator = await User.findById(educatorId);
+	  
+		  if (!educator || educator.role !== 'educator') {
+			return res.status(403).json({ message: 'Non autorisé' });
+		  }
+	  
+		  if (!educator.blockedUsers.includes(studentId)) {
+			educator.blockedUsers.push(studentId);
+			await educator.save();
+		  }
+	  
+		  res.status(200).json({ message: 'Étudiant bloqué avec succès' });
+		} catch (err) {
+		  console.error(err);
+		  res.status(500).json({ message: 'Erreur lors du blocage de l\'étudiant' });
+		}
+	  }
+	  
+  // GET /api/skill/user/:userId
+
+const getUserSkills =async (req, res) => {
+		try {
+		  const user = await User.findById(req.params.userId).populate('enrolledSkills');
+		  if (!user) {
+			return res.status(404).json({ message: 'Utilisateur non trouvé' });
+		  }
+		  res.json(user.enrolledSkills);
+		} catch (error) {
+		  console.error(error);
+		  res.status(500).json({ message: 'Erreur serveur' });
+		}
+	  };
+  
   
   
 
 
-module.exports = { signup,resendVerificationCode,updateProfile, verifyEmail, login, Test,updateUser, Admin, logout, Educator, forgetPassWord, resetPassword ,checkAuth};
+module.exports = { signup,resendVerificationCode,updateProfile, verifyEmail, login, Test,updateUser, Admin, logout, Educator, forgetPassWord, resetPassword ,checkAuth,blockStudent,getUserSkills};
 

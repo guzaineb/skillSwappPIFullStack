@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vérification de Certificat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .certificate-info {
+      background-color: #f5f5f5;
+      border-left: 4px solid #1E3A8A;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .valid {
+      background-color: #e6ffe6;
+      border-left: 4px solid #00cc00;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .invalid {
+      background-color: #ffe6e6;
+      border-left: 4px solid #cc0000;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Vérification de Certificat</h1>
+    <p>Utilisez cette page pour vérifier l'authenticité d'un certificat.</p>
+  </div>
+  
+  <div class="valid">
+    <h2>✅ Certificat Authentique</h2>
+    <p>Ce certificat est valide et a été émis par notre organisme.</p>
+  </div>
+  
+  <div class="invalid">
+    <h2>❌ Certificat Non Reconnu</h2>
+    <p>Ce certificat n'est pas reconnu dans notre système ou a été falsifié.</p>
+  </div>
+  
+  <div class="certificate-info">
+    <h2>Informations du Certificat</h2>
+    <table>
+      <tr>
+        <th>Numéro de Certificat</th>
+        <td>CERT-MA31E44P-BE8WAZ</td>
+      </tr>
+      <tr>
+        <th>Nom du Destinataire</th>
+        <td id="recipient-name">Chargement...</td>
+      </tr>
+      <tr>
+        <th>Domaine</th>
+        <td id="domain">Chargement...</td>
+      </tr>
+      <tr>
+        <th>Date d'Émission</th>
+        <td id="issue-date">Chargement...</td>
+      </tr>
+    </table>
+  </div>
+  
+  <script>
+    // Dans un système réel, cette partie récupérerait les données depuis une API
+    // Pour cet exemple, nous simulons des données
+    document.addEventListener('DOMContentLoaded', function() {
+      // Récupérer les paramètres de l'URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const data = urlParams.get('data');
+      
+      if (data) {
+        try {
+          const certData = JSON.parse(decodeURIComponent(data));
+          document.getElementById('recipient-name').textContent = certData.nom || 'Non spécifié';
+          document.getElementById('domain').textContent = certData.domaine || 'Non spécifié';
+          document.getElementById('issue-date').textContent = formatDate(certData.date) || 'Non spécifié';
+        } catch (e) {
+          console.error('Erreur lors du parsing des données:', e);
+          document.querySelector('.valid').style.display = 'none';
+          document.querySelector('.invalid').style.display = 'block';
+        }
+      } else {
+        // Simuler une requête API pour récupérer les données du certificat
+        // Dans un système réel, cela serait une vraie requête API
+        setTimeout(() => {
+          document.getElementById('recipient-name').textContent = 'Sophie Martin';
+          document.getElementById('domain').textContent = 'Data Science';
+          document.getElementById('issue-date').textContent = '15 novembre 2023';
+        }, 500);
+      }
+    });
+    
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('fr-FR', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }
+  </script>
+</body>
+</html>

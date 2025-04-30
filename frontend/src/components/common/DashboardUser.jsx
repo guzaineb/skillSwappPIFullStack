@@ -161,7 +161,7 @@ function DashboardUser() {
                   </div>
                 </div>
                 {/* /Sidebar */}
-                <div class="col-xl-9 col-lg-9">	
+                <div className="col-xl-9 col-lg-9">	
  
                      <Outlet/>
  

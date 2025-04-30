@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./store/authStore";
-
 import Header from "./components/common/Header";
 import Signin from "./components/common/Signin";
 import Signup from "./components/common/Signup";
@@ -28,8 +27,6 @@ import SkillList from "./components/common/SkillList";
 import { SkillGrid } from './components/common/SkillGrid';
 import { SkillForm } from './components/common/SkillForm';
 import { EditSkill } from './components/common/EditSkill';
-
-
 // Import pour les composants "T"
 import ProfileT from "./components/commonT/ProfileT";
 import CreateQuiz from "./components/commonT/CreateQuiz";
@@ -40,6 +37,11 @@ import Quiz from "./components/commonT/Quiz";
 import QuizDetails from "./components/commonT/QuizDetails";
 import Cours from "./components/commonT/Cours";
 import Logout from "./components/commonT/Logout";
+import ChatBotComponent from "./components/common/ChatBot";
+import StudentsBySkill from "./components/common/list/ListLEarner";
+import EducatorsByCategory from "./components/common/list/ListEducator";
+import SkillReader from "./components/common/SkillReader";
+import SkillDetail from "./components/common/SkillDetail";
 
 function App() {
   const socket = useAuthStore((state) => state.socket);
@@ -111,11 +113,13 @@ function App() {
           <Route path="AddCategory" element={<AddCategory />} />
           <Route path="update-password" element={<UpdatePassword />} />
           <Route path="skills/new" element={<SkillForm />} />
-          <Route path="UpdateCategory/:id" element={<UpdateCategory />} /> 
+          <Route path="UpdateCategory/:id" element={<UpdateCategory />} />
           <Route path="skills" element={<SkillGrid />} />
           <Route path="CreateQuiz" element={<CreateQuiz />} />
           <Route path="Quizzes" element={<Quizzes />} />
           <Route path="Categories" element={<Categories />} />
+          <Route path="skill/:skillId/students" element={<StudentsBySkill />} />
+
 
           <Route path="Chat" element={<Chat />} />
 
@@ -130,6 +134,14 @@ function App() {
           <Route path="update-password" element={<UpdatePassword />} />
           <Route path="SkillList" element={<SkillList />} />
           <Route path="Chat" element={<Chat />} />
+          <Route path="skill/:skillId/students" element={<StudentsBySkill />} />
+          <Route path="EducatorsByCategory" element={<EducatorsByCategory />} />
+          <Route path="skills/edit/:id" element={<EditSkill />} />
+          <Route path="Categories" element={<Categories />} />
+          <Route path="UpdateCategory/:id" element={<UpdateCategory />} />
+          <Route path="logout" element={<Logout />} />
+          <Route path="chatBot" element={<ChatBotComponent />} />
+          <Route path="learnSkill/:skillId" element={<SkillReader />} />
 
 
 
@@ -161,21 +173,23 @@ function App() {
         <Route path="/skills" element={<SkillGrid />} />
         <Route path="/skills/new" element={<SkillForm />} />
         <Route path="/Profile1" element={<Profile1 />} />
-
-
+        <Route path="/skill/:skillId/students" element={<StudentsBySkill />} />
+        <Route path="/skills/:id" element={<SkillDetail />} />
+        <Route path="/EducatorsByCategory" element={<EducatorsByCategory />} />
         <Route path="/skills/edit/:id" element={<EditSkill />} />
         <Route path="/Categories" element={<Categories />} />
-        <Route path="/UpdateCategory/:id" element={<UpdateCategory />} /> 
-
+        <Route path="/UpdateCategory/:id" element={<UpdateCategory />} />
         <Route path="/logout" element={<Logout />} />
-
         <Route path="/ProfileT" element={<ProfileT />} />
         <Route path="/Cours" element={<Cours />} />
         <Route path="/Question" element={<Question />} />
         <Route path="QuizDetails/:id" element={<QuizDetails />} />
-
+        <Route path="/chatBot" element={<ChatBotComponent />} />
 
         <Route path="CoursDetails" element={<CoursDetails />} />
+
+        <Route path="/learnSkill:skillId" element={<SkillReader />} />
+
 
       </Routes>
     </>

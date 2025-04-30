@@ -21,7 +21,7 @@ export const SkillForm = ({ existingSkill }) => {
     image: '',
     status: '',
     level: '',
-    lessons: [{ title: '', content: '', duration: 0 }]
+    lessons: [{ title: '', content: '', duration: '' }]
   });
 
   const validateForm = () => {

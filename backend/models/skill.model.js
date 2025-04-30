@@ -20,6 +20,7 @@ const skillSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'inactive', 'pending'], required: true },
   level: { type: String, enum: ['beginner', 'intermediate', 'advanced'], required: true },
   lessons: [lessonSchema],
+
 });
 
 // Middleware pour garantir la cohérence entre `pricingType` et `price`

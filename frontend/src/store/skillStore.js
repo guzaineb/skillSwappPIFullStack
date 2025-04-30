@@ -35,17 +35,17 @@ export const useSkillStore = create((set) => ({
     }
   },
 
-  search: async (searchTerm) => {
-    set({ isLoading: true, error: null });
+  participateToSkill: async (userId, skillId) => {
     try {
-      const response = await axios.get(`${API_URL}/search`, {
-        params: { searchTerm }
+      const response = await axios.post(`${API_URL}/participate`, {
+        userId,
+        skillId,
       });
-      set({ skills: response.data });
-    } catch (err) {
-      set({ error: err.message });
-    } finally {
-      set({ isLoading: false });
+      console.log('Réponse API participation :', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Erreur API participation :', error.response?.data || error.message);
+      throw error.response?.data || { message: "Erreur inconnue" };
     }
   },
 
@@ -104,4 +104,13 @@ export const useSkillStore = create((set) => ({
       set({ isLoading: false });
     }
   },
+
+  findSkillById: async (skillId) => {
+    try {
+      const response = await axios.get(`${API_URL}/${skillId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "Erreur inconnue" };
+    }
+  }
 }));
