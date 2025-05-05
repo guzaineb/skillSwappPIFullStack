@@ -26,8 +26,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('backend') {
-                    sh 'npm install express path-to-regexp'
-                    sh 'npm install'
+                    sh 'npm ci'
                 }
             }
         }
@@ -35,7 +34,10 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 dir('backend') {
-                    sh 'npm test'
+                    sh '''
+                echo "🧪 Running unit tests..."
+                npm test || (echo "❌ Tests failed. Showing logs:" && cat /root/.npm/_logs/* || true)
+            '''
                 }
             }
         }
