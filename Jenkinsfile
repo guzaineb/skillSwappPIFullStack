@@ -26,6 +26,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('backend') {
+                    sh 'npm install express path-to-regexp'
                     sh 'npm install'
                 }
             }
