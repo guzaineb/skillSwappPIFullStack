@@ -104,7 +104,8 @@ pipeline {
     post {
         always {
             script {
-                sh 'docker-compose down || true'
+                //sh 'docker-compose down || true'
+                echo 'Post Actions'
             }
         }
         success {
