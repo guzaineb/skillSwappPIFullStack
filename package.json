@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "nodemon backend/index.js",
     "test": "jest --coverage",
-    "start": "node backend/index.js",
-    
+    "start": "node backend/index.js"
   },
   "keywords": [],
   "author": "",
