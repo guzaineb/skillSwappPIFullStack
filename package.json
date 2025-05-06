@@ -4,8 +4,7 @@
   "main": "backend/index.js",
   "scripts": {
     "dev": "nodemon backend/index.js",
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
