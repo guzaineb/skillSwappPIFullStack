@@ -79,6 +79,13 @@ pipeline {
     }
 }
 
+        stage('Monitoring') {
+    steps {
+        echo 'Prometheus available at: http://172.23.96.107:9090'
+        echo 'Grafana available at: http://172.23.96.107:3000'
+    }
+}
+
 
         
 
