@@ -32,16 +32,18 @@ pipeline {
         }
 
         stage('Unit Tests') {
-            steps {
-                dir('backend') {
-                    sh '''
+    steps {
+        dir('backend') {
+            sh '''
                 echo "🧪 Running unit tests..."
-                npm test || (echo "❌ Tests failed. Showing logs:" && cat /root/.npm/_logs/* || true)
-            '''
+                npm test -- --coverage || {
+                    echo "❌ Tests failed. Showing logs:"
+                    cat /root/.npm/_logs/* || true
                 }
-            }
+            '''
         }
-
+    }
+}
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
