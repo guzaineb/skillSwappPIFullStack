@@ -36,10 +36,7 @@ pipeline {
                 dir('backend') {
                     sh '''
                 echo "🧪 Running unit tests..."
-                npm test -- --coverage || {
-                    echo "❌ Tests failed. Showing logs:"
-                    cat /root/.npm/_logs/* || true
-                }
+                npm test || (echo "❌ Tests failed. Showing logs:" && cat /root/.npm/_logs/* || true)
             '''
                 }
             }
