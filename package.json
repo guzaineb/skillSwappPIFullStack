@@ -4,7 +4,8 @@
   "main": "backend/index.js",
   "scripts": {
     "dev": "nodemon backend/index.js",
-    "test": "jest"
+    "test": "jest",
+    "start": "node backend/index.js"
   },
   "keywords": [],
   "author": "",
