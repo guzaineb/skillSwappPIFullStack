@@ -1,0 +1,22 @@
+/* Réduire le padding de la navbar */
+.navbar {
+  padding: 0.5rem 1rem; /* Réduit la hauteur de la navbar */
+  font-size: 0.875rem; /* Réduit la taille de la police des éléments */
+}
+
+/* Ajuster la taille du logo */
+.navbar .navbar-brand img {
+  max-height: 80px; /* Ajuste la taille du logo */
+}
+
+/* Réduire la taille de l'icône de bascule mobile */
+.navbar-toggler-icon {
+  width: 20px; /* Réduit la taille de l'icône du toggle */
+  height: 2px;
+}
+
+/* Ajuster la taille de la police des éléments du menu */
+.navbar .navbar-nav .nav-item .nav-link {
+  padding: 0.25rem 0.5rem; /* Réduit l'espacement des éléments */
+  font-size: 0.875rem; /* Réduit la taille de la police des éléments du menu */
+}
