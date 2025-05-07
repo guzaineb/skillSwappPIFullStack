@@ -43,6 +43,12 @@ import EducatorsByCategory from "./components/common/list/ListEducator";
 import SkillReader  from "./components/common/SkillReader";
 import SkillDetail from "./components/common/SkillDetail";
 import SkillProgress from './components/common/SkillProgress';
+//Import pour les composants "A"
+import DashboardA from "./components/common/DashboardA";
+import ProfileA from "./components/common/ProfileA";
+import Settings from "./components/common/Settings";
+import Notification from "./components/common/Notification";
+import LinkedAccounts from "./components/common/LinkedAccounts";
 
 // Dans votre configuration de routes
 <Route path="/skills/:skillId/progress" element={<SkillProgress />} />
@@ -193,6 +199,17 @@ function App() {
         <Route path="/learnSkill/:skillId" element={<SkillReader />} />
 
         <Route path="/skills/:skillId/progress" element={<SkillProgress />} />
+
+
+
+        /* Admin */
+        
+        <Route path="Dash" element={<DashboardA />}/>
+        <Route path="ProfileA" element={<ProfileA />}/>
+        <Route path="settings" element={<Settings/>}/>
+        <Route path="Notifications" element={<Notification/>}/>
+        <Route path="LinkedAccounts" element={<LinkedAccounts/>}/>
+
 
       </Routes>
     </>

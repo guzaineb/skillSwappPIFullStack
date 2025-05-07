@@ -18,7 +18,7 @@ const openaiRoutes = require("./routes/openaiRoutes.js");
 const notificationRoutes = require("./routes/notification.route.js");
 const userRoutes = require("./routes/user.route.js");
 const postRoutes = require("./routes/post.route.js");
-
+const adminRoutes = require("./routes/admin.route");
 
 const {app,server} = require("./lib/socket.js")
 const db = require("./db/db.json");
@@ -69,6 +69,7 @@ app.use("/api/", openaiRoutes);
 app.use("/api/notification", notificationRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
+app.use("/api/admin", adminRoutes);
 app.use(express.urlencoded({ extended: true }));
 
 
@@ -77,6 +78,33 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+// Fonction pour générer des données de graphique
+const generateChartData = (days = 7, min = 5, max = 20) => {
+  return Array.from({length: days}, (_, i) => ({
+    jour: `Day ${i + 1}`,  // Change "day" to "jour"
+    valeur: Math.floor(Math.random() * (max - min + 1)) + min
+  }));
+};
+
+
+
+
+
+// Endpoint pour les données des graphiques
+app.get('/api/chart-data', (req, res) => {
+  try {
+    const data = {
+      teachersData: generateChartData(7, 2, 10),
+      studentsData: generateChartData(7, 10, 50),
+      quizzesTakenData: generateChartData(7, 5, 30),
+      activeQuizzesData: generateChartData(7, 1, 15)
+    };
+    res.json(data);
+  } catch (error) {
+    console.error('Error generating chart data:', error);
+    res.status(500).json({error: 'Internal server error'});
+  }
+});
 
 const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./schema/shema.js");
