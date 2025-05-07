@@ -24,8 +24,10 @@ router.get('/search', advancedSearch);
 router.get('/:skillId/students',getStudentsBySkill);
 router.get('/category/:categoryId/educators', getEducatorsByCategory);
 router.get('/:skillId',findSkillById)
-router.post('/readSkillById', readSkillById);
-router.get("/skills/:id",showByID);
+router.get('/skills/:id', showByID);
+router.get('/progress/:userId/:skillId', getUserSkillProgress);
+router.post('/read-skill', readSkillById);
 router.post('/generate-certificate', generateAndSendCertificate);
-router.get('/progress/:userId/:skillId',getUserSkillProgress);
+
+
 module.exports = router;

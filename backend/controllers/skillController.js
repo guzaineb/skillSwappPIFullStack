@@ -2,6 +2,7 @@ const Skill = require('../models/skill.model');
 const User = require('../models/user.model');
 const Certificate = require('../models/certificate'); 
 
+const mongoose = require('mongoose');
 
 const Progress = require('../models/progress');
 const Category = require('../models/category.model'); 

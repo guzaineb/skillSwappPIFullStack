@@ -65,6 +65,41 @@ avatar:{
     profilePic: {
         type: String,
       },
+      followers: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User",
+                    default: [],
+                },
+            ],
+            following: [
+                {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User",
+                    default: [],
+                },	],
+                likedPosts: [
+                            {
+                                type: mongoose.Schema.Types.ObjectId,
+                                ref: "Post",
+                                default: [],
+                            },
+                        ],
+                        link: {
+                            type: String,
+                            default: "",
+                        },       bio: {
+                            type: String,
+                            default: "",
+                        },
+                        profileImg: {
+                            type: String,
+                            default: "",
+                        },
+                        coverImg: {
+                            type: String,
+                            default: "",
+                        },
      
     resetPasswordToken:String,
     resetPasswordExpires:Date,
@@ -73,10 +108,6 @@ avatar:{
     
     
 }, { timestamps: true });
-
-  
-
-
 
 module.exports = mongoose.model("User", userSchema);
 

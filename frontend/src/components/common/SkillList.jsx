@@ -22,7 +22,7 @@ const SkillList = () => {
       const skillRes = await axios.get(`http://localhost:5000/api/skill/skills/${skillId}`);
       const skillData = skillRes.data;
 
-      navigate(`/Profile1/learnSkill/${skillId}`, {
+      navigate(`/Profile1/skills/${skillId}/progress`, {
         state: {
           skill: skillData
         }

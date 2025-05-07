@@ -15,6 +15,11 @@ const googleRoutes = require("./routes/auth.go.js");
 const payRoutes = require("./routes/pay.route.js");
 const quizRoutes = require("./routes/quiz.route.js");
 const openaiRoutes = require("./routes/openaiRoutes.js");
+const notificationRoutes = require("./routes/notification.route.js");
+const userRoutes = require("./routes/user.route.js");
+const postRoutes = require("./routes/post.route.js");
+
+
 const {app,server} = require("./lib/socket.js")
 const db = require("./db/db.json");
 const cookieParser = require("cookie-parser");
@@ -60,7 +65,10 @@ app.use("/api", updateProfileRoutes);
 app.use("/api/openai", openaiRoutes);
 app.use("/api/pay", payRoutes);
 app.use("/api/quiz", quizRoutes);
-
+app.use("/api/", openaiRoutes);
+app.use("/api/notification", notificationRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/post", postRoutes);
 app.use(express.urlencoded({ extended: true }));
 
 
@@ -69,10 +77,7 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,  // Utilisation de ta clé API OpenAI
-  apiBaseUrl: 'https://api.openai.com/v1/',  // URL de base pour l'API OpenAI
-});
+
 const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./schema/shema.js");
 const resolvers = require("./schema/resolvers");

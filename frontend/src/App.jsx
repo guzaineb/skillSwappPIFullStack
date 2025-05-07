@@ -40,9 +40,12 @@ import Logout from "./components/commonT/Logout";
 import ChatBotComponent from "./components/common/ChatBot";
 import StudentsBySkill from "./components/common/list/ListLEarner";
 import EducatorsByCategory from "./components/common/list/ListEducator";
-import SkillReader from "./components/common/SkillReader";
+import SkillReader  from "./components/common/SkillReader";
 import SkillDetail from "./components/common/SkillDetail";
+import SkillProgress from './components/common/SkillProgress';
 
+// Dans votre configuration de routes
+<Route path="/skills/:skillId/progress" element={<SkillProgress />} />
 function App() {
   const socket = useAuthStore((state) => state.socket);
 
@@ -142,8 +145,7 @@ function App() {
           <Route path="logout" element={<Logout />} />
           <Route path="chatBot" element={<ChatBotComponent />} />
           <Route path="learnSkill/:skillId" element={<SkillReader />} />
-
-
+          <Route path="skills/:skillId/progress" element={<SkillProgress />} />
 
 
 
@@ -188,8 +190,9 @@ function App() {
 
         <Route path="CoursDetails" element={<CoursDetails />} />
 
-        <Route path="/learnSkill:skillId" element={<SkillReader />} />
+        <Route path="/learnSkill/:skillId" element={<SkillReader />} />
 
+        <Route path="/skills/:skillId/progress" element={<SkillProgress />} />
 
       </Routes>
     </>

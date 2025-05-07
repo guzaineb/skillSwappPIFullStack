@@ -74,7 +74,7 @@ export const SkillForm = ({ existingSkill }) => {
   const addLesson = () => {
     setFormData({
       ...formData,
-      lessons: [...formData.lessons, { title: '', content: '', duration: 0 }]
+      lessons: [...formData.lessons, { title: '', content: '', duration: '' }]
     });
   };
 

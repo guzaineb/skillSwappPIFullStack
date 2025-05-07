@@ -20,3 +20,6 @@
   padding: 0.25rem 0.5rem; /* Réduit l'espacement des éléments */
   font-size: 0.875rem; /* Réduit la taille de la police des éléments du menu */
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
