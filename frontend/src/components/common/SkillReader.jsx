@@ -5,6 +5,7 @@ import { useAuthStore } from '../../store/authStore';
 import { CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'react-toastify';
 import mongoose from 'mongoose';
+import SkillResponses from './SkillResponses';
 
 const SkillReader = () => {
   const { user } = useAuthStore();
@@ -28,12 +29,12 @@ const SkillReader = () => {
         toast.error("L'identifiant de la compétence est incorrect");
         return;
       }
- 
+
 
       try {
         setIsLoading(true);
         setError(null);
-        
+
         const [skillRes, progressRes] = await Promise.all([
           axios.get(`http://localhost:5000/api/skill/skills/${skillId}`),
           user?._id && axios.get(`http://localhost:5000/api/skill/progress/${user._id}/${skillId}`)
@@ -47,15 +48,15 @@ const SkillReader = () => {
 
         if (progressRes?.data) {
           setProgress(progressRes.data);
-          
+
           // Find first incomplete lesson
           const nextIncompleteIndex = skillRes.data.lessons.findIndex(
             lesson => !progressRes.data.completedLessons?.includes(lesson._id.toString())
           );
-          
+
           setCurrentLessonIndex(
-            nextIncompleteIndex !== -1 ? nextIncompleteIndex : 
-            skillRes.data.lessons.length > 0 ? skillRes.data.lessons.length - 1 : 0
+            nextIncompleteIndex !== -1 ? nextIncompleteIndex :
+              skillRes.data.lessons.length > 0 ? skillRes.data.lessons.length - 1 : 0
           );
 
           if (progressRes.data.isCompleted) {
@@ -97,7 +98,7 @@ const SkillReader = () => {
       setProgress(updatedProgress);
 
       if (updatedProgress.isCompleted) {
-        setCertificateUrl(res.data.certificateUrl || 
+        setCertificateUrl(res.data.certificateUrl ||
           `http://localhost:5000/certificates/${user._id}_${skillId}.pdf`);
       }
 
@@ -134,7 +135,7 @@ const SkillReader = () => {
     return (
       <div className="p-4 text-center text-red-500">
         <p>{error}</p>
-        <button 
+        <button
           onClick={() => window.location.reload()}
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
         >
@@ -169,15 +170,15 @@ const SkillReader = () => {
               </div>
             </div>
             <span className="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full">
-              {progress?.completedLessons?.includes(currentLesson._id.toString()) 
-                ? 'Complété' 
+              {progress?.completedLessons?.includes(currentLesson._id.toString())
+                ? 'Complété'
                 : `${currentLessonIndex + 1}/${totalLessons}`}
             </span>
           </div>
 
           <div className="w-full bg-gray-200 h-2 rounded-full">
-            <div 
-              className="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+            <div
+              className="bg-blue-500 h-2 rounded-full transition-all duration-300"
               style={{ width: `${percentage}%` }}
             ></div>
           </div>
@@ -196,15 +197,14 @@ const SkillReader = () => {
                   Précédent
                 </button>
               )}
-              
+
               <button
                 onClick={handleCompleteLesson}
                 disabled={progress?.completedLessons?.includes(currentLesson._id.toString())}
-                className={`px-4 py-2 rounded text-white ml-auto ${
-                  progress?.completedLessons?.includes(currentLesson._id.toString())
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-emerald-600 hover:bg-emerald-700'
-                }`}
+                className={`px-4 py-2 rounded text-white ml-auto ${progress?.completedLessons?.includes(currentLesson._id.toString())
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-emerald-600 hover:bg-emerald-700'
+                  }`}
               >
                 {progress?.completedLessons?.includes(currentLesson._id.toString())
                   ? 'Déjà complété'
@@ -220,14 +220,14 @@ const SkillReader = () => {
       {progress?.isCompleted && (
         <div className="bg-green-50 p-4 text-center rounded-lg mt-4">
           <p className="text-green-700 font-semibold flex items-center justify-center">
-            <CheckCircle className="h-5 w-5 mr-2" /> 
+            <CheckCircle className="h-5 w-5 mr-2" />
             Félicitations ! Compétence terminée 🎉
           </p>
           {certificateUrl && (
-            <a 
-              href={certificateUrl} 
+            <a
+              href={certificateUrl}
               className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              target="_blank" 
+              target="_blank"
               rel="noopener noreferrer"
             >
               Télécharger le certificat
@@ -235,6 +235,11 @@ const SkillReader = () => {
           )}
         </div>
       )}
+
+      {/* Section des réponses et questions */}
+      <div className="mt-8">
+        <SkillResponses skillId={skillId} />
+      </div>
     </div>
   );
 }

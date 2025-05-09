@@ -15,7 +15,15 @@ const notificationSchema = new mongoose.Schema(
 		type: {
 			type: String,
 			required: true,
-			enum: ["follow", "like"],
+			enum: ["follow", "like", "comment"],
+		},
+		post: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Post",
+			// Requis uniquement pour les notifications de type "like" et "comment"
+			required: function () {
+				return this.type === "like" || this.type === "comment";
+			}
 		},
 		read: {
 			type: Boolean,

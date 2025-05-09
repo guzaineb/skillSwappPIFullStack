@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from "../../store/authStore";
 import ProfileIcon from './ProfileIcon';
- // Assuming you have a CSS file for styles
+import NotificationDropdown from './NotificationDropdown';
+// Assuming you have a CSS file for styles
 
 function Header() {
   const { user, isAuthenticated, checkAuth } = useAuthStore();
@@ -79,7 +80,8 @@ function Header() {
                   Pages
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="pagesDropdown">
-                  <li><a className="dropdown-item" href="notifications.html">Notification</a></li>
+                  <li><a className="dropdown-item" href="/notifications">Notifications</a></li>
+                  <li><a className="dropdown-item" href="/posts">Posts</a></li>
                   <li><a className="dropdown-item" href="pricing-plan.html">Pricing Plan</a></li>
                   <li><a className="dropdown-item" href="wishlist.html">Wishlist</a></li>
                   <li><a className="dropdown-item" href="course-list.html">Course List</a></li>
@@ -102,29 +104,29 @@ function Header() {
             </ul>
           </div>
 
-          {/* Barre de droite : Dark Mode & Profil */}
+          {/* Barre de droite : Notifications & Profil */}
           <ul className="navbar-nav ms-3">
-           
-            {/* Conditional Rendering of Profile or SignIn/SignUp */}
-            <li className="nav-item">
-              {isAuthenticated ? (
-                <ProfileIcon />
-              ) : (
-                <>
-                  {/* <a className="nav-link" href="/signin">Signin</a>
-                  <a className="nav-link" href="/signup">Signup</a> */}
-  <ul className="nav header-navbar-rht">
-                  <li className="nav-item">
-            <a className="nav-link header-sign" href="/signin">Signin</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link header-login" href="/signup">Signup</a>
-          </li>
-          </ul>
-                </>
 
-              )}
-            </li>
+            {/* Conditional Rendering of Profile or SignIn/SignUp */}
+            {isAuthenticated ? (
+              <>
+                <li className="nav-item">
+                  <NotificationDropdown />
+                </li>
+                <li className="nav-item">
+                  <ProfileIcon />
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <a className="nav-link header-sign" href="/signin">Signin</a>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link header-login" href="/signup">Signup</a>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </nav>

@@ -30,3 +30,4 @@ export default defineConfig({
     exclude: [] // Vous pouvez ajouter des exclusions si nécessaire
   }
 })
+

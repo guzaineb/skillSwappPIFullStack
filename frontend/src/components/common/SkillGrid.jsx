@@ -61,7 +61,7 @@ export const SkillGrid = () => {
                   </div>
 
                   <div className="course-edit-btn d-flex align-items-center justify-content-between">
-                    <Link to={`/skills/edit/${skill._id}`} className="btn btn-link">
+                    <Link to={`/Profile/skills/edit/${skill._id}`} className="btn btn-link">
                       <i className="bx bx-edit me-2"></i>Modifier
                     </Link>
                     <button

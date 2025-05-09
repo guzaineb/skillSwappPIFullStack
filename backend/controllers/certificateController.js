@@ -3,11 +3,10 @@ const Skill = require('../models/skill.model');
 const Certificate = require('../models/certificate');
 const generateCertificatePdf = require('../utils/generateCertificatePdf');
 const sendCertificateEmail = require('../utils/sendCertificateEmail');
-const signPdf = require('../utils/signPdf'); // ajoute cette ligne
 
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config(); // pour charger le mot de passe depuis .env
+require('dotenv').config();
 
 const certificatesDir = path.join(__dirname, '..', 'certificates');
 if (!fs.existsSync(certificatesDir)) {
@@ -18,6 +17,7 @@ async function generateAndSendCertificate(req, res) {
   const { userId, skillId } = req.body;
 
   try {
+    // Vérification de l'existence de l'utilisateur et de la compétence
     const user = await User.findById(userId);
     const skill = await Skill.findById(skillId);
 
@@ -25,37 +25,56 @@ async function generateAndSendCertificate(req, res) {
       return res.status(404).json({ message: 'Utilisateur ou compétence introuvable' });
     }
 
-    const certificateId = `${userId}-${skillId}-${Date.now()}`;
-    const unsignedPath = path.join(certificatesDir, `${certificateId}_unsigned.pdf`);
-    const signedPath = path.join(certificatesDir, `${certificateId}_signed.pdf`);
-    const logoPath = path.join(__dirname, '..', 'assets', 'logo.png'); // adapte selon ton projet
-    const p12Path = path.join(__dirname, '..', 'utils', 'certificate.p12'); // dossier certs
-    const p12Password = process.env.P12_PASSWORD;
+    // Génération d'un ID de certificat unique
+    const certificateId = `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    
+    // Préparation des chemins
+    const outputPath = path.join(certificatesDir, `${certificateId}.pdf`);
+    const logoPath = path.join(__dirname, '..', 'assets', 'logo.png');
+    const signaturePath = path.join(__dirname, '..', 'assets', 'signature.png');
 
-    // Génère le PDF
-    await generateCertificatePdf(user.name, skill.skillname, certificateId, unsignedPath, logoPath);
+    // Vérification des assets
+    if (!fs.existsSync(logoPath)) {
+      return res.status(400).json({ message: 'Logo introuvable' });
+    }
 
-    // Signature numérique
-    signPdf(unsignedPath, signedPath, p12Path, p12Password);
+    // Génération du certificat avec tous les paramètres requis
+    await generateCertificatePdf({
+      userName: user.name, // Utilisation du champ name de l'utilisateur
+      field: skill.skillname,
+      certificateId: certificateId,
+      outputPath: outputPath,
+      logoPath: logoPath,
+      signaturePath: fs.existsSync(signaturePath) ? signaturePath : null
+    });
 
-    // Envoie le certificat signé par email
-    await sendCertificateEmail(user.email, signedPath);
+    // Envoi du certificat par email
+    await sendCertificateEmail(user.email, outputPath);
 
-    // Enregistre le certificat dans la base de données
+    // Sauvegarde en base de données
     const certificate = new Certificate({
       user: userId,
       skill: skillId,
       certificateId: certificateId,
+      filePath: outputPath,
+      issueDate: new Date()
     });
     await certificate.save();
 
-    res.status(200).json({ message: 'Certificat généré, signé et envoyé par email avec succès.' });
+    res.status(200).json({ 
+      message: 'Certificat généré et envoyé avec succès',
+      certificatePath: outputPath
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Erreur lors de la génération, signature ou envoi du certificat' });
+    console.error('Erreur:', error);
+    res.status(500).json({ 
+      message: 'Erreur lors de la génération du certificat',
+      error: error.message
+    });
   }
 }
 
 module.exports = {
-  generateAndSendCertificate,
+  generateAndSendCertificate
 };

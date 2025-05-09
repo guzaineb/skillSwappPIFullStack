@@ -356,12 +356,15 @@ async function readSkillById(req, res) {
 
       const existingCertificate = await Certificate.findOne({ user: userId, skill: skillId });
       if (!existingCertificate) {
+        // Get base URL from environment or use default
+        const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+        
         const certificate = new Certificate({
           certificateId: new mongoose.Types.ObjectId(),
           user: userId,
           skill: skillId,
           issuedAt: new Date(),
-          certificateUrl: `https://skillswapp.com/certificates/${userId}_${skillId}.pdf`
+          certificateUrl: `${baseUrl}/certificates/${userId}_${skillId}.pdf`
         });
         await certificate.save();
       }
@@ -442,6 +445,8 @@ async function getUserSkillProgress  (req, res)  {
   findByCategory ,
   findByIds ,readSkillById ,getSkillsByLearner,getUserSkillProgress
   };
+
+
 
 
 

@@ -2,8 +2,11 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const passportsetup=require("./service/passport.js")
-
+const passportsetup = require("./service/passport.js")
+const chatbot = require('./chatbot');
+const chatbotApi = require('./api');
+const advancedChatbot = require('./advancedChatbot');
+const advancedChatbotApi = require('./advancedChatbotApi');
 const passport = require("passport");
 
 const authRoutes = require("./routes/auth.route.js");
@@ -19,8 +22,9 @@ const notificationRoutes = require("./routes/notification.route.js");
 const userRoutes = require("./routes/user.route.js");
 const postRoutes = require("./routes/post.route.js");
 const adminRoutes = require("./routes/admin.route");
+const skillResponseRoutes = require("./routes/skillResponse.route.js");
 
-const {app,server} = require("./lib/socket.js")
+const { app, server } = require("./lib/socket.js")
 const db = require("./db/db.json");
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
@@ -47,6 +51,13 @@ app.use(
     credentials: true,
   })
 );
+// Initialiser les chatbots
+(async () => {
+  await chatbot.loadModel();
+  await advancedChatbot.loadModel();
+  console.log("✅ Chatbots initialisés avec succès");
+})();
+
 // Serve uploaded images statically
 
 app.use(express.json());
@@ -56,7 +67,8 @@ app.use(passport.initialize());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use("/api/category", categoryRoutes);
-
+app.use('/api/chatbot', chatbotApi);
+app.use('/api/advanced-chatbot', advancedChatbotApi);
 app.use("/api/auth", authRoutes);
 app.use("/api/skill", skillRoutes);
 app.use("/api/message", messageRoutes);
@@ -70,6 +82,7 @@ app.use("/api/notification", notificationRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/skill-response", skillResponseRoutes);
 app.use(express.urlencoded({ extended: true }));
 
 
@@ -80,7 +93,7 @@ server.listen(PORT, () => {
 
 // Fonction pour générer des données de graphique
 const generateChartData = (days = 7, min = 5, max = 20) => {
-  return Array.from({length: days}, (_, i) => ({
+  return Array.from({ length: days }, (_, i) => ({
     jour: `Day ${i + 1}`,  // Change "day" to "jour"
     valeur: Math.floor(Math.random() * (max - min + 1)) + min
   }));
@@ -102,7 +115,7 @@ app.get('/api/chart-data', (req, res) => {
     res.json(data);
   } catch (error) {
     console.error('Error generating chart data:', error);
-    res.status(500).json({error: 'Internal server error'});
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

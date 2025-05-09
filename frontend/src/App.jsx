@@ -38,11 +38,17 @@ import QuizDetails from "./components/commonT/QuizDetails";
 import Cours from "./components/commonT/Cours";
 import Logout from "./components/commonT/Logout";
 import ChatBotComponent from "./components/common/ChatBot";
+import AdvancedChatBot from "./components/common/AdvancedChatBot";
+import ChatbotDemo from "./pages/ChatbotDemo";
+import ChatbotAdmin from "./pages/ChatbotAdmin";
 import StudentsBySkill from "./components/common/list/ListLEarner";
 import EducatorsByCategory from "./components/common/list/ListEducator";
-import SkillReader  from "./components/common/SkillReader";
+import SkillReader from "./components/common/SkillReader";
 import SkillDetail from "./components/common/SkillDetail";
 import SkillProgress from './components/common/SkillProgress';
+// Import pour les composants de posts et notifications
+import PostsPage from './pages/PostsPage';
+import NotificationList from './components/common/NotificationList';
 //Import pour les composants "A"
 import DashboardA from "./components/common/DashboardA";
 import ProfileA from "./components/common/ProfileA";
@@ -130,6 +136,8 @@ function App() {
           <Route path="skill/:skillId/students" element={<StudentsBySkill />} />
 
 
+          <Route path="posts" element={<PostsPage />} />
+          <Route path="notifications" element={<NotificationList />} />
           <Route path="Chat" element={<Chat />} />
 
 
@@ -153,7 +161,8 @@ function App() {
           <Route path="learnSkill/:skillId" element={<SkillReader />} />
           <Route path="skills/:skillId/progress" element={<SkillProgress />} />
 
-
+          <Route path="posts" element={<PostsPage />} />
+          <Route path="notifications" element={<NotificationList />} />
 
         </Route>
 
@@ -193,6 +202,9 @@ function App() {
         <Route path="/Question" element={<Question />} />
         <Route path="QuizDetails/:id" element={<QuizDetails />} />
         <Route path="/chatBot" element={<ChatBotComponent />} />
+        <Route path="/advanced-chatbot" element={<AdvancedChatBot userId="test_user" />} />
+        <Route path="/chatbot-demo" element={<ChatbotDemo />} />
+        <Route path="/admin/chatbot" element={<ChatbotAdmin />} />
 
         <Route path="CoursDetails" element={<CoursDetails />} />
 
@@ -203,13 +215,16 @@ function App() {
 
 
         /* Admin */
-        
-        <Route path="Dash" element={<DashboardA />}/>
-        <Route path="ProfileA" element={<ProfileA />}/>
-        <Route path="settings" element={<Settings/>}/>
-        <Route path="Notifications" element={<Notification/>}/>
-        <Route path="LinkedAccounts" element={<LinkedAccounts/>}/>
 
+        <Route path="Dash" element={<DashboardA />} />
+        <Route path="ProfileA" element={<ProfileA />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="Notifications" element={<Notification />} />
+        <Route path="LinkedAccounts" element={<LinkedAccounts />} />
+
+        {/* Routes pour les posts et notifications */}
+        <Route path="/posts" element={<PostsPage />} />
+        <Route path="/notifications" element={<NotificationList />} />
 
       </Routes>
     </>

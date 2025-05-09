@@ -30,6 +30,51 @@ const postSchema = new mongoose.Schema(
 					ref: "User",
 					required: true,
 				},
+				likes: [
+					{
+						type: mongoose.Schema.Types.ObjectId,
+						ref: "User",
+					},
+				],
+				dislikes: [
+					{
+						type: mongoose.Schema.Types.ObjectId,
+						ref: "User",
+					},
+				],
+				replies: [
+					{
+						text: {
+							type: String,
+							required: true,
+						},
+						user: {
+							type: mongoose.Schema.Types.ObjectId,
+							ref: "User",
+							required: true,
+						},
+						likes: [
+							{
+								type: mongoose.Schema.Types.ObjectId,
+								ref: "User",
+							},
+						],
+						dislikes: [
+							{
+								type: mongoose.Schema.Types.ObjectId,
+								ref: "User",
+							},
+						],
+						createdAt: {
+							type: Date,
+							default: Date.now,
+						},
+					},
+				],
+				createdAt: {
+					type: Date,
+					default: Date.now,
+				},
 			},
 		],
 	},
