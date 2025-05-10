@@ -6,17 +6,17 @@ const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const ValidateLogin = require('../validation/Login');
 
-const { sendVerificationEmail, sendWelcomeEmail  } = require('../mailtrap/emails');
+const { sendVerificationEmail, sendWelcomeEmail } = require('../mailtrap/emails');
 
 const generateTokenAndSetCookie = require('../utils/generateTokenAndSetCookie');
 const transporter = require('../config/nodemailer');
 const { sendVerificationEmail1 } = require('../config/nodemail');
 const cloudinary = require('../lib/cloudinary');
 
-const { sendPasswordResetEmail,sendResetSuccessEmail } = require('../utils/EmailService');
+const { sendPasswordResetEmail, sendResetSuccessEmail } = require('../utils/EmailService');
 async function signup(req, res) {
 	try {
-		const { email, password, name, phone, role  } = req.body;
+		const { email, password, name, phone, role } = req.body;
 
 		if (!email || !password || !name || !phone || !role) {
 			return res.status(400).json({ success: false, message: "All fields are required" });
@@ -72,7 +72,7 @@ async function verifyEmail(req, res) {
 		const user = await User.findOne({
 			verificationToken: code,
 
-			verificationTokenExpires: { $gt: Date.now() }, 
+			verificationTokenExpires: { $gt: Date.now() },
 		});
 
 		if (!user) {
@@ -126,7 +126,7 @@ async function login(req, res) {
 
 		// Générer un token et l'envoyer en cookie sécurisé
 		const token = jwt.sign(
-			{ id: user._id, name: user.name, email: user.email, role: user.role ,},
+			{ id: user._id, name: user.name, email: user.email, role: user.role, },
 			process.env.JWT_SECRET,
 			{ expiresIn: "2h" }
 		);
@@ -148,7 +148,7 @@ async function login(req, res) {
 			email: user.email,
 			role: user.role,
 			profilePic: user.profilePic,
-			avatar: user.avatar, 
+			avatar: user.avatar,
 			isVerified: user.isVerified,
 			phone: user.phone,
 		};
@@ -174,15 +174,15 @@ async function Admin(req, res) {
 	res.send("welcome admin");
 }
 
-async function updateUser(req,res){ ///bech nrodha asyncrone lazem nzid m3aha await
-    try{
-       
-        const user= await User.findByIdAndUpdate(req.params.id,req.body,{new:true},); ////5aterupdate au niveau du body new:true bech yaffichili ba3d l modification 
-res .status(200).json(user);
-    }
-    catch(err){
-console.log(err)
-    }
+async function updateUser(req, res) { ///bech nrodha asyncrone lazem nzid m3aha await
+	try {
+
+		const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true },); ////5aterupdate au niveau du body new:true bech yaffichili ba3d l modification
+		res.status(200).json(user);
+	}
+	catch (err) {
+		console.log(err)
+	}
 }
 
 
@@ -205,17 +205,35 @@ const logout = async (req, res) => {
 
 const checkAuth = async (req, res) => {
 	try {
-		const token = req.cookies.token;
+		console.log('Vérification d\'authentification dans le contrôleur');
+
+		// Récupérer le token depuis différentes sources
+		let token = req.cookies.token || req.cookies.jwt;
+
+		// Si pas dans les cookies, vérifier dans l'en-tête Authorization
+		if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+			token = req.headers.authorization.split(' ')[1];
+			console.log('Token trouvé dans l\'en-tête Authorization');
+		}
+
 		if (!token) {
+			console.log('Aucun token trouvé');
 			return res.status(401).json({ success: false, message: "Unauthorized" });
 		}
 
+		console.log('Token trouvé, vérification...');
+
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
-		const user = await User.findById(decoded.id).select("-password");
+		console.log('Token décodé:', decoded);
+
+		const user = await User.findById(decoded.id || decoded._id || decoded.userId).select("-password");
 
 		if (!user) {
+			console.log('Utilisateur non trouvé');
 			return res.status(404).json({ success: false, message: "User not found" });
 		}
+
+		console.log('Utilisateur trouvé:', user.email);
 
 		// Modifier la structure pour inclure _id
 		const userData = {
@@ -230,15 +248,31 @@ const checkAuth = async (req, res) => {
 			phone: user.phone,
 		};
 
+		// Générer un nouveau token pour rafraîchir la session
+		const newToken = jwt.sign(
+			{ id: user._id, name: user.name, email: user.email, role: user.role },
+			process.env.JWT_SECRET,
+			{ expiresIn: "2h" }
+		);
+
+		// Définir le cookie avec des paramètres sécurisés
+		res.cookie("token", newToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "strict",
+			maxAge: 2 * 60 * 60 * 1000, // 2 heures
+		});
+
 		return res.status(200).json({
 			success: true,
-			user: userData
+			user: userData,
+			token: newToken
 		});
 	} catch (error) {
 		console.error("CheckAuth error:", error);
-		return res.status(401).json({ 
-			success: false, 
-			message: "Authentication failed" 
+		return res.status(401).json({
+			success: false,
+			message: "Authentication failed"
 		});
 	}
 };
@@ -256,7 +290,7 @@ async function forgetPassWord(req, res) {
 		// Generate reset token
 
 		const resetToken = crypto.randomBytes(32).toString("hex");
-const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+		const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
 
 		user.resetPasswordToken = resetToken;
 		user.resetPasswordExpires = resetTokenExpiresAt;
@@ -265,7 +299,7 @@ const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
 
 		// send email
 
-		await sendPasswordResetEmail(user.email, user.name ,`${process.env.CLIENT_URL}/reset-password/${resetToken}`);
+		await sendPasswordResetEmail(user.email, user.name, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);
 
 		res.status(200).json({ success: true, message: "Password reset link sent to your email" });
 	} catch (error) {
@@ -282,7 +316,8 @@ async function resetPassword(req, res) {
 		const user = await User.findOne({
 			resetPasswordToken: token,
 
-			resetPasswordExpires: { $gt: Date.now() },		});
+			resetPasswordExpires: { $gt: Date.now() },
+		});
 
 		if (!user) {
 			return res.status(400).json({ success: false, message: "Invalid or expired reset token" });
@@ -307,111 +342,112 @@ async function resetPassword(req, res) {
 	}
 };
 async function resendVerificationCode(req, res) {
-    const { email } = req.body;
-    
-    if (!email) {
-        return res.status(400).json({ 
-            success: false, 
-            message: "Email is required" 
-        });
-    }
+	const { email } = req.body;
 
-    try {
-        const user = await User.findOne({ email });
-        
-        if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "User not found" 
-            });
-        }
+	if (!email) {
+		return res.status(400).json({
+			success: false,
+			message: "Email is required"
+		});
+	}
 
-        const newVerificationToken = Math.floor(100000 + Math.random() * 900000).toString();
-        const newVerificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24h expiry
+	try {
+		const user = await User.findOne({ email });
 
-        user.verificationToken = newVerificationToken;
-        user.verificationTokenExpires = newVerificationTokenExpires;
-        await user.save();
+		if (!user) {
+			return res.status(404).json({
+				success: false,
+				message: "User not found"
+			});
+		}
 
-        await sendVerificationEmail(user.email, user.name, newVerificationToken);
+		const newVerificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+		const newVerificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24h expiry
 
-        res.status(200).json({
-            success: true,
-            message: "New verification code sent successfully",
-        });
-    } catch (error) {
-        console.error("Error resending verification code:", error);
-        res.status(500).json({ 
-            success: false, 
-            message: "Server error" 
-        });
-    }
+		user.verificationToken = newVerificationToken;
+		user.verificationTokenExpires = newVerificationTokenExpires;
+		await user.save();
+
+		await sendVerificationEmail(user.email, user.name, newVerificationToken);
+
+		res.status(200).json({
+			success: true,
+			message: "New verification code sent successfully",
+		});
+	} catch (error) {
+		console.error("Error resending verification code:", error);
+		res.status(500).json({
+			success: false,
+			message: "Server error"
+		});
+	}
 }
 
 const updateProfile = async (req, res) => {
 	try {
-	  const { profilePic } = req.body;
-	  const userId = req.user.id;  // Assure-toi que req.user est bien défini (authentification)
-  
-	  if (!profilePic) {
-		return res.status(400).json({ message: "Profile picture is required" });
-	  }
-  
-	  const uploadResponse = await cloudinary.uploader.upload(profilePic);
-  
-	  const updatedUser = await User.findByIdAndUpdate(
-		userId,
-		{ profilePic: uploadResponse.secure_url }, 
-		{ new: true }
-	  );
-  
-	  res.status(200).json(updatedUser);  // Renvoie l'utilisateur mis à jour
-  
-	} catch (error) {
-	  console.log("Error in updateProfile:", error);
-	  res.status(500).json({ message: "Internal server error" });
-	}};
+		const { profilePic } = req.body;
+		const userId = req.user.id;  // Assure-toi que req.user est bien défini (authentification)
 
-	const  blockStudent= async (req, res) => {
-		try {
-		  const { educatorId, studentId } = req.body;
-	  
-		  const educator = await User.findById(educatorId);
-	  
-		  if (!educator || educator.role !== 'educator') {
+		if (!profilePic) {
+			return res.status(400).json({ message: "Profile picture is required" });
+		}
+
+		const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+		const updatedUser = await User.findByIdAndUpdate(
+			userId,
+			{ profilePic: uploadResponse.secure_url },
+			{ new: true }
+		);
+
+		res.status(200).json(updatedUser);  // Renvoie l'utilisateur mis à jour
+
+	} catch (error) {
+		console.log("Error in updateProfile:", error);
+		res.status(500).json({ message: "Internal server error" });
+	}
+};
+
+const blockStudent = async (req, res) => {
+	try {
+		const { educatorId, studentId } = req.body;
+
+		const educator = await User.findById(educatorId);
+
+		if (!educator || educator.role !== 'educator') {
 			return res.status(403).json({ message: 'Non autorisé' });
-		  }
-	  
-		  if (!educator.blockedUsers.includes(studentId)) {
+		}
+
+		if (!educator.blockedUsers.includes(studentId)) {
 			educator.blockedUsers.push(studentId);
 			await educator.save();
-		  }
-	  
-		  res.status(200).json({ message: 'Étudiant bloqué avec succès' });
-		} catch (err) {
-		  console.error(err);
-		  res.status(500).json({ message: 'Erreur lors du blocage de l\'étudiant' });
 		}
-	  }
-	  
-  // GET /api/skill/user/:userId
 
-const getUserSkills =async (req, res) => {
-		try {
-		  const user = await User.findById(req.params.userId).populate('enrolledSkills');
-		  if (!user) {
+		res.status(200).json({ message: 'Étudiant bloqué avec succès' });
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ message: 'Erreur lors du blocage de l\'étudiant' });
+	}
+}
+
+// GET /api/skill/user/:userId
+
+const getUserSkills = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.userId).populate('enrolledSkills');
+		if (!user) {
 			return res.status(404).json({ message: 'Utilisateur non trouvé' });
-		  }
-		  res.json(user.enrolledSkills);
-		} catch (error) {
-		  console.error(error);
-		  res.status(500).json({ message: 'Erreur serveur' });
 		}
-	  };
-  
-  
-  
+		res.json(user.enrolledSkills);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: 'Erreur serveur' });
+	}
+};
 
 
-module.exports = { signup,resendVerificationCode,updateProfile, verifyEmail, login, Test,updateUser, Admin, logout, Educator, forgetPassWord, resetPassword ,checkAuth,blockStudent,getUserSkills};
+
+
+
+module.exports = { signup, resendVerificationCode, updateProfile, verifyEmail, login, Test, updateUser, Admin, logout, Educator, forgetPassWord, resetPassword, checkAuth, blockStudent, getUserSkills };
 

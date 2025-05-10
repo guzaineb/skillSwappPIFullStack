@@ -113,14 +113,21 @@ export const useSkillStore = create((set) => ({
     }
   },
 
-  findSkillById: async (skillId) => {
+  findSkillById: async (id) => {
+    set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_URL}/${skillId}`);
+      const response = await axios.get(`${API_URL}/skills/${id}`);
+      set({ selectedSkill: response.data });
       return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: "Erreur inconnue" };
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || err.message;
+      set({ error: errorMessage, selectedSkill: null });
+      throw new Error(errorMessage);
+    } finally {
+      set({ isLoading: false });
     }
   }
 }));
+
 
 

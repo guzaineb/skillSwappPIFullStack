@@ -55,6 +55,12 @@ import ProfileA from "./components/common/ProfileA";
 import Settings from "./components/common/Settings";
 import Notification from "./components/common/Notification";
 import LinkedAccounts from "./components/common/LinkedAccounts";
+// Importez les nouveaux composants de meeting
+import MeetingHome from "./pages/MeetingHome";
+import MeetingRoom from "./pages/MeetingRoom";
+import MeetingErrorBoundary from "./components/common/MeetingErrorBoundary";
+import "./styles/meeting-error.css";
+
 
 // Dans votre configuration de routes
 <Route path="/skills/:skillId/progress" element={<SkillProgress />} />
@@ -135,13 +141,15 @@ function App() {
           <Route path="Categories" element={<Categories />} />
           <Route path="skill/:skillId/students" element={<StudentsBySkill />} />
 
-
           <Route path="posts" element={<PostsPage />} />
           <Route path="notifications" element={<NotificationList />} />
           <Route path="Chat" element={<Chat />} />
-
-
-
+          <Route path="meetings" element={<MeetingHome />} />
+          <Route path="meeting/:meetingId" element={
+            <MeetingErrorBoundary>
+              <MeetingRoom />
+            </MeetingErrorBoundary>
+          } />
 
         </Route>
         <Route path="/Profile1" element={<DashboardUser />}>{/*learner */}
@@ -160,10 +168,15 @@ function App() {
           <Route path="chatBot" element={<ChatBotComponent />} />
           <Route path="learnSkill/:skillId" element={<SkillReader />} />
           <Route path="skills/:skillId/progress" element={<SkillProgress />} />
-
+          <Route path="meetings" element={<MeetingHome />} />
           <Route path="posts" element={<PostsPage />} />
           <Route path="notifications" element={<NotificationList />} />
 
+          <Route path="meeting/:meetingId" element={
+            <MeetingErrorBoundary>
+              <MeetingRoom />
+            </MeetingErrorBoundary>
+          } />
         </Route>
 
         <Route path="/index" element={<Index />} />
@@ -211,6 +224,13 @@ function App() {
         <Route path="/learnSkill/:skillId" element={<SkillReader />} />
 
         <Route path="/skills/:skillId/progress" element={<SkillProgress />} />
+        <Route path="/meetings" element={<MeetingHome />} />
+        <Route path="/meetings-direct" element={<MeetingHome skipAuthCheck={true} />} />
+        <Route path="/meeting/:meetingId" element={
+          <MeetingErrorBoundary>
+            <MeetingRoom />
+          </MeetingErrorBoundary>
+        } />
 
 
 
@@ -232,3 +252,7 @@ function App() {
 }
 
 export default App;
+console.log('Token dans localStorage:', localStorage.getItem('authToken'));
+console.log('Token dans cookies:', document.cookie);
+
+

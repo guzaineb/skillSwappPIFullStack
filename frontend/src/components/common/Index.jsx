@@ -83,9 +83,9 @@ export default function Index() {
                     <div className="course-box d-flex aos" data-aos="fade-up">
                       <div className="product d-flex flex-column align-items-center justify-content-center">
                         <div className="product-img">
-                          <a href="course-details.html">
+                          <div>
                             <img className="img-fluid" alt="Img" src="assets/img/course/UI-UXDesign.jpg" style={{ width: '369px', height: '271px', objectFit: 'cover' }} />
-                          </a>
+                          </div>
                         </div>
                         <div className="product-content text-center">
                           <h3 className="title" style={{ color: '#666' }}>UI/UX Design</h3>
@@ -99,9 +99,9 @@ export default function Index() {
                     <div className="course-box d-flex aos" data-aos="fade-up">
                       <div className="product d-flex flex-column align-items-center justify-content-center">
                         <div className="product-img">
-                          <a href="course-details.html">
+                          <div>
                             <img className="img-fluid" alt="Img" src="assets/img/course/Business.jpeg" style={{ width: '369px', height: '271px', objectFit: 'cover' }} />
-                          </a>
+                          </div>
                         </div>
                         <div className="product-content text-center">
                           <h3 className="title" style={{ color: '#666' }}>Business</h3>
@@ -131,9 +131,9 @@ export default function Index() {
                     <div className="course-box d-flex aos" data-aos="fade-up">
                       <div className="product d-flex flex-column align-items-center justify-content-center">
                         <div className="product-img">
-                          <a href="course-details.html">
+                          <div>
                             <img className="img-fluid" alt="Img" src="assets/img/course/DataScience.PNG" style={{ width: '369px', height: '271px', objectFit: 'cover' }} />
-                          </a>
+                          </div>
                         </div>
                         <div className="product-content text-center">
                           <h3 className="title" style={{ color: '#666' }}>Data Science</h3>
@@ -147,9 +147,9 @@ export default function Index() {
                     <div className="course-box d-flex aos" data-aos="fade-up">
                       <div className="product d-flex flex-column align-items-center justify-content-center">
                         <div className="product-img">
-                          <a href="course-details.html">
+                          <div>
                             <img className="img-fluid" alt="Img" src="assets/img/course/PersonalDevelopment.PNG" style={{ width: '369px', height: '271px', objectFit: 'cover' }} />
-                          </a>
+                          </div>
                         </div>
                         <div className="product-content text-center">
                           <h3 className="title" style={{ color: '#666' }}>Personal Development</h3>
@@ -163,9 +163,9 @@ export default function Index() {
                     <div className="course-box d-flex aos" data-aos="fade-up">
                       <div className="product d-flex flex-column align-items-center justify-content-center">
                         <div className="product-img">
-                          <a href="course-details.html">
+                          <div>
                             <img className="img-fluid" alt="Img" src="assets/img/course/SocialSciences.PNG" style={{ width: '369px', height: '271px', objectFit: 'cover' }} />
-                          </a>
+                          </div>
                         </div>
                         <div className="product-content text-center">
                           <h3 className="title" style={{ color: '#666' }}>Social Sciences</h3>
