@@ -10,7 +10,7 @@ pipeline {
         DB_NAME = 'SkillAppp'
         REGISTRY = '172.23.96.107:8081'
         REGISTRY_CREDENTIALS = 'nexus-credentials'
-        SONAR_HOST_URL = 'http://172.23.96.107:9001'
+        SONAR_HOST_URL = 'http://172.23.96.107:9000'
         PORT = '5000'
         EMAIL_TO = 'sarahmaamar2001@gmail.com'
     }
@@ -123,45 +123,36 @@ pipeline {
             }
         }
 
-        stage('Send Failure Notification') {
-            when {
-                expression { currentBuild.result == 'FAILURE' }
-            }
-            steps {
-                script {
-                    mail(
-                        to: env.EMAIL_TO,
-                        subject: "❌ FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """
-                            BUILD FAILED!
-                            Job: ${env.JOB_NAME}
-                            Build Number: ${env.BUILD_NUMBER}
-                            Failed Stage: ${env.STAGE_NAME}
-                            URL: ${env.BUILD_URL}
-                            Duration: ${currentBuild.durationString}
-                            
-                            Check console output at: ${env.BUILD_URL}console
-                        """
-                    )
-                }
-            }
-        }
 
     }
 
     post {
         always {
-            script {
-                //sh 'docker-compose down || true'
-                echo 'Post Actions'
-            }
+            echo 'Post Actions'
+            // Cleanup steps can go here
         }
         success {
             echo "✅ Pipeline executed successfully!"
             echo "App should be running at: http://localhost:5000"
         }
         failure {
-            echo "❌ Pipeline failed. Check logs for more info."
+            script {
+                mail(
+                    to: env.EMAIL_TO,
+                    subject: "❌ FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: """
+                        BUILD FAILED!
+                        Job: ${env.JOB_NAME}
+                        Build Number: ${env.BUILD_NUMBER}
+                        URL: ${env.BUILD_URL}
+                        Duration: ${currentBuild.durationString}
+                        
+                        Failed Stage: ${currentBuild.currentResult}
+                        Check console output at: ${env.BUILD_URL}console
+                    """
+                )
+                echo "❌ Pipeline failed. Check logs for more info."
+            }
         }
     }
 }
