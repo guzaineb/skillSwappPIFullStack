@@ -113,7 +113,7 @@ pipeline {
                             <p>Voir les détails ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
                         """,
                         mimeType: 'text/html',
-                        to: 'maamar.sara@€sprit.tn',
+                        to: 'sarahmaamar2001@gmail.com',
                         from: "${EMAIL_CREDENTIALS_USR}",
                         replyTo: "${EMAIL_CREDENTIALS_USR}"
                     )
