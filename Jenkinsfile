@@ -99,6 +99,53 @@ pipeline {
                 }
             }
         }
+
+        stage('Send Success Notification') {
+            when {
+                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
+            steps {
+                script {
+                    emailext(
+                        subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                        body: """
+                            <h2>Build Succeeded!</h2>
+                            <p><b>Job:</b> ${env.JOB_NAME}</p>
+                            <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                            <p><b>URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                            <p><b>Duration:</b> ${currentBuild.durationString}</p>
+                        """,
+                        to: env.EMAIL_TO,
+                        mimeType: 'text/html'
+                    )
+                }
+            }
+        }
+
+        stage('Send Failure Notification') {
+            when {
+                expression { currentBuild.result == 'FAILURE' }
+            }
+            steps {
+                script {
+                    emailext(
+                        subject: "❌ FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                        body: """
+                            <h2 style="color:red">Build Failed!</h2>
+                            <p><b>Job:</b> ${env.JOB_NAME}</p>
+                            <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                            <p><b>URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                            <p><b>Failed Stage:</b> ${env.STAGE_NAME}</p>
+                            <p><b>Duration:</b> ${currentBuild.durationString}</p>
+                        """,
+                        to: env.EMAIL_TO,
+                        mimeType: 'text/html',
+                        attachLog: true,
+                        attachmentsPattern: '**/target/*.log'
+                    )
+                }
+            }
+        }
     }
 
     post {
