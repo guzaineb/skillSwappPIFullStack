@@ -10,7 +10,7 @@ pipeline {
         DB_NAME = 'SkillAppp'
         REGISTRY = '172.23.96.107:8081'
         REGISTRY_CREDENTIALS = 'nexus-credentials'
-        SONAR_HOST_URL = 'http://172.23.96.107:9000'
+        SONAR_HOST_URL = 'http://172.23.96.107:9001'
         PORT = '5000'
         EMAIL_TO = 'sarahmaamar2001@gmail.com'
     }
