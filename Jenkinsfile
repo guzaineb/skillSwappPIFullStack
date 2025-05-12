@@ -12,21 +12,14 @@ pipeline {
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://172.23.96.107:9000'
         PORT = '5000'
-        EMAIL_CREDENTIALS = credentials('email') 
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'DevOpsPI']],
-                    extensions: [[$class: 'CloneOption', shallow: true, depth: 1]],
-                    userRemoteConfigs: [[
-                        url: 'https://github.com/guzaineb/skillSwappPIFullStack.git',
-                        credentialsId: 'dockerhub-credentials'
-                    ]]
-                ])
+                git branch: 'DevOpsPI',
+                    credentialsId: 'dockerhub-credentials',
+                    url: 'https://github.com/guzaineb/skillSwappPIFullStack.git'
             }
         }
 
@@ -39,19 +32,18 @@ pipeline {
         }
 
         stage('Unit Tests') {
-            steps {
-                dir('backend') {
-                    sh '''
-                        echo "🧪 Running unit tests..."
-                        npm test -- --coverage || {
-                            echo "❌ Tests failed. Showing logs:"
-                            cat /root/.npm/_logs/* || true
-                        }
-                    '''
+    steps {
+        dir('backend') {
+            sh '''
+                echo "🧪 Running unit tests..."
+                npm test -- --coverage || {
+                    echo "❌ Tests failed. Showing logs:"
+                    cat /root/.npm/_logs/* || true
                 }
-            }
+            '''
         }
-
+    }
+}
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
@@ -70,26 +62,34 @@ pipeline {
         }
         
         stage('Build & Push Docker Image') {
-            steps {
-                script {
-                    sh 'docker-compose build'
-                    sh 'docker tag localhost:8081/skill-app:latest saraiguess/skill-app:latest'
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        sh '''
-                            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                            docker push saraiguess/skill-app:latest
-                        '''
-                    }
-                }
+    steps {
+        script {
+            // Build image
+            sh 'docker-compose build'
+
+            // Tag pour Docker Hub
+            sh 'docker tag localhost:8081/skill-app:latest saraiguess/skill-app:latest'
+
+            // Pousser sur Docker Hub
+            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker push saraiguess/skill-app:latest
+                '''
             }
         }
+    }
+}
 
         stage('Monitoring') {
-            steps {
-                echo 'Prometheus available at: http://172.23.96.107:9090'
-                echo 'Grafana available at: http://172.23.96.107:3000'
-            }
-        }
+    steps {
+        echo 'Prometheus available at: http://172.23.96.107:9090'
+        echo 'Grafana available at: http://172.23.96.107:3000'
+    }
+}
+
+
+        
 
         stage('Run Application') {
             steps {
@@ -103,31 +103,17 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline status: ${currentBuild.currentResult}"
+            script {
+                //sh 'docker-compose down || true'
+                echo 'Post Actions'
+            }
         }
         success {
-            script {
-                emailext(
-                    subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                    body: """<p>Build succeeded!</p>
-                           <p>Details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
-                    to: 'sarahmaamar2001@gmail.com',
-                    mimeType: 'text/html'
-                )
-            }
+            echo "✅ Pipeline executed successfully!"
+            echo "App should be running at: http://localhost:5000"
         }
         failure {
-            script {
-                emailext(
-                    subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                    body: """<p style="color:red">Build failed!</p>
-                           <p>Error: ${currentBuild.currentResult}</p>
-                           <p>Details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
-                    to: 'sarahmaamar2001@gmail.com',
-                    mimeType: 'text/html',
-                    attachLog: true  // Attach build log
-                )
-            }
+            echo "❌ Pipeline failed. Check logs for more info."
         }
     }
 }
