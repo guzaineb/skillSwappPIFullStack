@@ -15,7 +15,7 @@ pipeline {
         EMAIL_TO = 'sarahmaamar2001@gmail.com'
     }
 
-    stages {
+    stages 
         stage('Checkout Code') {
             steps {
                 git branch: 'DevOpsPI',
