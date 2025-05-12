@@ -20,7 +20,8 @@ pipeline {
             steps {
                 git branch: 'DevOpsPI',
                     credentialsId: 'dockerhub-credentials',
-                    url: 'https://github.com/guzaineb/skillSwappPIFullStack.git'
+                    url: 'https://github.com/guzaineb/skillSwappPIFullStack.git',
+                    shallow: true
             }
         }
 
@@ -33,18 +34,19 @@ pipeline {
         }
 
         stage('Unit Tests') {
-    steps {
-        dir('backend') {
-            sh '''
-                echo "🧪 Running unit tests..."
-                npm test -- --coverage || {
-                    echo "❌ Tests failed. Showing logs:"
-                    cat /root/.npm/_logs/* || true
+            steps {
+                dir('backend') {
+                    sh '''
+                        echo "🧪 Running unit tests..."
+                        npm test -- --coverage || {
+                            echo "❌ Tests failed. Showing logs:"
+                            cat /root/.npm/_logs/* || true
+                        }
+                    '''
                 }
-            '''
+            }
         }
-    }
-}
+
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
@@ -63,34 +65,26 @@ pipeline {
         }
         
         stage('Build & Push Docker Image') {
-    steps {
-        script {
-            // Build image
-            sh 'docker-compose build'
-
-            // Tag pour Docker Hub
-            sh 'docker tag localhost:8081/skill-app:latest saraiguess/skill-app:latest'
-
-            // Pousser sur Docker Hub
-            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                sh '''
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                    docker push saraiguess/skill-app:latest
-                '''
+            steps {
+                script {
+                    sh 'docker-compose build'
+                    sh 'docker tag localhost:8081/skill-app:latest saraiguess/skill-app:latest'
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh '''
+                            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                            docker push saraiguess/skill-app:latest
+                        '''
+                    }
+                }
             }
         }
-    }
-}
 
         stage('Monitoring') {
-    steps {
-        echo 'Prometheus available at: http://172.23.96.107:9090'
-        echo 'Grafana available at: http://172.23.96.107:3000'
-    }
-}
-
-
-        
+            steps {
+                echo 'Prometheus available at: http://172.23.96.107:9090'
+                echo 'Grafana available at: http://172.23.96.107:3000'
+            }
+        }
 
         stage('Run Application') {
             steps {
@@ -101,7 +95,6 @@ pipeline {
             }
         }
     }
-
 
     post {
         always {
