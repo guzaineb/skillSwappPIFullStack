@@ -16,12 +16,17 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'DevOpsPI',
-                    credentialsId: 'dockerhub-credentials',
-                    url: 'https://github.com/guzaineb/skillSwappPIFullStack.git',
-                    shallow: true
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: 'DevOpsPI']],
+                    extensions: [[$class: 'CloneOption', shallow: true, depth: 1]],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/guzaineb/skillSwappPIFullStack.git',
+                        credentialsId: 'dockerhub-credentials'
+                    ]]
+                ])
             }
         }
 
@@ -98,23 +103,31 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline finished"
+            echo "Pipeline status: ${currentBuild.currentResult}"
         }
         success {
-            emailext (
-                subject: "✅ SUCCESS: ${env.JOB_NAME}",
-                body: "Build succeeded!",
-                to: 'sarahmaamar2001@gmail.com',
-                mimeType: 'text/html'
-            )
+            script {
+                emailext(
+                    subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: """<p>Build succeeded!</p>
+                           <p>Details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
+                    to: 'sarahmaamar2001@gmail.com',
+                    mimeType: 'text/html'
+                )
+            }
         }
         failure {
-            emailext (
-                subject: "❌ FAILURE: ${env.JOB_NAME}",
-                body: "Build failed!",
-                to: 'sarahmaamar2001@gmail.com',
-                mimeType: 'text/html'
-            )
+            script {
+                emailext(
+                    subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: """<p style="color:red">Build failed!</p>
+                           <p>Error: ${currentBuild.currentResult}</p>
+                           <p>Details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
+                    to: 'sarahmaamar2001@gmail.com',
+                    mimeType: 'text/html',
+                    attachLog: true  // Attach build log
+                )
+            }
         }
     }
 }
