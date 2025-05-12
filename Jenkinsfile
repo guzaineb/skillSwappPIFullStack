@@ -84,7 +84,7 @@ pipeline {
 
         stage('Monitoring') {
     steps {
-        echo 'Prometheus available at: http://172.23.96.107:9090'
+        echo 'Prometheus available at: http://172.23.96.107:9091'
         echo 'Grafana available at: http://172.23.96.107:3000'
     }
 }
@@ -101,15 +101,6 @@ pipeline {
             }
         }
 
-        stage('Force Failure Test') {
-    steps {
-        script {
-            if (env.TEST_MODE == 'true') {
-                error("Simulating failure for testing")
-            }
-        }
-    }
-}
 
         stage('Send Success Notification') {
             when {
