@@ -102,40 +102,36 @@ pipeline {
         }
     }
 
-     stage('Send Email') {
-            steps {
-                script {
-                    emailext (
-                        subject: "✅ Build Réussi : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """
-                            <p>Bonjour,</p>
-                            <p>Le build du job <strong>${env.JOB_NAME}</strong> a réussi 🎉</p>
-                            <p>Voir les détails ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                        """,
-                        mimeType: 'text/html',
-                        to: 'sarahmaamar2001@gmail.com',
-                        from: "${EMAIL_CREDENTIALS_USR}",
-                        replyTo: "${EMAIL_CREDENTIALS_USR}"
-                    )
-                }
-            }
-        }
     }
 
 
     post {
-        always {
-            script {
-                //sh 'docker-compose down || true'
-                echo 'Post Actions'
-            }
+       always {
+            echo "Pipeline finished (success or failure)."
         }
         success {
-            echo "✅ Pipeline executed successfully!"
-            echo "App should be running at: http://localhost:5000"
+            emailext (
+                subject: "✅ SUCCESS: Pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <p>Pipeline <b>${env.JOB_NAME}</b> succeeded!</p>
+                    <p><b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    <p><b>Console Log:</b> <a href="${env.BUILD_URL}console">View Logs</a></p>
+                """,
+                to: 'sarahmaamar2001@gmail.com',
+                mimeType: 'text/html'
+            )
         }
         failure {
-            echo "❌ Pipeline failed. Check logs for more info."
+            emailext (
+                subject: "❌ FAILURE: Pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <p>Pipeline <b>${env.JOB_NAME}</b> failed!</p>
+                    <p><b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    <p><b>Console Log:</b> <a href="${env.BUILD_URL}console">Debug Here</a></p>
+                """,
+                to: 'sarahmaamar2001@gmail.com',
+                mimeType: 'text/html'
+            )
         }
     }
 }
