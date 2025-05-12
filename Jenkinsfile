@@ -12,6 +12,7 @@ pipeline {
         REGISTRY_CREDENTIALS = 'nexus-credentials'
         SONAR_HOST_URL = 'http://172.23.96.107:9000'
         PORT = '5000'
+        EMAIL_CREDENTIALS = credentials('email') 
     }
 
     stages {
@@ -100,6 +101,27 @@ pipeline {
             }
         }
     }
+
+     stage('Send Email') {
+            steps {
+                script {
+                    emailext (
+                        subject: "✅ Build Réussi : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                        body: """
+                            <p>Bonjour,</p>
+                            <p>Le build du job <strong>${env.JOB_NAME}</strong> a réussi 🎉</p>
+                            <p>Voir les détails ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                        """,
+                        mimeType: 'text/html',
+                        to: 'maamar.sara@€sprit.tn',
+                        from: "${EMAIL_CREDENTIALS_USR}",
+                        replyTo: "${EMAIL_CREDENTIALS_USR}"
+                    )
+                }
+            }
+        }
+    }
+
 
     post {
         always {
