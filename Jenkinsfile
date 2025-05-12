@@ -15,7 +15,7 @@ pipeline {
         EMAIL_TO = 'sarahmaamar2001@gmail.com'
     }
 
-    stages 
+    stages {
         stage('Checkout Code') {
             steps {
                 git branch: 'DevOpsPI',
@@ -100,6 +100,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Force Failure Test') {
+    steps {
+        script {
+            if (env.TEST_MODE == 'true') {
+                error("Simulating failure for testing")
+            }
+        }
+    }
+}
 
         stage('Send Success Notification') {
             when {
