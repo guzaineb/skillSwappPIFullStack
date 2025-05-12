@@ -107,17 +107,16 @@ pipeline {
             }
             steps {
                 script {
-                    emailext(
+                    mail(
+                        to: env.EMAIL_TO,
                         subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                         body: """
-                            <h2>Build Succeeded!</h2>
-                            <p><b>Job:</b> ${env.JOB_NAME}</p>
-                            <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
-                            <p><b>URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                            <p><b>Duration:</b> ${currentBuild.durationString}</p>
-                        """,
-                        to: env.EMAIL_TO,
-                        mimeType: 'text/html'
+                            Build Succeeded!
+                            Job: ${env.JOB_NAME}
+                            Build Number: ${env.BUILD_NUMBER}
+                            URL: ${env.BUILD_URL}
+                            Duration: ${currentBuild.durationString}
+                        """
                     )
                 }
             }
@@ -129,24 +128,24 @@ pipeline {
             }
             steps {
                 script {
-                    emailext(
+                    mail(
+                        to: env.EMAIL_TO,
                         subject: "❌ FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                         body: """
-                            <h2 style="color:red">Build Failed!</h2>
-                            <p><b>Job:</b> ${env.JOB_NAME}</p>
-                            <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
-                            <p><b>URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                            <p><b>Failed Stage:</b> ${env.STAGE_NAME}</p>
-                            <p><b>Duration:</b> ${currentBuild.durationString}</p>
-                        """,
-                        to: env.EMAIL_TO,
-                        mimeType: 'text/html',
-                        attachLog: true,
-                        attachmentsPattern: '**/target/*.log'
+                            BUILD FAILED!
+                            Job: ${env.JOB_NAME}
+                            Build Number: ${env.BUILD_NUMBER}
+                            Failed Stage: ${env.STAGE_NAME}
+                            URL: ${env.BUILD_URL}
+                            Duration: ${currentBuild.durationString}
+                            
+                            Check console output at: ${env.BUILD_URL}console
+                        """
                     )
                 }
             }
         }
+
     }
 
     post {
