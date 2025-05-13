@@ -38,13 +38,14 @@ export default function ProfileIcon() {
 
   return (
     <div className="nav-item user-nav">
-      <a 
-        href="#" 
-        className="dropdown-toggle" 
+
+      <a
+        href="#"
+        className="dropdown-toggle"
         onClick={() => setDropdownOpen(!isDropdownOpen)}
       >
         <span className="user-img">
-          <img src={ user?.profilePic || user?.avatar || "/avatar.png"} alt="Profile" />
+          <img src={user?.profilePic || user?.avatar || "/avatar.png"} alt="Profile" />
           <span className="status online" />
         </span>
       </a>
@@ -60,6 +61,13 @@ export default function ProfileIcon() {
         </a>
         <a className="dropdown-item" href="/Profile">
           <i className="feather-star me-1" /> Edit Profile
+        </a>
+
+        <a className="dropdown-item" href="/posts">
+          <i className="feather-file-text me-1" /> Posts
+        </a>
+        <a className="dropdown-item" href="/notifications">
+          <i className="feather-bell me-1" /> Notifications
         </a>
         <button className="dropdown-item" onClick={handleLogout}>
           <i className="feather-log-out me-1" /> Logout

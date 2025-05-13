@@ -377,4 +377,3 @@ const updateProfile = async (req, res) => {
 
 
 module.exports = { signup,resendVerificationCode,updateProfile, verifyEmail, login, Test,updateUser, Admin, logout, Educator, forgetPassWord, resetPassword ,checkAuth};
-

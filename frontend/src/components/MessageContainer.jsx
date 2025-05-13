@@ -7,4 +7,8 @@ useEffect(() => {
   return () => {
     unsubscribeFromMessages();
   };
+<<<<<<< HEAD
 }, [selectedUser, subscribeToMessages, unsubscribeFromMessages]);
+=======
+}, [selectedUser, subscribeToMessages, unsubscribeFromMessages]);
+>>>>>>> origin/mimi

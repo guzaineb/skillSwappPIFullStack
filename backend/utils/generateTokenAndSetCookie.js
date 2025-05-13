@@ -1,17 +1,8 @@
-const jwt = require('jsonwebtoken');
+
+const jwt = require('jsonwebtoken');  // Importation de jwt
 
 const generateTokenAndSetCookie = (res, userId) => {
-    // S'assurer que userId est une chaîne de caractères
-    const userIdStr = userId.toString();
-    
-    console.log("Generating token for user ID:", userIdStr);
-    
-    // Inclure l'ID utilisateur sous plusieurs clés pour assurer la compatibilité
-    const token = jwt.sign({ 
-        userId: userIdStr,
-        _id: userIdStr,
-        id: userIdStr
-    }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
         expiresIn: '7d',
     });
 
@@ -27,5 +18,3 @@ const generateTokenAndSetCookie = (res, userId) => {
 };
 
 module.exports = generateTokenAndSetCookie;  // Exporter la fonction
-
-

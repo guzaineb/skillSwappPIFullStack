@@ -11,8 +11,9 @@ export const EditSkill = () => {
     skillname: '',
     category: '',
     description: '',
-    pricingType: 'free',
-    price: 0,
+
+    pricingType: '',
+    price: '',
     status: '',
     level: '',
     lessons: [{ title: '', content: '', duration: 0 }]

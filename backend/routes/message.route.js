@@ -185,7 +185,3 @@ router.delete('/messages/:messageId', verifyToken, async (req, res) => {
 });
 
 module.exports = router; 
-
-
-
-

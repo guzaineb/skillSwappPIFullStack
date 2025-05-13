@@ -1172,22 +1172,3 @@ const AudioPlayer = ({ audioUrl, isDarkMode }) => {
 };
 
 export default ChatContainer;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

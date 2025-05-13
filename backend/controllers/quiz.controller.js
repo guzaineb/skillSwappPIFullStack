@@ -1,4 +1,43 @@
 const Quiz = require("../models/quiz.model");
+const { sendQuizNotification } = require("../services/twilio.service");
+const User = require("../models/user.model");
+
+const axios = require("axios");
+
+const fetchDefinition = async (term) => {
+  const apiKey = "f6715eb6-7ecb-42e6-92b7-bad84cbc6750"; 
+
+  try {
+    const response = await axios.get(
+      `https://www.dictionaryapi.com/api/v3/references/collegiate/json/${encodeURIComponent(term)}?key=${apiKey}`,
+      {
+        timeout: 5000 // 5 second timeout
+      }
+    );
+
+    // Handle different response formats
+    if (!response.data || response.data.length === 0) {
+      return ["No definition found"];
+    }
+
+    // If the API returns suggestions (misspelled word)
+    if (typeof response.data[0] === 'string') {
+      return [`Did you mean: ${response.data.join(', ')}`];
+    }
+
+    // Extract definitions
+    const defs = response.data[0]?.shortdef || [];
+    return Array.isArray(defs) ? defs : ["No definition available"];
+    
+  } catch (error) {
+    console.error("Dictionary API Error:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    throw new Error("Failed to fetch definition");
+  }
+};
 
 const getAllQuizzes = async (req, res) => {
   try {
@@ -31,25 +70,33 @@ const getQuiz = async (req, res) => {
 
 const createQuiz = async (req, res) => {
   const { creatorEmail, title, questions } = req.body;
+  
   try {
+    // 1. Create the quiz
     const newQuiz = new Quiz({
       creatorEmail,
       title,
       questions,
     });
     await newQuiz.save();
-    res.status(201).json(newQuiz);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating quiz", err: JSON.stringify(error)  });
-  }
-};
 
-const deleteQuiz = async (req, res) => {
-  try {
-    await Quiz.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Quiz deleted successfully" });
+    // 2. Send notification (completely hardcoded)
+    try {
+      await sendQuizNotification(); // No parameters needed now
+      console.log("📨 SMS notification sent successfully");
+    } catch (error) {
+      console.error("⚠️ SMS notification failed:", error.message);
+      // Continue even if SMS fails
+    }
+
+    res.status(201).json(newQuiz);
+    
   } catch (error) {
-    res.status(500).json({ message: "Error deleting quiz" });
+    console.error("❌ Quiz creation error:", error);
+    res.status(500).json({ 
+      message: "Error creating quiz",
+      error: error.message 
+    });
   }
 };
 
@@ -73,6 +120,6 @@ module.exports = {
   getAllStudentQuizzes,
   getQuiz,
   createQuiz,
-  deleteQuiz,
   addQuizAnswer,
+  fetchDefinition
 };

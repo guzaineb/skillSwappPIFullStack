@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
+import { useParams, Link } from "react-router-dom";
 
 function QuizDetails() {
   const { id } = useParams();
@@ -19,10 +18,10 @@ function QuizDetails() {
 
     fetchQuizDetails();
   }, [id]);
+
   return (
     <>
       <div className="main-wrapper">
-       
         {/* Breadcrumb */}
         <div className="breadcrumb-bar breadcrumb-bar-info">
           <div className="container">
@@ -35,10 +34,7 @@ function QuizDetails() {
                       <li className="breadcrumb-item">
                         <a href="index-2.html">Home</a>
                       </li>
-                      <li
-                        className="breadcrumb-item active"
-                        aria-current="page"
-                      >
+                      <li className="breadcrumb-item active" aria-current="page">
                         Quiz Details
                       </li>
                     </ol>
@@ -49,11 +45,11 @@ function QuizDetails() {
           </div>
         </div>
         {/* /Breadcrumb */}
+
         {/* Page Content */}
         <div className="page-content">
           <div className="container">
             <div className="row">
-             
               {/* Student Quiz Details */}
               <div className="col-xl-9 col-lg-9">
                 <div className="settings-widget card-details mb-0">
@@ -61,8 +57,9 @@ function QuizDetails() {
                     <div className="profile-heading">
                       <h3>{quiz ? quiz.title : "Could not find Quiz."}</h3>
                     </div>
-                    {quiz && <div className="checkout-form">
-                      <div>
+                    {quiz && (
+                      <div className="checkout-form">
+                        <div>
                           <h4>Quiz Creator: {quiz.creatorEmail}</h4>
                           <h4>Quiz Questions:</h4>
                           {quiz.questions.map((question, index) => (
@@ -81,13 +78,23 @@ function QuizDetails() {
                           <ul>
                             {quiz.attempts.map((attempt, index) => (
                               <li key={index}>
-                                <strong>{attempt.userEmail}</strong>:
-                                {attempt.answers.reduce((acc, curr, index) => acc + (curr == quiz.questions[index].answer ? 1 : 0), 0)} points
+                                <strong>{attempt.userEmail}</strong>:{" "}
+                                {attempt.answers.reduce(
+                                  (acc, curr, i) =>
+                                    acc +
+                                    (curr === quiz.questions[i].answer ? 1 : 0),
+                                  0
+                                )}{" "}
+                                points
                               </li>
                             ))}
                           </ul>
                         </div>
-                      </div>}
+                        <Link to="/Profile/Quizzes" className="btn btn-primary mt-3">
+                          Back to Quizzes
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -96,7 +103,6 @@ function QuizDetails() {
           </div>
         </div>
         {/* /Page Content */}
-    
       </div>
     </>
   );

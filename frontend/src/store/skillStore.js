@@ -35,17 +35,18 @@ export const useSkillStore = create((set) => ({
     }
   },
 
-  search: async (searchTerm) => {
-    set({ isLoading: true, error: null });
+
+  participateToSkill: async (userId, skillId) => {
     try {
-      const response = await axios.get(`${API_URL}/search`, {
-        params: { searchTerm }
+      const response = await axios.post(`${API_URL}/participate`, {
+        userId,
+        skillId,
       });
-      set({ skills: response.data });
-    } catch (err) {
-      set({ error: err.message });
-    } finally {
-      set({ isLoading: false });
+      console.log('Réponse API participation :', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Erreur API participation :', error.response?.data || error.message);
+      throw error.response?.data || { message: "Erreur inconnue" };
     }
   },
 
@@ -66,14 +67,23 @@ export const useSkillStore = create((set) => ({
   updateSkill: async (id, updatedSkill) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.put(`${API_URL}/skills/update/${id}`, updatedSkill);
+
+      // Assurez-vous que l'URL est correcte
+      const response = await axios.put(`${API_URL}/skills/${id}`, updatedSkill);
+      
+      // Mettre à jour le state avec la compétence mise à jour
       set((state) => ({
-        skills: state.skills.map((skill) =>
+        skills: state.skills.map(skill => 
           skill._id === id ? response.data : skill
-        )
+        ),
+        selectedSkill: response.data
       }));
+      
+      return response.data;
     } catch (err) {
-      set({ error: err.message });
+      const errorMessage = err.response?.data?.message || err.message;
+      set({ error: errorMessage });
+      throw new Error(errorMessage);
     } finally {
       set({ isLoading: false });
     }
@@ -104,4 +114,16 @@ export const useSkillStore = create((set) => ({
       set({ isLoading: false });
     }
   },
+
+
+  findSkillById: async (skillId) => {
+    try {
+      const response = await axios.get(`${API_URL}/${skillId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: "Erreur inconnue" };
+    }
+  }
 }));
+
+

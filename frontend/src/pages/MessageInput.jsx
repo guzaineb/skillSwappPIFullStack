@@ -800,4 +800,3 @@ const MessageInput = ({ isDarkMode }) => {
 };
 
 export default MessageInput;
-

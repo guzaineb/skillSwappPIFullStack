@@ -5,11 +5,22 @@ import { Camera } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
 import {Outlet,Link} from "react-router-dom";
+import { fetchRandomQuote } from '../../services/quote.service';
 
 function DashboardUser() {
   const { user, isUpdatingProfile,isAuthenticated, updateProfile,checkAuth } = useAuthStore();
     const [selectedImg, setSelectedImg] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
+    const [quote, setQuote] = useState({ content: '', author: '' });
+
+    useEffect(() => {
+      const loadQuote = async () => {
+        const newQuote = await fetchRandomQuote();
+        setQuote(newQuote);
+      };
+      loadQuote();
+    }, []);
+
       useEffect(() => {
         const verifyUser = async () => {
           try {
@@ -62,6 +73,35 @@ function DashboardUser() {
               </div>
             </div>
           </div>
+
+ {/* Daily Motivation Quote Section - Add this */}
+ <div className="container mt-3">
+          <div className="row justify-content-center">
+            <div className="col-md-8">
+              <div className="card motivation-card">
+                <div className="card-body text-center">
+                  <h5 className="card-title">Daily Motivation</h5>
+                  <blockquote className="blockquote mb-0">
+                    <p>"{quote.content}"</p>
+                    <footer className="blockquote-footer mt-2">
+                      <cite title="Source Title">{quote.author}</cite>
+                    </footer>
+                  </blockquote>
+                  <button 
+  className="btn btn-sm btn-outline-primary mt-3"
+  onClick={async () => {
+    const newQuote = await fetchRandomQuote();
+    setQuote(newQuote);
+  }}
+>
+  New Quote
+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
           {/* /Breadcrumb */}
           {/* Page Content */}
           <div className="page-content">
@@ -161,7 +201,7 @@ function DashboardUser() {
                   </div>
                 </div>
                 {/* /Sidebar */}
-                <div class="col-xl-9 col-lg-9">	
+                <div className="col-xl-9 col-lg-9">	
  
                      <Outlet/>
  

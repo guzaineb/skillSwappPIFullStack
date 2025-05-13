@@ -21,7 +21,8 @@ export const SkillForm = ({ existingSkill }) => {
     image: '',
     status: '',
     level: '',
-    lessons: [{ title: '', content: '', duration: 0 }]
+
+    lessons: [{ title: '', content: '', duration: '' }]
   });
 
   const validateForm = () => {
@@ -74,7 +75,8 @@ export const SkillForm = ({ existingSkill }) => {
   const addLesson = () => {
     setFormData({
       ...formData,
-      lessons: [...formData.lessons, { title: '', content: '', duration: 0 }]
+
+      lessons: [...formData.lessons, { title: '', content: '', duration: '' }]
     });
   };
 
@@ -296,5 +298,6 @@ export const SkillForm = ({ existingSkill }) => {
     </form>
   );
 };
+
 
 

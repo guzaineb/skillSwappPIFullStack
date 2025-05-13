@@ -4,14 +4,13 @@ const mongoose = require('mongoose');
 const cloudinary = require('../lib/cloudinary');
 const fs = require('fs');
 const { getReceiverSocketId, io } = require('../lib/socket');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require('openai'); // ✅ nouvelle importation
 const config = require('../config/config');
 
-// Configuration OpenAI
-const configuration = new Configuration({
+// ✅ Initialisation d'OpenAI v4
+const openai = new OpenAI({
   apiKey: config.openai.apiKey,
 });
-const openai = new OpenAIApi(configuration);
 
 const getUsersForSidebar = async (req, res) => {
   try {
@@ -185,51 +184,48 @@ const markAsRead = async (req, res) => {
   }
 };
 
-// Fonction pour vérifier le contenu inapproprié
+// ✅ Fonction compatible avec OpenAI v4
 const checkInappropriateContent = async (text) => {
   try {
     console.log('Vérification du contenu via HTTP:', text);
-    
-    // Utiliser OpenAI pour la modération
-    const response = await openai.createModeration({
+
+    const response = await openai.moderations.create({
       input: text,
     });
-    
-    const results = response.data.results[0];
-    
+
+    const results = response.results[0];
+
     console.log('Résultat de la modération:', {
       flagged: results.flagged,
-      categories: results.categories
+      categories: results.categories,
     });
-    
-    // Vérifier si le contenu est flaggé comme inapproprié
+
     if (results.flagged) {
       console.log('Contenu inapproprié détecté:', results.categories);
       return true;
     }
-    
+
     return false;
   } catch (error) {
-    console.error('Erreur lors de l\'analyse du contenu avec IA:', error);
-    
-    // Option de secours: vérification basique par mots-clés
-    const forbiddenWords = ['tuer', 'mort', 'violence', 'haine']; // Ajoutez vos mots interdits ici
+    console.error("Erreur OpenAI, fallback sur détection manuelle:", error);
+
+    const forbiddenWords = ['tuer', 'mort', 'violence', 'haine'];
     const lowerText = text.toLowerCase();
-    
+
     for (const word of forbiddenWords) {
-      if (lowerText.includes(word.toLowerCase())) {
-        console.log('Mot interdit détecté:', word);
+      if (lowerText.includes(word)) {
+        console.log("Mot interdit détecté:", word);
         return true;
       }
     }
-    
+
     return false;
   }
 };
 
-module.exports = { getUsersForSidebar, getMessages, sendMessage, markAsRead };
-
-
-
-
-
+module.exports = {
+  getUsersForSidebar,
+  getMessages,
+  sendMessage,
+  markAsRead
+};
