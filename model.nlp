@@ -1,0 +1,773 @@
+{
+  "settings": {
+    "languages": [
+      "fr"
+    ],
+    "forceNER": true,
+    "tag": "nlp",
+    "threshold": 0.5,
+    "autoLoad": true,
+    "autoSave": true,
+    "modelFileName": "model.nlp",
+    "executeActionsBeforeAnswers": false,
+    "calculateSentiment": true
+  },
+  "nluManager": {
+    "settings": {
+      "tag": "nlu-manager"
+    },
+    "locales": [
+      "fr"
+    ],
+    "languageNames": {},
+    "domainManagers": {
+      "fr": {
+        "settings": {
+          "locale": "fr",
+          "trainByDomain": false,
+          "tag": "domain-manager-fr",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "useStemDict": true
+        },
+        "stemDict": {
+          "bonjour": {
+            "intent": "salutation.hello",
+            "domain": "default"
+          },
+          "salut": {
+            "intent": "salutation.hello",
+            "domain": "default"
+          },
+          "merc": {
+            "intent": "salutation.thanks",
+            "domain": "default"
+          },
+          "au,revoir": {
+            "intent": "salutation.bye",
+            "domain": "default"
+          },
+          "ca,comment,va": {
+            "intent": "salutation.status",
+            "domain": "default"
+          },
+          "apprendr,javascript,je,le,veux": {
+            "intent": "skill.learn",
+            "domain": "default"
+          },
+          "cour,de,je,piano,propos": {
+            "intent": "skill.offer",
+            "domain": "default"
+          },
+          "comment,fonction,skillexchang": {
+            "intent": "info.how",
+            "domain": "default"
+          },
+          "competent,disponibl,quel,sont": {
+            "intent": "skill.available",
+            "domain": "default"
+          },
+          "de,mon,niveau,progress,voir": {
+            "intent": "user.progress",
+            "domain": "default"
+          }
+        },
+        "intentDict": {
+          "salutation.hello": "default",
+          "salutation.thanks": "default",
+          "salutation.bye": "default",
+          "salutation.status": "default",
+          "skill.learn": "default",
+          "skill.offer": "default",
+          "info.how": "default",
+          "skill.available": "default",
+          "user.progress": "default"
+        },
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "bonjour",
+            "intent": "salutation.hello"
+          },
+          {
+            "domain": "default",
+            "utterance": "salut",
+            "intent": "salutation.hello"
+          },
+          {
+            "domain": "default",
+            "utterance": "merci",
+            "intent": "salutation.thanks"
+          },
+          {
+            "domain": "default",
+            "utterance": "au revoir",
+            "intent": "salutation.bye"
+          },
+          {
+            "domain": "default",
+            "utterance": "comment ça va",
+            "intent": "salutation.status"
+          },
+          {
+            "domain": "default",
+            "utterance": "je veux apprendre le javascript",
+            "intent": "skill.learn"
+          },
+          {
+            "domain": "default",
+            "utterance": "je propose des cours de piano",
+            "intent": "skill.offer"
+          },
+          {
+            "domain": "default",
+            "utterance": "comment fonctionne skillExchange",
+            "intent": "info.how"
+          },
+          {
+            "domain": "default",
+            "utterance": "quelles compétences sont disponibles",
+            "intent": "skill.available"
+          },
+          {
+            "domain": "default",
+            "utterance": "voir mon niveau de progression",
+            "intent": "user.progress"
+          }
+        ],
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "locale": "fr",
+              "tag": "nlu-fr",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
+            },
+            "features": {
+              "bonjour": 1,
+              "salut": 1,
+              "merc": 1,
+              "au": 1,
+              "revoir": 1,
+              "comment": 1,
+              "ca": 1,
+              "va": 1,
+              "je": 1,
+              "veux": 1,
+              "apprendr": 1,
+              "le": 1,
+              "javascript": 1,
+              "propos": 1,
+              "de": 1,
+              "cour": 1,
+              "piano": 1,
+              "fonction": 1,
+              "skillexchang": 1,
+              "quel": 1,
+              "competent": 1,
+              "sont": 1,
+              "disponibl": 1,
+              "voir": 1,
+              "mon": 1,
+              "niveau": 1,
+              "progress": 1
+            },
+            "intents": {
+              "salutation.hello": 1,
+              "salutation.thanks": 1,
+              "salutation.bye": 1,
+              "salutation.status": 1,
+              "skill.learn": 1,
+              "skill.offer": 1,
+              "info.how": 1,
+              "skill.available": 1,
+              "user.progress": 1
+            },
+            "intentFeatures": {
+              "salutation.hello": {
+                "bonjour": 1,
+                "salut": 1
+              },
+              "salutation.thanks": {
+                "merc": 1
+              },
+              "salutation.bye": {
+                "au": 1,
+                "revoir": 1
+              },
+              "salutation.status": {
+                "comment": 1,
+                "ca": 1,
+                "va": 1
+              },
+              "skill.learn": {
+                "je": 1,
+                "veux": 1,
+                "apprendr": 1,
+                "le": 1,
+                "javascript": 1
+              },
+              "skill.offer": {
+                "je": 1,
+                "propos": 1,
+                "de": 1,
+                "cour": 1,
+                "piano": 1
+              },
+              "info.how": {
+                "comment": 1,
+                "fonction": 1,
+                "skillexchang": 1
+              },
+              "skill.available": {
+                "quel": 1,
+                "competent": 1,
+                "sont": 1,
+                "disponibl": 1
+              },
+              "user.progress": {
+                "voir": 1,
+                "mon": 1,
+                "niveau": 1,
+                "de": 1,
+                "progress": 1
+              }
+            },
+            "featuresToIntent": {
+              "bonjour": [
+                "salutation.hello"
+              ],
+              "salut": [
+                "salutation.hello"
+              ],
+              "merc": [
+                "salutation.thanks"
+              ],
+              "au": [
+                "salutation.bye"
+              ],
+              "revoir": [
+                "salutation.bye"
+              ],
+              "comment": [
+                "salutation.status",
+                "info.how"
+              ],
+              "ca": [
+                "salutation.status"
+              ],
+              "va": [
+                "salutation.status"
+              ],
+              "je": [
+                "skill.learn",
+                "skill.offer"
+              ],
+              "veux": [
+                "skill.learn"
+              ],
+              "apprendr": [
+                "skill.learn"
+              ],
+              "le": [
+                "skill.learn"
+              ],
+              "javascript": [
+                "skill.learn"
+              ],
+              "propos": [
+                "skill.offer"
+              ],
+              "de": [
+                "skill.offer",
+                "user.progress"
+              ],
+              "cour": [
+                "skill.offer"
+              ],
+              "piano": [
+                "skill.offer"
+              ],
+              "fonction": [
+                "info.how"
+              ],
+              "skillexchang": [
+                "info.how"
+              ],
+              "quel": [
+                "skill.available"
+              ],
+              "competent": [
+                "skill.available"
+              ],
+              "sont": [
+                "skill.available"
+              ],
+              "disponibl": [
+                "skill.available"
+              ],
+              "voir": [
+                "user.progress"
+              ],
+              "mon": [
+                "user.progress"
+              ],
+              "niveau": [
+                "user.progress"
+              ],
+              "progress": [
+                "user.progress"
+              ]
+            },
+            "neuralNetwork": {
+              "settings": {
+                "locale": "fr",
+                "tag": "nlu-fr",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true,
+                "log": true
+              },
+              "features": [
+                "bonjour",
+                "salut",
+                "merc",
+                "au",
+                "revoir",
+                "comment",
+                "ca",
+                "va",
+                "je",
+                "veux",
+                "apprendr",
+                "le",
+                "javascript",
+                "propos",
+                "de",
+                "cour",
+                "piano",
+                "fonction",
+                "skillexchang",
+                "quel",
+                "competent",
+                "sont",
+                "disponibl",
+                "voir",
+                "mon",
+                "niveau",
+                "progress"
+              ],
+              "intents": [
+                "salutation.hello",
+                "salutation.thanks",
+                "salutation.bye",
+                "salutation.status",
+                "skill.learn",
+                "skill.offer",
+                "info.how",
+                "skill.available",
+                "user.progress"
+              ],
+              "perceptrons": [
+                [
+                  9.7884521484375,
+                  9.78989028930664,
+                  -3.8792686462402344,
+                  -2.092583179473877,
+                  -2.092583179473877,
+                  -2.107156753540039,
+                  -1.0545052289962769,
+                  -1.0545052289962769,
+                  -1.2845818996429443,
+                  -0.7334702610969543,
+                  -0.7334702610969543,
+                  -0.7334702610969543,
+                  -0.7334702610969543,
+                  -0.5503739714622498,
+                  -1.2840042114257812,
+                  -0.5503739714622498,
+                  -0.5503739714622498,
+                  -1.0512760877609253,
+                  -1.0512760877609253,
+                  -1.053236484527588,
+                  -1.053236484527588,
+                  -1.053236484527588,
+                  -1.053236484527588,
+                  -0.732925295829773,
+                  -0.732925295829773,
+                  -0.732925295829773,
+                  -0.732925295829773,
+                  4.220007011310649
+                ],
+                [
+                  -1.9013803005218506,
+                  -1.8794001340866089,
+                  11.687715530395508,
+                  -1.0560483932495117,
+                  -1.0560483932495117,
+                  -1.0610941648483276,
+                  -0.5309739112854004,
+                  -0.5309739112854004,
+                  -0.6463155746459961,
+                  -0.36920106410980225,
+                  -0.36920106410980225,
+                  -0.36920106410980225,
+                  -0.36920106410980225,
+                  -0.2769547700881958,
+                  -0.6461894512176514,
+                  -0.2769547700881958,
+                  -0.2769547700881958,
+                  -0.5297914147377014,
+                  -0.5297914147377014,
+                  -0.5304926037788391,
+                  -0.5304926037788391,
+                  -0.5304926037788391,
+                  -0.5304926037788391,
+                  -0.36907580494880676,
+                  -0.36907580494880676,
+                  -0.36907580494880676,
+                  -0.36907580494880676,
+                  2.1232409169474655
+                ],
+                [
+                  -0.9990875124931335,
+                  -0.9919307827949524,
+                  -0.9845365285873413,
+                  6.630435466766357,
+                  6.630435466766357,
+                  -0.6473417282104492,
+                  -0.3283381462097168,
+                  -0.3283381462097168,
+                  -0.4173850119113922,
+                  -0.2264326959848404,
+                  -0.2264326959848404,
+                  -0.2264326959848404,
+                  -0.2264326959848404,
+                  -0.17240820825099945,
+                  -0.407272070646286,
+                  -0.17240820825099945,
+                  -0.17240820825099945,
+                  -0.30694589018821716,
+                  -0.30694589018821716,
+                  -0.3221728801727295,
+                  -0.3221728801727295,
+                  -0.3221728801727295,
+                  -0.3221728801727295,
+                  -0.2200668901205063,
+                  -0.2200668901205063,
+                  -0.2200668901205063,
+                  -0.2200668901205063,
+                  1.0073620050668257
+                ],
+                [
+                  -0.47911718487739563,
+                  -0.4765475392341614,
+                  -0.47384917736053467,
+                  -0.2694678008556366,
+                  -0.2694678008556366,
+                  3.3316450119018555,
+                  5.236847400665283,
+                  5.236847400665283,
+                  -0.3132518529891968,
+                  -0.16182829439640045,
+                  -0.16182829439640045,
+                  -0.16182829439640045,
+                  -0.16182829439640045,
+                  -0.122407466173172,
+                  -0.27444344758987427,
+                  -0.122407466173172,
+                  -0.122407466173172,
+                  -1.9052908420562744,
+                  -1.9052908420562744,
+                  -0.18576282262802124,
+                  -0.18576282262802124,
+                  -0.18576282262802124,
+                  -0.18576282262802124,
+                  -0.1261296570301056,
+                  -0.1261296570301056,
+                  -0.1261296570301056,
+                  -0.1261296570301056,
+                  0.4788924582984332
+                ],
+                [
+                  -0.2966647148132324,
+                  -0.29417550563812256,
+                  -0.29295045137405396,
+                  -0.18816900253295898,
+                  -0.18816900253295898,
+                  -0.2792307734489441,
+                  -0.1066315546631813,
+                  -0.1066315546631813,
+                  2.2076451778411865,
+                  2.9459917545318604,
+                  2.9459917545318604,
+                  2.9459917545318604,
+                  2.9459917545318604,
+                  -0.6932100057601929,
+                  -0.7815096974372864,
+                  -0.6932100057601929,
+                  -0.6932100057601929,
+                  -0.1513437032699585,
+                  -0.1513437032699585,
+                  -0.14797355234622955,
+                  -0.14797355234622955,
+                  -0.14797355234622955,
+                  -0.14797355234622955,
+                  -0.06553619354963303,
+                  -0.06553619354963303,
+                  -0.06553619354963303,
+                  -0.06553619354963303,
+                  0.29399985790587413
+                ],
+                [
+                  -0.221488818526268,
+                  -0.21554459631443024,
+                  -0.2116824835538864,
+                  -0.14738407731056213,
+                  -0.14738407731056213,
+                  -0.24603351950645447,
+                  -0.08317546546459198,
+                  -0.08317546546459198,
+                  2.382883310317993,
+                  -0.6964635252952576,
+                  -0.6964635252952576,
+                  -0.6964635252952576,
+                  -0.6964635252952576,
+                  3.1072025299072266,
+                  2.3729379177093506,
+                  3.1072025299072266,
+                  3.1072025299072266,
+                  -0.1354617327451706,
+                  -0.1354617327451706,
+                  -0.13158786296844482,
+                  -0.13158786296844482,
+                  -0.13158786296844482,
+                  -0.13158786296844482,
+                  -0.6866706013679504,
+                  -0.6866706013679504,
+                  -0.6866706013679504,
+                  -0.6866706013679504,
+                  0.20823389906525178
+                ],
+                [
+                  -0.4851864278316498,
+                  -0.4819905161857605,
+                  -0.4796414375305176,
+                  -0.2905198335647583,
+                  -0.2905198335647583,
+                  3.3303401470184326,
+                  -1.9055358171463013,
+                  -1.9055358171463013,
+                  -0.2049691528081894,
+                  -0.11431495100259781,
+                  -0.11431495100259781,
+                  -0.11431495100259781,
+                  -0.11431495100259781,
+                  -0.07288886606693268,
+                  -0.25471991300582886,
+                  -0.07288886606693268,
+                  -0.07288886606693268,
+                  5.235916614532471,
+                  5.235916614532471,
+                  -0.21233706176280975,
+                  -0.21233706176280975,
+                  -0.21233706176280975,
+                  -0.21233706176280975,
+                  -0.16065557301044464,
+                  -0.16065557301044464,
+                  -0.16065557301044464,
+                  -0.16065557301044464,
+                  0.48208173994848025
+                ],
+                [
+                  -0.4701237678527832,
+                  -0.4669821858406067,
+                  -0.46484267711639404,
+                  -0.2878846824169159,
+                  -0.2878846824169159,
+                  -0.36392202973365784,
+                  -0.18231412768363953,
+                  -0.18231412768363953,
+                  -0.24642357230186462,
+                  -0.1357022076845169,
+                  -0.1357022076845169,
+                  -0.1357022076845169,
+                  -0.1357022076845169,
+                  -0.0881490632891655,
+                  -0.27923718094825745,
+                  -0.0881490632891655,
+                  -0.0881490632891655,
+                  -0.15980923175811768,
+                  -0.15980923175811768,
+                  3.4546353816986084,
+                  3.4546353816986084,
+                  3.4546353816986084,
+                  3.4546353816986084,
+                  -0.16647185385227203,
+                  -0.16647185385227203,
+                  -0.16647185385227203,
+                  -0.16647185385227203,
+                  0.4670017468338592
+                ],
+                [
+                  -0.30460116267204285,
+                  -0.29626792669296265,
+                  -0.29485467076301575,
+                  -0.19804632663726807,
+                  -0.19804632663726807,
+                  -0.2649990916252136,
+                  -0.13964278995990753,
+                  -0.13964278995990753,
+                  -0.7787805795669556,
+                  -0.07964995503425598,
+                  -0.07964995503425598,
+                  -0.07964995503425598,
+                  -0.07964995503425598,
+                  -0.6724332571029663,
+                  2.2206344604492188,
+                  -0.6724332571029663,
+                  -0.6724332571029663,
+                  -0.10561268031597137,
+                  -0.10561268031597137,
+                  -0.11780902743339539,
+                  -0.11780902743339539,
+                  -0.11780902743339539,
+                  -0.11780902743339539,
+                  2.9425406455993652,
+                  2.9425406455993652,
+                  2.9425406455993652,
+                  2.9425406455993652,
+                  0.2948577986980101
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "intentDomains": {},
+    "extraSentences": [
+      [
+        "fr",
+        "bonjour"
+      ],
+      [
+        "fr",
+        "salut"
+      ],
+      [
+        "fr",
+        "merci"
+      ],
+      [
+        "fr",
+        "au revoir"
+      ],
+      [
+        "fr",
+        "comment ça va"
+      ],
+      [
+        "fr",
+        "je veux apprendre le javascript"
+      ],
+      [
+        "fr",
+        "je propose des cours de piano"
+      ],
+      [
+        "fr",
+        "comment fonctionne skillExchange"
+      ],
+      [
+        "fr",
+        "quelles compétences sont disponibles"
+      ],
+      [
+        "fr",
+        "voir mon niveau de progression"
+      ]
+    ]
+  },
+  "ner": {
+    "settings": {
+      "tag": "ner",
+      "entityPreffix": "%",
+      "entitySuffix": "%"
+    },
+    "rules": {}
+  },
+  "nlgManager": {
+    "settings": {
+      "tag": "nlg-manager"
+    },
+    "responses": {
+      "fr": {
+        "salutation.hello": [
+          {
+            "answer": "Bonjour ! Comment puis-je vous aider ?"
+          }
+        ],
+        "salutation.thanks": [
+          {
+            "answer": "Avec plaisir !"
+          }
+        ],
+        "salutation.bye": [
+          {
+            "answer": "À bientôt !"
+          }
+        ],
+        "salutation.status": [
+          {
+            "answer": "Je vais bien, merci !"
+          }
+        ],
+        "skill.learn": [
+          {
+            "answer": "Super ! Nous allons chercher un mentor en JavaScript pour vous."
+          }
+        ],
+        "skill.offer": [
+          {
+            "answer": "Merci pour votre contribution ! Votre offre va être publiée."
+          }
+        ],
+        "info.how": [
+          {
+            "answer": "SkillExchange permet aux utilisateurs d’échanger des compétences gratuitement."
+          }
+        ],
+        "skill.available": [
+          {
+            "answer": "Voici une liste des compétences populaires : JavaScript, Piano, Anglais..."
+          }
+        ],
+        "user.progress": [
+          {
+            "answer": "Vous avez complété 40% de votre parcours d’apprentissage."
+          }
+        ]
+      }
+    }
+  },
+  "actionManager": {
+    "settings": {
+      "tag": "action-manager"
+    },
+    "actions": {}
+  },
+  "slotManager": {}
+}
