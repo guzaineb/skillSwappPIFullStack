@@ -135,7 +135,6 @@ async function addSkillWithLessons(req, res) {
   try {
     const { skillname, description, lessons, pricingType, price, status, level, category, image,  } = req.body;
 
-
     if (!category) {
       return res.status(400).json({ message: 'La catégorie est requise' });
     }
@@ -192,7 +191,6 @@ async function participateToSkill(req, res) {
         return res.status(404).json({ message: 'Utilisateur ou Skill non trouvé' });
       }
   
-
       // ✅ Empêche le créateur de s'inscrire à sa propre skill
       if (skill.creator?.toString() === userId) {
         return res.status(400).json({ message: 'Le créateur ne peut pas participer à sa propre skill' });

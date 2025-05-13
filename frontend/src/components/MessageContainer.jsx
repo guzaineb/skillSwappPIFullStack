@@ -8,7 +8,11 @@ useEffect(() => {
     unsubscribeFromMessages();
   };
 <<<<<<< HEAD
+<<<<<<< HEAD
 }, [selectedUser, subscribeToMessages, unsubscribeFromMessages]);
 =======
 }, [selectedUser, subscribeToMessages, unsubscribeFromMessages]);
 >>>>>>> origin/mimi
+=======
+}, [selectedUser, subscribeToMessages, unsubscribeFromMessages]);
+>>>>>>> origin/tasks

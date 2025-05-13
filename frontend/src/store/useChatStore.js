@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { toast } from "react-toastify";
 import { useAuthStore } from "./authStore";
 
+<<<<<<< HEAD
 // Fonction pour la synthèse vocale
 const speakWarning = (message) => {
   if ('speechSynthesis' in window) {
@@ -26,6 +27,8 @@ const speakWarning = (message) => {
   }
 };
 
+=======
+>>>>>>> origin/tasks
 const API_URL = import.meta.env.MODE === "development"
   ? "http://localhost:5000/api/message"
   : "/api/message";
@@ -58,6 +61,7 @@ export const useChatStore = create((set, get) => ({
     set({ isMessagesLoading: true });
     try {
       const res = await axios.get(`${API_URL}/${userId}`);
+<<<<<<< HEAD
       
       // Assurez-vous que les types de messages sont correctement définis
       const currentUser = useAuthStore.getState().user;
@@ -73,6 +77,9 @@ export const useChatStore = create((set, get) => ({
       });
       
       set({ messages: processedMessages || [] });
+=======
+      set({ messages: res.data || [] });
+>>>>>>> origin/tasks
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to load messages";
       toast.error(msg);
@@ -92,7 +99,11 @@ export const useChatStore = create((set, get) => ({
       return;
     }
 
+<<<<<<< HEAD
     if (!messageData?.content && !messageData?.image && !messageData?.audio && !messageData?.document) {
+=======
+    if (!messageData?.content && !messageData?.image) {
+>>>>>>> origin/tasks
       toast.error("Message cannot be empty");
       return;
     }
@@ -110,14 +121,19 @@ export const useChatStore = create((set, get) => ({
         profilePic: selectedUser.profilePic
       },
       content: messageData.content || "",
+<<<<<<< HEAD
       fileUrl: messageData.image || messageData.audio || messageData.document || "",
       fileType: messageData.image ? "image" : messageData.audio ? "audio" : messageData.document ? "document" : null,
       fileName: messageData.documentName || null,
       messageType: "sender", // Toujours "sender" pour les messages envoyés
+=======
+      image: messageData.image || "",
+>>>>>>> origin/tasks
       createdAt: new Date().toISOString(),
       pending: true
     };
 
+<<<<<<< HEAD
     // Ajouter le message temporaire à l'état
     set(state => ({
       messages: [...state.messages, tempMessage]
@@ -143,6 +159,18 @@ export const useChatStore = create((set, get) => ({
       }
       
       formData.append('messageType', 'sender'); // Ajouter le type de message
+=======
+    try {
+      set({ messages: [...messages, tempMessage] });
+
+      const formData = new FormData();
+      if (messageData.content) formData.append('content', messageData.content);
+      if (messageData.image) {
+        const base64Response = await fetch(messageData.image);
+        const blob = await base64Response.blob();
+        formData.append('image', blob, 'image.jpg');
+      }
+>>>>>>> origin/tasks
 
       const res = await axios.post(
         `${API_URL}/send/${selectedUser._id}`,
@@ -161,6 +189,7 @@ export const useChatStore = create((set, get) => ({
         )
       });
 
+<<<<<<< HEAD
       // Vérifier si le socket est connecté avant d'émettre l'événement
       if (socket?.connected) {
         console.log("Emitting sendMessage event with data:", {
@@ -216,6 +245,26 @@ export const useChatStore = create((set, get) => ({
       });
       
       throw error;
+=======
+      if (socket?.connected) {
+        socket.emit("sendMessage", {
+          receiverId: selectedUser._id,
+          content: messageData.content,
+          image: res.data.image // Utiliser l'URL de l'image du serveur
+        });
+      }
+
+    } catch (error) {
+      console.error("Error sending message:", error);
+      set({
+        messages: messages.map(msg =>
+          msg._id === tempMessage._id
+            ? { ...msg, error: true, pending: false }
+            : msg
+        )
+      });
+      toast.error(error.response?.data?.message || "Failed to send message");
+>>>>>>> origin/tasks
     }
   },
 
@@ -223,6 +272,7 @@ export const useChatStore = create((set, get) => ({
     const { messages, selectedUser } = get();
     const currentUser = useAuthStore.getState().user;
 
+<<<<<<< HEAD
     // Assurez-vous que le type de message est correctement défini
     if (!newMessage.messageType) {
       if (newMessage.senderId._id === currentUser._id) {
@@ -232,6 +282,8 @@ export const useChatStore = create((set, get) => ({
       }
     }
 
+=======
+>>>>>>> origin/tasks
     const messageExists = messages.some(msg => msg._id === newMessage._id);
     const isRelevantMessage = selectedUser && (
       (newMessage.senderId._id === currentUser._id && newMessage.receiverId._id === selectedUser._id) ||
@@ -244,7 +296,11 @@ export const useChatStore = create((set, get) => ({
       }));
       
       if (newMessage.senderId._id === selectedUser._id) {
+<<<<<<< HEAD
         toast.info(`Nouveau message de ${selectedUser.fullName}`);
+=======
+        toast.info(`Nouveau message de ${selectedUser.name}`);
+>>>>>>> origin/tasks
       }
     }
   },
@@ -258,6 +314,7 @@ export const useChatStore = create((set, get) => ({
 
     get().unsubscribeFromMessages();
 
+<<<<<<< HEAD
     socket.on("newMessage", (message) => {
       // Forcer le type à "receiver" pour les nouveaux messages
       const processedMessage = {...message, messageType: "receiver"};
@@ -280,11 +337,19 @@ export const useChatStore = create((set, get) => ({
         
         const processedMessage = {...data.message, messageType};
         get().handleNewMessage(processedMessage);
+=======
+    socket.on("newMessage", get().handleNewMessage);
+    socket.on("messageSent", get().handleNewMessage);
+    socket.on("messageReceived", (data) => {
+      if (data.message) {
+        get().handleNewMessage(data.message);
+>>>>>>> origin/tasks
       }
     });
 
     socket.on("messageError", (error) => {
       console.error("Message error:", error);
+<<<<<<< HEAD
       
       // Vérifier si l'erreur est liée à du contenu inapproprié
       if (error.error && error.error.includes('contenu inapproprié')) {
@@ -308,6 +373,9 @@ export const useChatStore = create((set, get) => ({
       set({
         messages: get().messages.filter(msg => !msg.pending)
       });
+=======
+      toast.error(error.message || "Erreur lors de l'envoi du message");
+>>>>>>> origin/tasks
     });
   },
 
@@ -321,6 +389,7 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
+<<<<<<< HEAD
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 
   // Pour ajouter une réaction à un message
@@ -380,3 +449,7 @@ export const useChatStore = create((set, get) => ({
     }
   }
 }));
+=======
+  setSelectedUser: (selectedUser) => set({ selectedUser })
+}));
+>>>>>>> origin/tasks

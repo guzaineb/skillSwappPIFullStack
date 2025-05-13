@@ -35,7 +35,10 @@ export const useSkillStore = create((set) => ({
     }
   },
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/tasks
   participateToSkill: async (userId, skillId) => {
     try {
       const response = await axios.post(`${API_URL}/participate`, {
@@ -67,7 +70,10 @@ export const useSkillStore = create((set) => ({
   updateSkill: async (id, updatedSkill) => {
     set({ isLoading: true, error: null });
     try {
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/tasks
       // Assurez-vous que l'URL est correcte
       const response = await axios.put(`${API_URL}/skills/${id}`, updatedSkill);
       
@@ -115,6 +121,7 @@ export const useSkillStore = create((set) => ({
     }
   },
 
+<<<<<<< HEAD
 
   findSkillById: async (skillId) => {
     try {
@@ -122,8 +129,26 @@ export const useSkillStore = create((set) => ({
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: "Erreur inconnue" };
+=======
+  findSkillById: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.get(`${API_URL}/skills/${id}`);
+      set({ selectedSkill: response.data });
+      return response.data;
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || err.message;
+      set({ error: errorMessage, selectedSkill: null });
+      throw new Error(errorMessage);
+    } finally {
+      set({ isLoading: false });
+>>>>>>> origin/tasks
     }
   }
 }));
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/tasks

@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useSkillStore } from './../../store/skillStore';
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/tasks
 import { Link, useNavigate } from 'react-router-dom';
 
 export const SkillGrid = () => {
@@ -85,7 +88,10 @@ export const SkillGrid = () => {
               </div>
             </div>
           </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/tasks
         ))}
       </div>
     </div>

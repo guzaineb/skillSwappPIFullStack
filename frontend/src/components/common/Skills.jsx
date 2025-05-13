@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import axios from "axios";
+<<<<<<< HEAD
 
 import { useNavigate, Link } from "react-router-dom";
 import useQuery from "../../useQuery";
 import Header from "./Header";
 import Footer from "./Footer";
+=======
+import { useNavigate, Link } from "react-router-dom";
+import useQuery from "../../useQuery";
+>>>>>>> origin/tasks
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -30,11 +35,20 @@ function Profile() {
         `http://localhost:5000/api/auth/profile/${user._id}/unobtained-skills`
       );
       setSkills(response.data);
+<<<<<<< HEAD
 
       setFilteredSkills(response.data);
 
       const uniqueCategories = [
         ...new Set(response.data.map((skill) => skill.category?.title).filter(Boolean)),
+=======
+      setFilteredSkills(response.data);
+
+      const uniqueCategories = [
+        ...new Set(
+          response.data.map((skill) => skill.category?.title).filter(Boolean)
+        ),
+>>>>>>> origin/tasks
       ];
       setCategories(uniqueCategories);
 
@@ -50,23 +64,44 @@ function Profile() {
     try {
       if (skill.pricingType === "free") {
         const response = await axios.post(
+<<<<<<< HEAD
           `http://localhost:5000/api/auth/profile/${userId || user._id}/add-skill`,
           { skillId: skill._id }
         );
         if (response.status === 200) {
 
+=======
+          `http://localhost:5000/api/auth/profile/${
+            userId || user._id
+          }/add-skill`,
+          { skillId: skill._id }
+        );
+        if (response.status === 200) {
+>>>>>>> origin/tasks
           alert("Compétence ajoutée avec succès");
           navigate("/learnskills");
         } else {
           alert("Erreur lors de l'ajout de la compétence.");
         }
       } else {
+<<<<<<< HEAD
         const response = await axios.post(`http://localhost:5000/api/pay/checkout`, {
           skillId: skill._id,
           skillName: skill.skillname,
           skillPrice: skill.price,
           userId: user._id,
         });
+=======
+        const response = await axios.post(
+          `http://localhost:5000/api/pay/checkout`,
+          {
+            skillId: skill._id,
+            skillName: skill.skillname,
+            skillPrice: skill.price,
+            userId: user._id,
+          }
+        );
+>>>>>>> origin/tasks
         if (response.status === 200) {
           window.location.href = response.data;
         } else {
@@ -75,7 +110,13 @@ function Profile() {
       }
     } catch (err) {
       console.error(err);
+<<<<<<< HEAD
       setLocalError("Une erreur est survenue lors de l'ajout de la compétence.");
+=======
+      setLocalError(
+        "Une erreur est survenue lors de l'ajout de la compétence."
+      );
+>>>>>>> origin/tasks
     }
   };
 
@@ -93,7 +134,10 @@ function Profile() {
         await checkAuth();
       } catch (error) {
         console.error("Authentication failed:", error);
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/tasks
         navigate("/login");
         return;
       }
@@ -126,7 +170,10 @@ function Profile() {
 
   return (
     <div className="skill-list-page">
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/tasks
       <main className="container py-5">
         <section className="search-section mb-5 text-center">
           <div className="d-flex flex-column align-items-center gap-3">
@@ -147,7 +194,13 @@ function Profile() {
               <button
                 onClick={() => setSelectedCategory("Tous")}
                 className={`btn btn-sm ${
+<<<<<<< HEAD
                   selectedCategory === "Tous" ? "btn-primary" : "btn-outline-primary"
+=======
+                  selectedCategory === "Tous"
+                    ? "btn-primary"
+                    : "btn-outline-primary"
+>>>>>>> origin/tasks
                 } rounded-pill`}
               >
                 Tous
@@ -157,7 +210,13 @@ function Profile() {
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
                   className={`btn btn-sm ${
+<<<<<<< HEAD
                     selectedCategory === cat ? "btn-primary" : "btn-outline-primary"
+=======
+                    selectedCategory === cat
+                      ? "btn-primary"
+                      : "btn-outline-primary"
+>>>>>>> origin/tasks
                   } rounded-pill`}
                 >
                   {cat}
@@ -196,12 +255,21 @@ function Profile() {
                       <div className="position-relative">
                         <Link to={`/skills/${skill._id}`}>
                           <img
+<<<<<<< HEAD
                             src={skill.image || "/assets/img/default-course.jpg"}
                             alt={skill.skillname}   className="img-fluid w-100 h-200 object-fit-cover"
+=======
+                            src={
+                              skill.image || "/assets/img/default-course.jpg"
+                            }
+                            alt={skill.skillname}
+                            className="img-fluid w-100 h-200 object-fit-cover"
+>>>>>>> origin/tasks
                             style={{ height: "200px", objectFit: "cover" }}
                           />
                         </Link>
                         {skill.pricingType === "free" ? (
+<<<<<<< HEAD
   <button
     className="btn btn-primary mt-auto"
     onClick={() => navigate(`/skills/${skill._id}`)}
@@ -218,6 +286,23 @@ function Profile() {
   </button>
 )}
 
+=======
+                          <button
+                            className="btn btn-primary mt-auto"
+                            onClick={() => navigate(`/skills/${skill._id}`)}
+                          >
+                            Participer
+                          </button>
+                        ) : (
+                          <button
+                            className="btn btn-success mt-auto"
+                            onClick={() => handleParticipation(skill)}
+                            disabled={participatingSkills[skill._id]}
+                          >
+                            Acheter ${skill.price}
+                          </button>
+                        )}
+>>>>>>> origin/tasks
                       </div>
 
                       <div className="card-body d-flex flex-column">
@@ -227,6 +312,7 @@ function Profile() {
                             ? skill.description.substring(0, 100) + "..."
                             : skill.description}
                         </p>
+<<<<<<< HEAD
                         <p className="card-text text-muted small">{skill.category?.title}</p>
 
                         <div className="course-info d-flex align-items-center justify-content-between">
@@ -240,13 +326,49 @@ function Profile() {
   </div>
 </div>
 
+=======
+                        <p className="card-text text-muted small">
+                          {skill.category?.title}
+                        </p>
+
+                        <div className="course-info d-flex align-items-center justify-content-between">
+                          <div className="rating-img d-flex align-items-center gap-2">
+                            <img
+                              src="/assets/img/icon/icon-01.svg"
+                              alt="leçons"
+                            />
+                            <p>
+                              {skill.lessonCount
+                                ? `${skill.lessonCount} Leçons`
+                                : "N/A"}
+                            </p>
+                          </div>
+                          <div className="course-view d-flex align-items-center gap-2">
+                            <img
+                              src="/assets/img/icon/icon-02.svg"
+                              alt="durée"
+                            />
+                            <p>
+                              {skill.totalDuration
+                                ? skill.totalDuration
+                                : "Durée inconnue"}
+                            </p>
+                          </div>
+                        </div>
+>>>>>>> origin/tasks
 
                         <button
                           className="btn btn-primary mt-auto"
                           onClick={() => handleParticipation(skill)}
                           disabled={participatingSkills[skill._id]}
                         >
+<<<<<<< HEAD
                           {participatingSkills[skill._id] ? "Inscrit" : "Participer"}
+=======
+                          {participatingSkills[skill._id]
+                            ? "Inscrit"
+                            : "Participer"}
+>>>>>>> origin/tasks
                         </button>
                       </div>
                     </div>
@@ -257,7 +379,11 @@ function Profile() {
           </>
         )}
       </main>
+<<<<<<< HEAD
    =
+=======
+      =
+>>>>>>> origin/tasks
     </div>
   );
 }

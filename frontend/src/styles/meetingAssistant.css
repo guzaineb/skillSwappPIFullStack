@@ -1,0 +1,262 @@
+.meeting-assistant {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  width: 350px;
+  max-height: 70vh;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.assistant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #4299e1;
+  color: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.assistant-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.assistant-content {
+  padding: 15px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.assistant-section {
+  margin-bottom: 20px;
+}
+
+.assistant-intro {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #ebf8ff;
+  border-radius: 5px;
+  border-left: 3px solid #4299e1;
+}
+
+.assistant-intro p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #2c5282;
+}
+
+.assistant-section h4 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  color: #4a5568;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.assistant-section h4 i {
+  margin-right: 8px;
+  color: #4299e1;
+}
+
+.assistant-section ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.assistant-section li {
+  margin-bottom: 12px;
+  line-height: 1.4;
+  font-size: 0.95rem;
+  color: #2d3748;
+}
+
+.key-points-list li {
+  position: relative;
+  padding-left: 5px;
+  border-left: 2px solid #4299e1;
+}
+
+.questions-list li {
+  position: relative;
+  padding-left: 5px;
+  border-left: 2px solid #ed8936;
+}
+
+.actions-list li {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.action-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 5px;
+}
+
+.action-item input[type="checkbox"] {
+  margin-right: 8px;
+  margin-top: 3px;
+}
+
+.action-item label {
+  flex: 1;
+  cursor: pointer;
+}
+
+.assistant-footer {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.assistant-note {
+  font-size: 0.85rem;
+  color: #718096;
+  font-style: italic;
+  margin: 0;
+}
+
+.assistant-note i {
+  margin-right: 5px;
+  color: #4299e1;
+}
+
+.empty-message {
+  color: #a0aec0;
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 5px 0;
+}
+
+.assistant-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #4a5568;
+}
+
+.assistant-loading .spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(66, 153, 225, 0.2);
+  border-radius: 50%;
+  border-top-color: #4299e1;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.assistant-loading p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Styles pour les boutons de contrôle de l'assistant */
+.assistant-toggle {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.assistant-toggle:hover {
+  background-color: #3182ce;
+  transform: scale(1.05);
+}
+
+.assistant-toggle i {
+  font-size: 1.2rem;
+}
+
+/* Animation d'entrée et de sortie */
+.meeting-assistant-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.meeting-assistant-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.meeting-assistant-exit {
+  opacity: 1;
+}
+
+.meeting-assistant-exit-active {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .meeting-assistant {
+    width: 100%;
+    max-width: 100%;
+    height: 50vh;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .assistant-toggle {
+    bottom: 80px;
+    top: auto;
+    right: 20px;
+  }
+}

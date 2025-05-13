@@ -1,11 +1,16 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import { X, Phone, Video, MoreVertical, Info, Star, Archive } from "lucide-react";
+=======
+import { X } from "lucide-react";
+>>>>>>> origin/tasks
 import { useAuthStore } from "../store/authStore";
 import { useChatStore } from "../store/useChatStore";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
+<<<<<<< HEAD
   const [showOptions, setShowOptions] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [lastSeen, setLastSeen] = useState("Today at 12:45 PM");
@@ -47,6 +52,18 @@ const ChatHeader = () => {
                 border: isDarkMode ? "2px solid #2d3748" : "2px solid #f8f9fa"
               }}
             >
+=======
+
+  if (!selectedUser) return null;
+
+  return (
+    <div className="border-bottom bg-white">
+      <div className="d-flex justify-content-between align-items-center p-3">
+        <div className="d-flex align-items-center gap-3">
+          {/* Avatar */}
+          <div className="avatar">
+            <div className="rounded-circle overflow-hidden" style={{ width: "40px", height: "40px" }}>
+>>>>>>> origin/tasks
               <img
                 src={selectedUser.profilePic || "/avatar.png"}
                 alt={selectedUser.fullName || selectedUser.name || "User"}
@@ -57,6 +74,7 @@ const ChatHeader = () => {
                 }}
               />
             </div>
+<<<<<<< HEAD
             {isOnline && (
               <span 
                 className="position-absolute bottom-0 end-0 rounded-circle border-2"
@@ -270,8 +288,40 @@ const ChatHeader = () => {
           100% { opacity: 0; }
         }
       `}</style>
+=======
+          </div>
+
+          {/* User info */}
+          <div>
+            <h6 className="mb-0">{selectedUser.fullName || selectedUser.name || "Anonymous"}</h6>
+            <small className="text-muted">
+              {onlineUsers?.includes(selectedUser._id) ? (
+                <span className="text-success">Online</span>
+              ) : (
+                <span className="text-muted">Offline</span>
+              )}
+            </small>
+          </div>
+        </div>
+
+        {/* Close button */}
+        <button
+          onClick={() => setSelectedUser(null)}
+          className="btn btn-link text-muted p-0"
+        >
+          <X size={20} />
+        </button>
+      </div>
+>>>>>>> origin/tasks
     </div>
   );
 };
 
+<<<<<<< HEAD
 export default ChatHeader;
+=======
+export default ChatHeader;
+
+
+
+>>>>>>> origin/tasks

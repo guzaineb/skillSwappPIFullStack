@@ -5,6 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { io } from "socket.io-client";
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/tasks
 const API_URL = import.meta.env.MODE === "development" 
   ? "http://localhost:5000/api/auth" 
   : "/api/auth";

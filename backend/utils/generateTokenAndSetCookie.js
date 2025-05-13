@@ -1,4 +1,3 @@
-
 const jwt = require('jsonwebtoken');  // Importation de jwt
 
 const generateTokenAndSetCookie = (res, userId) => {

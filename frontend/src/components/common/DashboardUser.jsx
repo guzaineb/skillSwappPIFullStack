@@ -5,12 +5,16 @@ import { Camera } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
 import {Outlet,Link} from "react-router-dom";
+<<<<<<< HEAD
 import { fetchRandomQuote } from '../../services/quote.service';
+=======
+>>>>>>> origin/tasks
 
 function DashboardUser() {
   const { user, isUpdatingProfile,isAuthenticated, updateProfile,checkAuth } = useAuthStore();
     const [selectedImg, setSelectedImg] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
+<<<<<<< HEAD
     const [quote, setQuote] = useState({ content: '', author: '' });
 
     useEffect(() => {
@@ -21,6 +25,8 @@ function DashboardUser() {
       loadQuote();
     }, []);
 
+=======
+>>>>>>> origin/tasks
       useEffect(() => {
         const verifyUser = async () => {
           try {
@@ -73,6 +79,7 @@ function DashboardUser() {
               </div>
             </div>
           </div>
+<<<<<<< HEAD
 
  {/* Daily Motivation Quote Section - Add this */}
  <div className="container mt-3">
@@ -102,6 +109,8 @@ function DashboardUser() {
           </div>
         </div>
 
+=======
+>>>>>>> origin/tasks
           {/* /Breadcrumb */}
           {/* Page Content */}
           <div className="page-content">
@@ -154,6 +163,16 @@ function DashboardUser() {
                        Skill List
                          </Link>
                        </li>
+<<<<<<< HEAD
+=======
+                       <li className="nav-item ">
+                         
+                         <Link className="nav-link" to="/Profile1/mytasks">
+                       <i className="bx bxs-user"/>
+                       My Tasks
+                         </Link>
+                       </li>
+>>>>>>> origin/tasks
                         <li className="nav-item ">
                          
                           <Link className="nav-link" to="/Profile1/profile2">

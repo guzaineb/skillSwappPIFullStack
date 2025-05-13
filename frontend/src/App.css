@@ -19,4 +19,11 @@
 .navbar .navbar-nav .nav-item .nav-link {
   padding: 0.25rem 0.5rem; /* Réduit l'espacement des éléments */
   font-size: 0.875rem; /* Réduit la taille de la police des éléments du menu */
+<<<<<<< HEAD
 }
+=======
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+>>>>>>> origin/tasks

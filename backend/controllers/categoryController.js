@@ -22,7 +22,6 @@ const upload = multer({ storage });
 module.exports = upload;
 
 
-
 // Add a new category with an image
 async function addCategory(req, res) {
     try {

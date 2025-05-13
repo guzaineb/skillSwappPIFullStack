@@ -64,9 +64,22 @@ const CreatePost = ({ onPostCreated }) => {
       console.log('Submitting post with text:', postText);
       console.log('Image attached:', image ? image.name : 'No image');
 
+<<<<<<< HEAD
       const response = await axios.post('http://localhost:5000/api/post/create', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
+=======
+      // Récupérer le token depuis les cookies ou localStorage
+      const token = document.cookie.split('; ').find(row => row.startsWith('token=') || row.startsWith('jwt='))?.split('=')[1]
+        || localStorage.getItem('authToken');
+
+      console.log('Token disponible pour la requête:', token ? 'Oui' : 'Non');
+
+      const response = await axios.post('http://localhost:5000/api/post/create', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': token ? `Bearer ${token}` : ''
+>>>>>>> origin/tasks
         },
         withCredentials: true
       });

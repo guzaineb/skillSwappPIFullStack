@@ -38,7 +38,10 @@ export default function ProfileIcon() {
 
   return (
     <div className="nav-item user-nav">
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/tasks
       <a
         href="#"
         className="dropdown-toggle"
@@ -62,7 +65,10 @@ export default function ProfileIcon() {
         <a className="dropdown-item" href="/Profile">
           <i className="feather-star me-1" /> Edit Profile
         </a>
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/tasks
         <a className="dropdown-item" href="/posts">
           <i className="feather-file-text me-1" /> Posts
         </a>

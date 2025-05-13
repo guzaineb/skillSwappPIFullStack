@@ -10,6 +10,7 @@ export default function CreateQuiz() {
     },
   ]);
   const [title, setTitle] = useState("");
+<<<<<<< HEAD
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -58,18 +59,30 @@ export default function CreateQuiz() {
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+=======
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+>>>>>>> origin/tasks
     const quizData = {
       creatorEmail: "test@test.com",
       title,
       questions,
     };
+<<<<<<< HEAD
     
     try {
       const response = await axios.post(
+=======
+    let response;
+    try {
+      response = await axios.post(
+>>>>>>> origin/tasks
         "http://localhost:5000/api/quiz",
         quizData
       );
       if (response.status === 201) {
+<<<<<<< HEAD
         window.location.href = "/QuizDetails/" + response.data._id;
       }
     } catch (error) {
@@ -78,6 +91,18 @@ export default function CreateQuiz() {
     } finally {
       setIsSubmitting(false);
     }
+=======
+        console.log("Quiz created successfully!");
+      } else {
+        console.error("Error creating quiz:", response.statusText);
+        return;
+      }
+    } catch (error) {
+      console.error("Caught Error creating quiz:", error);
+      return;
+    }
+    window.location.href = "/QuizDetails/" + response.data._id;
+>>>>>>> origin/tasks
   };
 
   return (
@@ -95,7 +120,14 @@ export default function CreateQuiz() {
                       <li className="breadcrumb-item">
                         <a href="index-2.html">Home</a>
                       </li>
+<<<<<<< HEAD
                       <li className="breadcrumb-item active" aria-current="page">
+=======
+                      <li
+                        className="breadcrumb-item active"
+                        aria-current="page"
+                      >
+>>>>>>> origin/tasks
                         Create Quiz
                       </li>
                     </ol>
@@ -106,11 +138,18 @@ export default function CreateQuiz() {
           </div>
         </div>
         {/* /Breadcrumb */}
+<<<<<<< HEAD
         
+=======
+>>>>>>> origin/tasks
         {/* Page Content */}
         <div className="page-content">
           <div className="container">
             <div className="row">
+<<<<<<< HEAD
+=======
+           
+>>>>>>> origin/tasks
               <div className="col-xl-9 col-lg-9">
                 <div className="settings-widget card-details">
                   <div className="settings-menu p-0">
@@ -156,10 +195,15 @@ export default function CreateQuiz() {
                             className="form-control"
                             name="title"
                             placeholder="Enter quiz title"
+<<<<<<< HEAD
                             required
                           />
                         </div>
                         
+=======
+                          />
+                        </div>
+>>>>>>> origin/tasks
                         {questions.map((question, index) => (
                           <div key={index} className="form-group">
                             <label>Question {index + 1}</label>
@@ -174,14 +218,21 @@ export default function CreateQuiz() {
                                 newQuestions[index].question = e.target.value;
                                 setQuestions(newQuestions);
                               }}
+<<<<<<< HEAD
                               required
+=======
+>>>>>>> origin/tasks
                             />
                             <label>Options</label>
                             {question.options.map((option, i) => (
                               <input
                                 key={`question${index}option${i}`}
                                 type="text"
+<<<<<<< HEAD
                                 className="form-control mt-2"
+=======
+                                className="form-control"
+>>>>>>> origin/tasks
                                 name={`option${i}`}
                                 placeholder={`Option ${i + 1}`}
                                 value={option}
@@ -191,10 +242,16 @@ export default function CreateQuiz() {
                                     e.target.value;
                                   setQuestions(newQuestions);
                                 }}
+<<<<<<< HEAD
                                 required
                               />
                             ))}
                             <label className="mt-2">Answer</label>
+=======
+                              />
+                            ))}
+                            <label>Answer</label>
+>>>>>>> origin/tasks
                             <input
                               type="text"
                               className="form-control"
@@ -206,11 +263,15 @@ export default function CreateQuiz() {
                                 newQuestions[index].answer = e.target.value;
                                 setQuestions(newQuestions);
                               }}
+<<<<<<< HEAD
                               required
+=======
+>>>>>>> origin/tasks
                             />
                           </div>
                         ))}
 
+<<<<<<< HEAD
                         <div className="d-flex gap-2 mt-4">
                           <button
                             type="submit"
@@ -236,6 +297,15 @@ export default function CreateQuiz() {
                             )}
                           </button>
                         </div>
+=======
+                        <button
+                          type="submit"
+                          className="btn btn-primary mt-3"
+                          onClick={onSubmit}
+                        >
+                          Submit
+                        </button>
+>>>>>>> origin/tasks
                       </form>
                     </div>
                   </div>
@@ -244,7 +314,15 @@ export default function CreateQuiz() {
             </div>
           </div>
         </div>
+<<<<<<< HEAD
       </div>
     </>
   );
 }
+=======
+       
+      </div>
+    </>
+  );
+}
+>>>>>>> origin/tasks
