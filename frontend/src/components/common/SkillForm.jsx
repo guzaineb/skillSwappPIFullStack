@@ -21,10 +21,6 @@ export const SkillForm = ({ existingSkill }) => {
     image: '',
     status: '',
     level: '',
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
     lessons: [{ title: '', content: '', duration: '' }]
   });
 
@@ -78,10 +74,6 @@ export const SkillForm = ({ existingSkill }) => {
   const addLesson = () => {
     setFormData({
       ...formData,
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
       lessons: [...formData.lessons, { title: '', content: '', duration: '' }]
     });
   };
@@ -304,6 +296,3 @@ export const SkillForm = ({ existingSkill }) => {
     </form>
   );
 };
-
-
-

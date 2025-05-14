@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 
-const { upload } = require("../middleware/uploadMiddleware");
+const {upload} = require("../middleware/uploadMiddleware");
 const verifyToken = require("../middleware/verifyToken");
 
 // Middleware pour vérifier le rôle admin
@@ -32,3 +32,4 @@ router.get(
 
 
 module.exports = router;
+

@@ -10,10 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
     "@radix-ui/react-progress": "^1.1.4",
     "@radix-ui/react-slot": "^1.2.0",
     "aos": "^2.3.4",
@@ -21,16 +17,14 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.7.3",
+    "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.479.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-feather": "^2.0.10",
     "react-hot-toast": "^2.5.2",
-<<<<<<< HEAD
-=======
     "react-icons": "^5.5.0",
->>>>>>> origin/tasks
     "react-loading-skeleton": "^3.5.0",
     "react-owl-carousel": "^2.3.3",
     "react-qr-code": "^2.0.15",
@@ -46,10 +40,6 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
     "@eslint/js": "^9.21.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
@@ -61,10 +51,6 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "postcss": "^8.5.3",
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
     "tailwindcss": "^4.1.5",
     "vite": "^6.2.0"
   }

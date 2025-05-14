@@ -25,10 +25,7 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/tasks
   optimizeDeps: {
     include: ['qrcode.react'],
     exclude: [] // Vous pouvez ajouter des exclusions si nécessaire

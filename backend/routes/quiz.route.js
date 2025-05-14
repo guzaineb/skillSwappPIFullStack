@@ -139,6 +139,4 @@ router.get('/quote/zen', async (req, res) => {
 });
 
 
-
-
 module.exports = router;

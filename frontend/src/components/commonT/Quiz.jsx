@@ -15,7 +15,6 @@ function QuizDetails() {
   ];
 
   const [quizAnswered, setQuizAnswered] = useState(false);
-<<<<<<< HEAD
   const [definition, setDefinition] = useState([]);
   const [loadingDef, setLoadingDef] = useState(false);
 
@@ -39,24 +38,12 @@ const isAnswerSelected = answers[currentQuestionIndex] !== undefined;
     refs.forEach(ref => ref.current.checked = false);
 
     // If not the last question, move to the next one
-=======
-
-  const submitAnswers = async () => {
-    // Réinitialisation des réponses sélectionnées
-    refs.forEach(ref => ref.current.checked = false);
-
-    // Si ce n'est pas la dernière question, passer à la suivante
->>>>>>> origin/tasks
     if (currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       return;
     }
 
-<<<<<<< HEAD
     // Submit answers once all questions are answered
-=======
-    // Soumettre les réponses une fois toutes les questions répondues
->>>>>>> origin/tasks
     try {
       const response = await axios.post(
         `http://localhost:5000/api/quiz/${id}/answers`,
@@ -118,10 +105,6 @@ const isAnswerSelected = answers[currentQuestionIndex] !== undefined;
         <div className="page-content">
           <div className="container">
             <div className="row">
-<<<<<<< HEAD
-=======
-            
->>>>>>> origin/tasks
               {/* Student Quiz Details */}
               <div className="col-xl-9 col-lg-9">
                 <div className="settings-widget card-details mb-0">
@@ -139,7 +122,6 @@ const isAnswerSelected = answers[currentQuestionIndex] !== undefined;
                     ) : quiz && (
                       <div className="checkout-form">
                         <h2>Question {currentQuestionIndex + 1}</h2>
-<<<<<<< HEAD
                         <h4>{quiz.questions[currentQuestionIndex]?.question}</h4> {/* Ensure correct property here */}
                         <button
                           onClick={() => {
@@ -155,11 +137,6 @@ const isAnswerSelected = answers[currentQuestionIndex] !== undefined;
                         </button>
                         <div className="form-group">
                           {quiz.questions[currentQuestionIndex]?.options.map((option, index) => (
-=======
-                        <h4>{quiz.questions[currentQuestionIndex].question}</h4>
-                        <div className="form-group">
-                          {quiz.questions[currentQuestionIndex].options.map((option, index) => (
->>>>>>> origin/tasks
                             <div key={index} className="form-check">
                               <input
                                 ref={refs[index]}
@@ -176,7 +153,6 @@ const isAnswerSelected = answers[currentQuestionIndex] !== undefined;
                             </div>
                           ))}
                         </div>
-<<<<<<< HEAD
                         <div className="d-flex flex-column align-items-start gap-2 mb-2">
  <button
                           className="btn btn-success mb-2"
@@ -207,10 +183,6 @@ const isAnswerSelected = answers[currentQuestionIndex] !== undefined;
   </button>
 </div>
                      </div>
-=======
-                        <button onClick={submitAnswers}>Next Question</button>
-                      </div>
->>>>>>> origin/tasks
                     )}
                   </div>
                 </div>
@@ -220,17 +192,9 @@ const isAnswerSelected = answers[currentQuestionIndex] !== undefined;
           </div>
         </div>
         {/* /Page Content */}
-<<<<<<< HEAD
-=======
-       
->>>>>>> origin/tasks
       </div>
     </>
   );
 }
 
-<<<<<<< HEAD
 export default QuizDetails;
-=======
-export default QuizDetails;
->>>>>>> origin/tasks

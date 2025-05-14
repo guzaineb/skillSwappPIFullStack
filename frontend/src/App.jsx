@@ -2,10 +2,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./store/authStore";
-<<<<<<< HEAD
+import Cookies from 'js-cookie';
 
-=======
->>>>>>> origin/tasks
 import Header from "./components/common/Header";
 import Signin from "./components/common/Signin";
 import Signup from "./components/common/Signup";
@@ -28,26 +26,17 @@ import AddCategory from "./components/common/category/AddCategory";
 import Categories from "./components/common/category/Categories";
 import UpdateCategory from "./components/common/category/UpdateCategory";
 import SkillList from "./components/common/SkillList";
-<<<<<<< HEAD
 import { SkillGrid } from './components/common/SkillGrid';
 import { SkillForm } from './components/common/SkillForm';
 import { EditSkill } from './components/common/EditSkill';
 
-=======
-import { SkillGrid } from "./components/common/SkillGrid";
-import { SkillForm } from "./components/common/SkillForm";
-import { EditSkill } from "./components/common/EditSkill";
->>>>>>> origin/tasks
 // Import pour les composants "T"
 import ProfileT from "./components/commonT/ProfileT";
 import CreateQuiz from "./components/commonT/CreateQuiz";
 import CoursDetails from "./components/commonT/CoursDetails";
 import Question from "./components/commonT/Question";
 import Quizzes from "./components/commonT/Quizzes";
-<<<<<<< HEAD
 import Quiz from "./components/commonT/Quiz";
-=======
->>>>>>> origin/tasks
 import QuizDetails from "./components/commonT/QuizDetails";
 import Cours from "./components/commonT/Cours";
 import Logout from "./components/commonT/Logout";
@@ -59,55 +48,37 @@ import StudentsBySkill from "./components/common/list/ListLEarner";
 import EducatorsByCategory from "./components/common/list/ListEducator";
 import SkillReader from "./components/common/SkillReader";
 import SkillDetail from "./components/common/SkillDetail";
-<<<<<<< HEAD
 import SkillProgress from './components/common/SkillProgress';
 // Import pour les composants de posts et notifications
 import PostsPage from './pages/PostsPage';
 import NotificationList from './components/common/NotificationList';
-=======
-import SkillProgress from "./components/common/SkillProgress";
-// Import pour les composants de posts et notifications
-import PostsPage from "./pages/PostsPage";
-import NotificationList from "./components/common/NotificationList";
->>>>>>> origin/tasks
 //Import pour les composants "A"
 import DashboardA from "./components/common/DashboardA";
 import ProfileA from "./components/common/ProfileA";
 import Settings from "./components/common/Settings";
 import Notification from "./components/common/Notification";
 import LinkedAccounts from "./components/common/LinkedAccounts";
-<<<<<<< HEAD
 import CreateQuizAI from "./components/commonT/CreateQuizAI";
 
-// Dans votre configuration de routes
-<Route path="/skills/:skillId/progress" element={<SkillProgress />} />
-=======
-// Importez les nouveaux composants de meeting
+// Import pour les composants de meeting
 import MeetingHome from "./pages/MeetingHome";
 import MeetingRoom from "./pages/MeetingRoom";
 import MeetingErrorBoundary from "./components/common/MeetingErrorBoundary";
 import "./styles/meeting-error.css";
 
+// Import pour les composants de tâches
 import Tasks from "./components/common/Tasks";
 import TaskApply from "./components/common/TaskApply";
 import TaskCreate from "./components/common/TaskCreate";
 import MyTasks from "./components/common/MyTasks";
 import TaskDetail from "./components/common/TaskDetail";
 
-// Dans votre configuration de routes
-<Route path="/skills/:skillId/progress" element={<SkillProgress />} />;
->>>>>>> origin/tasks
 function App() {
   const socket = useAuthStore((state) => state.socket);
-
   const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     if (socket && user?._id) {
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
       socket.emit("addUser", user._id);
     }
   }, [socket, user]);
@@ -119,20 +90,12 @@ function App() {
   useEffect(() => {
     if (!socket) return;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
     // Écouter l'événement "onlineUsers"
     socket.on("onlineUsers", (users) => {
       setOnlineUsers(users);
     });
 
     return () => {
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
       socket.off("onlineUsers");
     };
   }, [socket, setOnlineUsers]);
@@ -172,59 +135,24 @@ function App() {
 
   return (
     <>
-<<<<<<< HEAD
-
       <Routes>
         <Route path="/Profile" element={<DashboardInterface />}>{/* Educator */}
-=======
-      <Routes>
-        <Route path="/Profile" element={<DashboardInterface />}>
-          {/* Educator */}
->>>>>>> origin/tasks
           <Route index element={<Profile />} />
           <Route path="AddCategory" element={<AddCategory />} />
           <Route path="update-password" element={<UpdatePassword />} />
           <Route path="skills/new" element={<SkillForm />} />
-<<<<<<< HEAD
-
           <Route path="UpdateCategory/:id" element={<UpdateCategory />} />
           <Route path="skills" element={<SkillGrid />} />
           <Route path="CreateQuiz" element={<CreateQuiz />} />
-<Route path="CreateQuizAI" element={
-  <CreateQuizAI onQuizGenerated={(quizData) => {
-    console.log("Generated Quiz:", quizData);
-    // Here you can add logic to save the quiz or navigate to another page
-  }} />
-} />
-
-=======
-          <Route path="UpdateCategory/:id" element={<UpdateCategory />} />
-          <Route path="skills" element={<SkillGrid />} />
-          <Route path="CreateQuiz" element={<CreateQuiz />} />
->>>>>>> origin/tasks
+          <Route path="CreateQuizAI" element={
+            <CreateQuizAI onQuizGenerated={(quizData) => {
+              console.log("Generated Quiz:", quizData);
+              // Here you can add logic to save the quiz or navigate to another page
+            }} />
+          } />
           <Route path="Quizzes" element={<Quizzes />} />
           <Route path="Categories" element={<Categories />} />
           <Route path="skill/:skillId/students" element={<StudentsBySkill />} />
-
-<<<<<<< HEAD
-
-          <Route path="posts" element={<PostsPage />} />
-          <Route path="notifications" element={<NotificationList />} />
-          <Route path="Chat" element={<Chat />} />
-
-
-
-
-        </Route>
-        <Route path="/Profile1" element={<DashboardUser />}>{/*learner */}
-          <Route index element={<SkillList />} />
-          <Route path="learnskills" element={<Skills />} />
-          <Route path="profile2" element={<Profile />} />
-          <Route path="update-password" element={<UpdatePassword />} />
-          <Route path="SkillList" element={<SkillList />} />
-          <Route path="Chat" element={<Chat />} />
-
-=======
           <Route path="posts" element={<PostsPage />} />
           <Route path="notifications" element={<NotificationList />} />
           <Route path="Chat" element={<Chat />} />
@@ -238,8 +166,8 @@ function App() {
             }
           />
         </Route>
-        <Route path="/Profile1" element={<DashboardUser />}>
-          {/*learner */}
+
+        <Route path="/Profile1" element={<DashboardUser />}>{/*learner */}
           <Route index element={<SkillList />} />
           <Route path="learnskills" element={<Skills />} />
           <Route path="profile2" element={<Profile />} />
@@ -247,7 +175,6 @@ function App() {
           <Route path="update-password" element={<UpdatePassword />} />
           <Route path="SkillList" element={<SkillList />} />
           <Route path="Chat" element={<Chat />} />
->>>>>>> origin/tasks
           <Route path="skill/:skillId/students" element={<StudentsBySkill />} />
           <Route path="EducatorsByCategory" element={<EducatorsByCategory />} />
           <Route path="skills/edit/:id" element={<EditSkill />} />
@@ -257,17 +184,10 @@ function App() {
           <Route path="chatBot" element={<ChatBotComponent />} />
           <Route path="learnSkill/:skillId" element={<SkillReader />} />
           <Route path="skills/:skillId/progress" element={<SkillProgress />} />
-<<<<<<< HEAD
           <Route path="Quiz/:id" element={<Quiz />} />
-
           <Route path="posts" element={<PostsPage />} />
           <Route path="notifications" element={<NotificationList />} />
-
-=======
           <Route path="meetings" element={<MeetingHome />} />
-          <Route path="posts" element={<PostsPage />} />
-          <Route path="notifications" element={<NotificationList />} />
-
           <Route
             path="meeting/:meetingId"
             element={
@@ -276,7 +196,6 @@ function App() {
               </MeetingErrorBoundary>
             }
           />
->>>>>>> origin/tasks
         </Route>
 
         <Route path="/index" element={<Index />} />
@@ -291,9 +210,6 @@ function App() {
             </RedirectAuthenticatedUser>
           }
         />
-<<<<<<< HEAD
-
-=======
         <Route
           path="/login"
           element={
@@ -302,7 +218,6 @@ function App() {
             </RedirectAuthenticatedUser>
           }
         />
->>>>>>> origin/tasks
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/index1" element={<Index1 />} />
@@ -314,10 +229,6 @@ function App() {
         <Route path="/skills" element={<SkillGrid />} />
         <Route path="/skills/new" element={<SkillForm />} />
         <Route path="/Profile1" element={<Profile1 />} />
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
         <Route path="/skill/:skillId/students" element={<StudentsBySkill />} />
         <Route path="/skills/:id" element={<SkillDetail />} />
         <Route path="/EducatorsByCategory" element={<EducatorsByCategory />} />
@@ -330,28 +241,15 @@ function App() {
         <Route path="/Question" element={<Question />} />
         <Route path="QuizDetails/:id" element={<QuizDetails />} />
         <Route path="/chatBot" element={<ChatBotComponent />} />
-<<<<<<< HEAD
         <Route path="/advanced-chatbot" element={<AdvancedChatBot userId="test_user" />} />
-=======
-        <Route
-          path="/advanced-chatbot"
-          element={<AdvancedChatBot userId="test_user" />}
-        />
->>>>>>> origin/tasks
         <Route path="/chatbot-demo" element={<ChatbotDemo />} />
         <Route path="/admin/chatbot" element={<ChatbotAdmin />} />
 
         <Route path="CoursDetails" element={<CoursDetails />} />
-
         <Route path="/learnSkill/:skillId" element={<SkillReader />} />
-
         <Route path="/skills/:skillId/progress" element={<SkillProgress />} />
-<<<<<<< HEAD
 
-
-
-        /* Admin */
-=======
+        {/* Routes pour les meetings et tasks */}
         <Route path="/meetings" element={<MeetingHome />} />
         <Route
           path="/meetings-direct"
@@ -372,8 +270,6 @@ function App() {
         <Route path="/tasks/:id" element={<TaskDetail />} />
 
         {/* Admin */}
->>>>>>> origin/tasks
-
         <Route path="Dash" element={<DashboardA />} />
         <Route path="ProfileA" element={<ProfileA />} />
         <Route path="settings" element={<Settings />} />
@@ -383,19 +279,9 @@ function App() {
         {/* Routes pour les posts et notifications */}
         <Route path="/posts" element={<PostsPage />} />
         <Route path="/notifications" element={<NotificationList />} />
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
       </Routes>
     </>
   );
 }
 
 export default App;
-<<<<<<< HEAD
-
-=======
-console.log("Token dans localStorage:", localStorage.getItem("authToken"));
-console.log("Token dans cookies:", document.cookie);
->>>>>>> origin/tasks

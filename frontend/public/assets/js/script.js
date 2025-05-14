@@ -5,6 +5,9 @@ Version      : 1.0
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 (function($) {
     "use strict";
 
@@ -23,6 +26,7 @@ Version      : 1.0
 		
 	if($('.toggle-password').length > 0) {
 		$(document).on('click', '.toggle-password', function() {
+<<<<<<< HEAD
 =======
 (function ($) {
 	"use strict";
@@ -43,6 +47,8 @@ Version      : 1.0
 	if ($('.toggle-password').length > 0) {
 		$(document).on('click', '.toggle-password', function () {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 			$(this).toggleClass("feather-eye feather-eye-off");
 			var input = $(".pass-input");
 			if (input.attr("type") == "password") {
@@ -53,6 +59,9 @@ Version      : 1.0
 		});
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	
 	// Sidebar
 	
@@ -94,6 +103,7 @@ Version      : 1.0
 	// Toggle
 	
 	if($('#edit-rating').length > 0) {
+<<<<<<< HEAD
 =======
 
 	// Sidebar
@@ -137,12 +147,17 @@ Version      : 1.0
 
 	if ($('#edit-rating').length > 0) {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		$('#edit-rating').on('click', function () {
 			$('.publish-rate').toggle('1000');
 			$('.stip-grp').toggle('1000');
 		});
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	
 	// JQuery counterUp
 
@@ -157,6 +172,7 @@ Version      : 1.0
 	
 	$('.header-fixed').append('<div class="sidebar-overlay"></div>');
 	$(document).on('click', '#mobile_btn', function() {
+<<<<<<< HEAD
 =======
 
 	// JQuery counterUp
@@ -173,11 +189,14 @@ Version      : 1.0
 	$('.header-fixed').append('<div class="sidebar-overlay"></div>');
 	$(document).on('click', '#mobile_btn', function () {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		$('main-wrapper').toggleClass('slide-nav');
 		$('.sidebar-overlay').toggleClass('opened');
 		$('html').addClass('menu-opened');
 		return false;
 	});
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	$(document).on('click', '.sidebar-overlay', function() {
@@ -185,10 +204,15 @@ Version      : 1.0
 
 	$(document).on('click', '.sidebar-overlay', function () {
 >>>>>>> origin/tasks
+=======
+	
+	$(document).on('click', '.sidebar-overlay', function() {
+>>>>>>> origin/meeting
 		$('html').removeClass('menu-opened');
 		$(this).removeClass('opened');
 		$('main-wrapper').removeClass('slide-nav');
 	});
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	$(document).on('click', '#menu_close', function() {
@@ -196,10 +220,15 @@ Version      : 1.0
 
 	$(document).on('click', '#menu_close', function () {
 >>>>>>> origin/tasks
+=======
+	
+	$(document).on('click', '#menu_close', function() {
+>>>>>>> origin/meeting
 		$('html').removeClass('menu-opened');
 		$('.sidebar-overlay').removeClass('opened');
 		$('main-wrapper').removeClass('slide-nav');
 	});
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	// Select 2
@@ -209,6 +238,11 @@ Version      : 1.0
 	// Select 2
 
 >>>>>>> origin/tasks
+=======
+	
+	// Select 2
+	
+>>>>>>> origin/meeting
 	if ($('.select').length > 0) {
 		$('.select').select2({
 			minimumResultsForSearch: -1,
@@ -216,6 +250,9 @@ Version      : 1.0
 		});
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	
 	// tooltip
 	
@@ -280,6 +317,7 @@ Version      : 1.0
 				1300:{
 					items:5,
 					
+<<<<<<< HEAD
 =======
 
 	// tooltip
@@ -308,10 +346,13 @@ Version      : 1.0
 				},
 				1170: {
 					items: 4
+=======
+>>>>>>> origin/meeting
 				}
 			}
 		});
 	}
+<<<<<<< HEAD
 
 	// Home Three Choose favourite Course from top Category
 
@@ -351,6 +392,8 @@ Version      : 1.0
 		});
 	}
 <<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	
 	// Home Three Most Trending Courses
 
@@ -380,6 +423,7 @@ Version      : 1.0
 				1300:{
 					items:4,
 					
+<<<<<<< HEAD
 =======
 
 	// Home Three Most Trending Courses
@@ -411,12 +455,17 @@ Version      : 1.0
 					items: 4,
 
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 				}
 			}
 		});
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
     // Treand Course
 
 	if($('.owl-carousel.trending-course').length > 0 ){
@@ -492,6 +541,7 @@ Version      : 1.0
 	            	items: 5
 	          	}
 	    	}
+<<<<<<< HEAD
 =======
 	// Treand Course
 
@@ -569,12 +619,17 @@ Version      : 1.0
 				}
 			}
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		});
 	}
 
 	// Leading Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.owl-carousel.leading-slider-five').length > 0 ){
 		var owl = $('.owl-carousel.leading-slider-five');
 	      	owl.owlCarousel({
@@ -632,6 +687,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.owl-carousel.leading-slider-five').length > 0) {
 		var owl = $('.owl-carousel.leading-slider-five');
@@ -691,11 +747,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Best Course Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.best-course-slider').length > 0) {
 		$('.best-course-slider').owlCarousel({
 			loop:true,
@@ -726,6 +787,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.best-course-slider').length > 0) {
 		$('.best-course-slider').owlCarousel({
@@ -758,11 +820,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Feature-instructor-two-slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.feature-instructor-two-slider').length > 0) {
 		$('.feature-instructor-two-slider').owlCarousel({
 			loop:true,
@@ -792,6 +859,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.feature-instructor-two-slider').length > 0) {
 		$('.feature-instructor-two-slider').owlCarousel({
@@ -823,11 +891,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Impressive Section Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.impressive-section-slider').length > 0) {
 		$('.impressive-section-slider').owlCarousel({
 			loop:true,
@@ -857,6 +930,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.impressive-section-slider').length > 0) {
 		$('.impressive-section-slider').owlCarousel({
@@ -888,11 +962,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	//Latest Nwes and Events Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.latest-news-events-slider').length > 0) {
 		$('.latest-news-events-slider').owlCarousel({
 			loop:true,
@@ -922,6 +1001,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.latest-news-events-slider').length > 0) {
 		$('.latest-news-events-slider').owlCarousel({
@@ -953,11 +1033,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Leading Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.owl-carousel.home-five-course').length > 0 ){
 		var owl = $('.owl-carousel.home-five-course');
 			owl.owlCarousel({
@@ -991,6 +1076,7 @@ Version      : 1.0
 					items: 2
 			  	},
 			  	1300: {
+<<<<<<< HEAD
 =======
 	if ($('.owl-carousel.home-five-course').length > 0) {
 		var owl = $('.owl-carousel.home-five-course');
@@ -1026,6 +1112,8 @@ Version      : 1.0
 				},
 				1300: {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 					items: 3
 				}
 			}
@@ -1035,6 +1123,9 @@ Version      : 1.0
 	// Blog Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.owl-carousel.home-five-blog').length > 0 ){
 		var owl = $('.owl-carousel.home-five-blog');
 			owl.owlCarousel({
@@ -1065,6 +1156,7 @@ Version      : 1.0
 					dots:false,
 				},
 				 1170: {
+<<<<<<< HEAD
 =======
 	if ($('.owl-carousel.home-five-blog').length > 0) {
 		var owl = $('.owl-carousel.home-five-blog');
@@ -1097,11 +1189,16 @@ Version      : 1.0
 				},
 				1170: {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 					items: 2
 				},
 				1300: {
 					items: 3
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 			  	}
 			}
 		});
@@ -1110,6 +1207,7 @@ Version      : 1.0
 	// // Testimonial slider 5
 
 	if($('.testimonial-five.lazy').length > 0) {
+<<<<<<< HEAD
 =======
 				}
 			}
@@ -1120,6 +1218,8 @@ Version      : 1.0
 
 	if ($('.testimonial-five.lazy').length > 0) {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		$(".testimonial-five.lazy").slick({
 			lazyLoad: 'ondemand',
 			slidesToShow: 1,
@@ -1129,16 +1229,23 @@ Version      : 1.0
 			speed: 3000,
 			autoplaySpeed: 1800,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			
 =======
 
 >>>>>>> origin/tasks
+=======
+			
+>>>>>>> origin/meeting
 		});
 	}
 
 	// Feature Instructors
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.owl-carousel.instructors-course').length > 0 ){
 		var owl = $('.owl-carousel.instructors-course');
 	      	owl.owlCarousel({
@@ -1219,6 +1326,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.owl-carousel.instructors-course').length > 0) {
 		var owl = $('.owl-carousel.instructors-course');
@@ -1301,11 +1409,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Our Courses Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.our-courses-slider').length > 0) {
 		$('.our-courses-slider').owlCarousel({
 			loop:true,
@@ -1336,6 +1449,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.our-courses-slider').length > 0) {
 		$('.our-courses-slider').owlCarousel({
@@ -1368,11 +1482,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Featured Instructor Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.feature-instructor-slider').length > 0) {
 		$('.feature-instructor-slider').owlCarousel({
 			loop:true,
@@ -1403,6 +1522,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.feature-instructor-slider').length > 0) {
 		$('.feature-instructor-slider').owlCarousel({
@@ -1435,11 +1555,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Testimonial Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.testimonial-slider').length > 0) {
 		$('.testimonial-slider').owlCarousel({
 			loop:true,
@@ -1472,6 +1597,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.testimonial-slider').length > 0) {
 		$('.testimonial-slider').owlCarousel({
@@ -1506,11 +1632,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Latest Blogs Slider
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.latest-blog-slider').length > 0) {
 		$('.latest-blog-slider').owlCarousel({
 			loop:true,
@@ -1541,6 +1672,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.latest-blog-slider').length > 0) {
 		$('.latest-blog-slider').owlCarousel({
@@ -1573,11 +1705,16 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// Features Clinic Four
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.owl-carousel.real-reviews').length > 0) {
 		$('.owl-carousel.real-reviews').owlCarousel({
 			loop:true,
@@ -1604,6 +1741,7 @@ Version      : 1.0
 				}
 			}
 		})	
+<<<<<<< HEAD
 =======
 	if ($('.owl-carousel.real-reviews').length > 0) {
 		$('.owl-carousel.real-reviews').owlCarousel({
@@ -1632,38 +1770,55 @@ Version      : 1.0
 			}
 		})
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 	}
 
 	// They Trusted us Testimonails
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if($('.swiper-testimonial-three').length > 0 ){
 =======
 	if ($('.swiper-testimonial-three').length > 0) {
 >>>>>>> origin/tasks
+=======
+	if($('.swiper-testimonial-three').length > 0 ){
+>>>>>>> origin/meeting
 		var swiper = new Swiper(".swiper-testimonial-three", {
 			effect: "coverflow",
 			loop: false,
 			grabCursor: true,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			center:true,
 =======
 			center: true,
 >>>>>>> origin/tasks
+=======
+			center:true,
+>>>>>>> origin/meeting
 			centeredSlides: true,
 			slidesPerView: "auto",
 			centeredSlides: true,
 			initialSlide: 2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			nav:true,
 =======
 			nav: true,
 >>>>>>> origin/tasks
+=======
+			nav:true,
+>>>>>>> origin/meeting
 			navigation: {
 				prevEl: '.slide-prev-btn',
 				nextEl: '.slide-next-btn',
 				speed: 400,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
  				spaceBetween: 100,
 			},
 			coverflowEffect: {
@@ -1677,6 +1832,7 @@ Version      : 1.0
 			pagination: {
 			el: ".swiper-pagination",
 			clickable: true
+<<<<<<< HEAD
 =======
 				spaceBetween: 100,
 			},
@@ -1692,6 +1848,8 @@ Version      : 1.0
 				el: ".swiper-pagination",
 				clickable: true
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 			}
 		});
 	}
@@ -1699,6 +1857,9 @@ Version      : 1.0
 	// Login Slide
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.owl-carousel.login-slide').length > 0 ){
 		var owl = $('.owl-carousel.login-slide');
 	      	owl.owlCarousel({
@@ -1723,6 +1884,7 @@ Version      : 1.0
 	// Slick testimonial three
 
 	if($('.mentor-testimonial.lazy').length > 0) {
+<<<<<<< HEAD
 =======
 	if ($('.owl-carousel.login-slide').length > 0) {
 		var owl = $('.owl-carousel.login-slide');
@@ -1749,6 +1911,8 @@ Version      : 1.0
 
 	if ($('.mentor-testimonial.lazy').length > 0) {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		$(".mentor-testimonial.lazy").slick({
 			lazyLoad: 'ondemand',
 			infinite: true
@@ -1758,6 +1922,7 @@ Version      : 1.0
 	// Home header
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	$(window).scroll(function(){
 		var sticky = $('.scroll-sticky'),
 		  scroll = $(window).scrollTop();
@@ -1766,21 +1931,32 @@ Version      : 1.0
 		var sticky = $('.scroll-sticky'),
 			scroll = $(window).scrollTop();
 >>>>>>> origin/tasks
+=======
+	$(window).scroll(function(){
+		var sticky = $('.scroll-sticky'),
+		  scroll = $(window).scrollTop();
+>>>>>>> origin/meeting
 
 		if (scroll >= 100) sticky.addClass('add-header-bg');
 		else sticky.removeClass('add-header-bg');
 	});
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	
 	// Timer countdown
 	
 	if($('.countdown-container').length > 0 ){
+<<<<<<< HEAD
 =======
 
 	// Timer countdown
 
 	if ($('.countdown-container').length > 0) {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		const daysEl = document.getElementById("days");
 		const hoursEl = document.getElementById("hours");
 		const minsEl = document.getElementById("mins");
@@ -1812,6 +1988,7 @@ Version      : 1.0
 		setInterval(countdown, 1000);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 	// Circle Progress Bar
 	
@@ -1820,6 +1997,11 @@ Version      : 1.0
 	// Circle Progress Bar
 
 >>>>>>> origin/tasks
+=======
+	
+	// Circle Progress Bar
+	
+>>>>>>> origin/meeting
 	function animateElements() {
 		$('.circle-bar1').each(function () {
 			var elementPos = $(this).offset().top;
@@ -1831,10 +2013,14 @@ Version      : 1.0
 				$(this).find('.circle-graph1').circleProgress({
 					value: percent / 100,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					size : 400,
 =======
 					size: 400,
 >>>>>>> origin/tasks
+=======
+					size : 400,
+>>>>>>> origin/meeting
 					thickness: 40,
 					startAngle: -1.6,
 					fill: {
@@ -1844,6 +2030,9 @@ Version      : 1.0
 			}
 		});
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	}	
 	
 	if($('.circle-bar').length > 0) {
@@ -1871,6 +2060,7 @@ Version      : 1.0
 						$(next).select();
 					} else {
 						if(parent.data('autosubmit')) {
+<<<<<<< HEAD
 =======
 	}
 
@@ -1900,6 +2090,8 @@ Version      : 1.0
 				} else {
 					if (parent.data('autosubmit')) {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 						parent.submit();
 					}
 				}
@@ -1907,16 +2099,22 @@ Version      : 1.0
 		});
 	});
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	
 	$('.digit-group input').on('keyup', function(){
 		var self = $(this);
 		if ( self.val() != '' ) {
+<<<<<<< HEAD
 =======
 
 	$('.digit-group input').on('keyup', function () {
 		var self = $(this);
 		if (self.val() != '') {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 			self.addClass('active');
 		} else {
 			self.removeClass('active');
@@ -1926,20 +2124,27 @@ Version      : 1.0
 	// Fade in scroll
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	if($('.main-wrapper .aos').length > 0) {
 	    AOS.init({
 		  duration: 1200,
 		  once: true,
+<<<<<<< HEAD
 =======
 	if ($('.main-wrapper .aos').length > 0) {
 		AOS.init({
 			duration: 1200,
 			once: true,
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		});
 	}
 
 	// Content div min height set
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	function resizeInnerDiv() {
@@ -1949,6 +2154,11 @@ Version      : 1.0
 	function resizeInnerDiv() {
 		var height = $(window).height();
 >>>>>>> origin/tasks
+=======
+	
+	function resizeInnerDiv() {
+		var height = $(window).height();	
+>>>>>>> origin/meeting
 		var header_height = $(".header").height();
 		var footer_height = $(".footer").height();
 		var setheight = height - header_height;
@@ -1956,6 +2166,9 @@ Version      : 1.0
 		$(".content").css("min-height", trueheight);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	
 	if($('.content').length > 0 ){
 		resizeInnerDiv();
@@ -1963,6 +2176,7 @@ Version      : 1.0
 
 	$(window).resize(function(){
 		if($('.content').length > 0 ){
+<<<<<<< HEAD
 =======
 
 	if ($('.content').length > 0) {
@@ -1972,6 +2186,8 @@ Version      : 1.0
 	$(window).resize(function () {
 		if ($('.content').length > 0) {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 			resizeInnerDiv();
 		}
 	});
@@ -1979,6 +2195,7 @@ Version      : 1.0
 	// Wizard
 
 	$(document).ready(function () {
+<<<<<<< HEAD
 <<<<<<< HEAD
         let progressVal = 0;
         let businessType = 0;
@@ -1988,6 +2205,11 @@ Version      : 1.0
 		let businessType = 0;
 
 >>>>>>> origin/tasks
+=======
+        let progressVal = 0;
+        let businessType = 0;
+      
+>>>>>>> origin/meeting
 		$(".next_btn").click(function () {
 			$(this).parent().parent().parent().next().fadeIn('slow');
 			$(this).parent().parent().parent().css({
@@ -2004,6 +2226,9 @@ Version      : 1.0
 			});
 			progressVal = progressVal - 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 			$('.progress-active').removeClass('progress-active').prev().removeClass('progress-activated').addClass('progress-active'); 
 		});
   	});
@@ -2042,6 +2267,7 @@ Version      : 1.0
 	 // Sidebar Slimscroll
 
 	 if($slimScrolls.length > 0) {
+<<<<<<< HEAD
 =======
 			$('.progress-active').removeClass('progress-active').prev().removeClass('progress-activated').addClass('progress-active');
 		});
@@ -2082,6 +2308,8 @@ Version      : 1.0
 
 	if ($slimScrolls.length > 0) {
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		$slimScrolls.slimScroll({
 			height: 'auto',
 			width: '100%',
@@ -2099,10 +2327,14 @@ Version      : 1.0
 		$('.chat.settings-main .slimScrollDiv').height(wHeight);
 		$('.right-sidebar.video-right-sidebar .slimScrollDiv').height(wHeight - 90);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$(window).resize(function() {
 =======
 		$(window).resize(function () {
 >>>>>>> origin/tasks
+=======
+		$(window).resize(function() {
+>>>>>>> origin/meeting
 			var rHeight = $(window).height();
 			$slimScrolls.height(rHeight);
 			$('.left-sidebar .slimScrollDiv, .sidebar-menu .slimScrollDiv, .sidebar-menu .slimScrollDiv').height(rHeight);
@@ -2115,10 +2347,14 @@ Version      : 1.0
 
 	// Tooltip
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if($('[data-bs-toggle="tooltip"]').length > 0) {
 =======
 	if ($('[data-bs-toggle="tooltip"]').length > 0) {
 >>>>>>> origin/tasks
+=======
+	if($('[data-bs-toggle="tooltip"]').length > 0) {
+>>>>>>> origin/meeting
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 			return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -2128,10 +2364,14 @@ Version      : 1.0
 	// Date Range Picker
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if($('.bookingrange').length > 0) {
 =======
 	if ($('.bookingrange').length > 0) {
 >>>>>>> origin/tasks
+=======
+	if($('.bookingrange').length > 0) {
+>>>>>>> origin/meeting
 		var start = moment().subtract(6, 'days');
 		var end = moment();
 
@@ -2157,10 +2397,14 @@ Version      : 1.0
 
 	//Top Online Contacts
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if($('.top-online-contacts .swiper-container').length > 0 ){
 =======
 	if ($('.top-online-contacts .swiper-container').length > 0) {
 >>>>>>> origin/tasks
+=======
+	if($('.top-online-contacts .swiper-container').length > 0 ){
+>>>>>>> origin/meeting
 		var swiper = new Swiper('.top-online-contacts .swiper-container', {
 			slidesPerView: 5,
 			spaceBetween: 15,
@@ -2185,16 +2429,22 @@ Version      : 1.0
 		$('.chat-search').removeClass('visible-chat');
 	});
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/meeting
 	$(".chat-search .form-control").on("keyup", function() {
 		var value = $(this).val().toLowerCase();
 		$(".chat .chat-body .messages .chats").filter(function() {
 		  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+<<<<<<< HEAD
 =======
 	$(".chat-search .form-control").on("keyup", function () {
 		var value = $(this).val().toLowerCase();
 		$(".chat .chat-body .messages .chats").filter(function () {
 			$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
 >>>>>>> origin/tasks
+=======
+>>>>>>> origin/meeting
 		});
 	});
 
@@ -2205,10 +2455,14 @@ Version      : 1.0
 		}
 	});
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> origin/tasks
+=======
+	
+>>>>>>> origin/meeting
 	$(".left_sides").on('click', function () {
 		if ($(window).width() <= 991) {
 			$('.sidebar-group').removeClass('hide-left-sidebar');
@@ -2224,14 +2478,19 @@ Version      : 1.0
 		if ($(window).width() <= 767) {
 			$('.left-sidebar').addClass('hide-left-sidebar');
 <<<<<<< HEAD
+<<<<<<< HEAD
 				$('.sidebar-menu').addClass('d-none');
 =======
 			$('.sidebar-menu').addClass('d-none');
 >>>>>>> origin/tasks
+=======
+				$('.sidebar-menu').addClass('d-none');
+>>>>>>> origin/meeting
 		}
 	});
 
 	// Date Time Picker
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	if($('.datetimepicker').length > 0) {
@@ -2239,6 +2498,10 @@ Version      : 1.0
 
 	if ($('.datetimepicker').length > 0) {
 >>>>>>> origin/tasks
+=======
+	
+	if($('.datetimepicker').length > 0) {
+>>>>>>> origin/meeting
 		$('.datetimepicker').datetimepicker({
 			format: 'DD-MM-YYYY',
 			icons: {
@@ -2250,8 +2513,12 @@ Version      : 1.0
 		});
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> origin/tasks
+=======
+	
+>>>>>>> origin/meeting
 })(jQuery);

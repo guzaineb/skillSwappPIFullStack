@@ -1,4 +1,4 @@
-var express = require('express');
+const express = require('express');
 const router = express.Router();
 const protectRoute = require('../middleware/protectRoute.js');
 const verifyToken = require('../middleware/verifyToken.js');

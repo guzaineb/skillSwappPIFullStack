@@ -13,7 +13,19 @@ const TaskCreate = () => {
   const { user, isAuthenticated, checkAuth } = useAuthStore();
   const navigate = useNavigate();
 
-  useEffect(() => {checkAuth()}, [])
+  useEffect(() => {    
+    const verifyUser = async () => {
+      try {
+        const result = await checkAuth();
+        console.log("Response from checkAuth:", result); // Debugging log
+      } catch (error) {
+        console.error("Erreur lors de la vérification de l'authentification :", error);
+      }
+    };
+
+    if (!isAuthenticated) { // Check only if user is not authenticated already
+      verifyUser();
+    }}, [isAuthenticated])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,11 +40,6 @@ const TaskCreate = () => {
     }
 
     try {
-      const token =
-        document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("token=") || row.startsWith("jwt="))
-          ?.split("=")[1] || localStorage.getItem("authToken");
       const response = await axios.post(
         "/tasks",
         {
@@ -42,7 +49,7 @@ const TaskCreate = () => {
         },
         {
           headers: {
-            Authorization: token ? `Bearer ${token}` : "",
+            Authorization: "",
           },
           withCredentials: true,
         }

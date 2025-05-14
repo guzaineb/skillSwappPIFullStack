@@ -146,6 +146,22 @@ const Tasks = () => {
           <i className="fas fa-file-alt"></i>
         </div>
         <p style={{ fontSize: "18px", color: "#7f8c8d" }}>No tasks found</p>
+        <Link
+          to="/tasks/create"
+          style={{
+            display: "inline-block",
+            padding: "10px 15px",
+            backgroundColor: "#27ae60",
+            color: "white",
+            textDecoration: "none",
+            borderRadius: "4px",
+            fontWeight: "bold",
+            margin: "10px 0",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          }}
+        >
+          Create Task
+        </Link>
       </div>
     );
   }

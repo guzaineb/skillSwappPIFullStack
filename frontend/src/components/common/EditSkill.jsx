@@ -11,10 +11,6 @@ export const EditSkill = () => {
     skillname: '',
     category: '',
     description: '',
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
     pricingType: '',
     price: '',
     status: '',
@@ -280,5 +276,3 @@ export const EditSkill = () => {
     </div>
   );
 };
-
-

@@ -52,6 +52,50 @@ avatar:{
         type:Number,
         required:true,
     },
+ isBlocked: {
+        type: Boolean,
+        default: false
+    }
+    ,
+    blockedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
+    ,followers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: [],
+        },
+    ],
+    following: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: [],
+        },],
+    likedPosts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post",
+            default: [],
+        },
+    ],
+    link: {
+        type: String,
+        default: "",
+    }, bio: {
+        type: String,
+        default: "",
+    },
+    profileImg: {
+        type: String,
+        default: "",
+    },
+    coverImg: {
+        type: String,
+        default: "",
+    },
 
     profilePic: {
         type: String,

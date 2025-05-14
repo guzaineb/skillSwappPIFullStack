@@ -10,22 +10,11 @@ console.log("Modèle Notification importé:", !!Notification);
 const createPost = async (req, res) => {
 	try {
 		const { text } = req.body;
-<<<<<<< HEAD
 		const userId = req.user.id;
 
 		console.log("Creating post for user ID:", userId);
 
 		if (!userId) {
-=======
-		// Utiliser l'ID utilisateur de manière flexible
-		const userId = req.user.id || req.user._id;
-
-		console.log("Creating post for user ID:", userId);
-		console.log("User object in request:", req.user);
-
-		if (!userId) {
-			console.log("No user ID found in request");
->>>>>>> origin/tasks
 			return res.status(401).json({ error: "User not authenticated" });
 		}
 

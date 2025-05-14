@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
 // SkillList.jsx
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -136,8 +132,4 @@ const SkillList = () => {
   );
 };
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/tasks
 export default SkillList;

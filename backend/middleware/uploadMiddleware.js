@@ -2,7 +2,6 @@ const multer = require("multer");
 const path = require("path");
 
 // Configuration du stockage
-
 const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "../uploads"));
@@ -17,7 +16,6 @@ const diskStorage = multer.diskStorage({
 });
 
 // Filtrage des fichiers
-
 const imageFileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image/")) {
     cb(null, true);
@@ -25,7 +23,6 @@ const imageFileFilter = (req, file, cb) => {
     cb(new Error("Seules les images sont autorisées"), false);
   }
 };
-
 
 const pdfFileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {

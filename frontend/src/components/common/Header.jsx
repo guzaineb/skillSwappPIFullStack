@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from "../../store/authStore";
 import ProfileIcon from './ProfileIcon';
-<<<<<<< HEAD
- // Assuming you have a CSS file for styles
-=======
 import NotificationDropdown from './NotificationDropdown';
 // Assuming you have a CSS file for styles
->>>>>>> origin/tasks
 
 function Header() {
   const { user, isAuthenticated, checkAuth } = useAuthStore();
@@ -64,6 +60,7 @@ function Header() {
                   <li><a className="dropdown-item" href="instructor-dashboard.html">Dashboard</a></li>
                   <li><a className="dropdown-item" href="instructor-profile.html">My Profile</a></li>
                   <li><a className="dropdown-item" href="instructor-course.html">My Course</a></li>
+
                   {/* Add more items as needed */}
                 </ul>
               </li>
@@ -84,20 +81,14 @@ function Header() {
                   Pages
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="pagesDropdown">
-<<<<<<< HEAD
-                  <li><a className="dropdown-item" href="notifications.html">Notification</a></li>
-                  <li><a className="dropdown-item" href="pricing-plan.html">Pricing Plan</a></li>
-                  <li><a className="dropdown-item" href="wishlist.html">Wishlist</a></li>
-                  <li><a className="dropdown-item" href="course-list.html">Course List</a></li>
-=======
                   <li><a className="dropdown-item" href="/notifications">Notifications</a></li>
                   <li><a className="dropdown-item" href="/posts">Posts</a></li>
                   <li><a className="dropdown-item" href="pricing-plan.html">Pricing Plan</a></li>
                   <li><a className="dropdown-item" href="wishlist.html">Wishlist</a></li>
                   <li><a className="dropdown-item" href="course-list.html">Course List</a></li>
-                  <li><a className="dropdown-item" href="/tasks">Tasks</a></li>
->>>>>>> origin/tasks
-                  {/* Add more items as needed */}
+                 
+                                   <li><a className="dropdown-item" href="/tasks">Tasks</a></li>
+ {/* Add more items as needed */}
                 </ul>
               </li>
 
@@ -116,31 +107,6 @@ function Header() {
             </ul>
           </div>
 
-<<<<<<< HEAD
-          {/* Barre de droite : Dark Mode & Profil */}
-          <ul className="navbar-nav ms-3">
-           
-            {/* Conditional Rendering of Profile or SignIn/SignUp */}
-            <li className="nav-item">
-              {isAuthenticated ? (
-                <ProfileIcon />
-              ) : (
-                <>
-                  {/* <a className="nav-link" href="/signin">Signin</a>
-                  <a className="nav-link" href="/signup">Signup</a> */}
-  <ul className="nav header-navbar-rht">
-                  <li className="nav-item">
-            <a className="nav-link header-sign" href="/signin">Signin</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link header-login" href="/signup">Signup</a>
-          </li>
-          </ul>
-                </>
-
-              )}
-            </li>
-=======
           {/* Barre de droite : Notifications & Profil */}
           <ul className="navbar-nav ms-3">
 
@@ -164,7 +130,6 @@ function Header() {
                 </li>
               </>
             )}
->>>>>>> origin/tasks
           </ul>
         </div>
       </nav>

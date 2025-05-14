@@ -1,12 +1,10 @@
 const Skill = require('../models/skill.model');
 const User = require('../models/user.model');
-
 const Certificate = require('../models/certificate'); 
 
 const mongoose = require('mongoose');
 
 const Progress = require('../models/progress');
-
 const Category = require('../models/category.model'); 
 
 /*async function add(req,res) {
@@ -130,7 +128,6 @@ async function deleteSkill (req,res) {
     }  
 };
 
-
 async function addSkillWithLessons(req, res) {
   try {
     const { skillname, description, lessons, pricingType, price, status, level, category, image,  } = req.body;
@@ -162,7 +159,6 @@ async function addSkillWithLessons(req, res) {
       image,
       status,
       level,
-
       lessons, 
       createdDate: new Date()
     });
@@ -212,7 +208,6 @@ async function participateToSkill(req, res) {
   }
   
   // Voir enseignants & étudiants
-
 async function getAllUsersByRole(req, res) {
     try {
       const teachers = await User.find({ role: 'educator' });
@@ -224,7 +219,6 @@ async function getAllUsersByRole(req, res) {
       res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs' });
     }
   }
-
 async function advancedSearch(req, res) {
     try {
         const { skillname, category, level, pricingType, priceRange } = req.query;
@@ -261,7 +255,6 @@ async function advancedSearch(req, res) {
         console.error(err);
         res.status(500).json({ message: 'Erreur lors de la recherche' });
     }
-
 
 
   }
@@ -440,7 +433,6 @@ async function getUserSkillProgress  (req, res)  {
     participateToSkill,
     getAllUsersByRole,
     advancedSearch,
-
     getStudentsBySkill,
     getEducatorsByCategory,
     findSkillById,
@@ -451,11 +443,5 @@ async function getUserSkillProgress  (req, res)  {
   findOneByName,
   findAll,
   findByCategory ,
-
   findByIds ,readSkillById ,getSkillsByLearner,getUserSkillProgress
   };
-
-
-
-
-

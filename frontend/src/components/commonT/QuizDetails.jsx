@@ -108,8 +108,4 @@ function QuizDetails() {
   );
 }
 
-<<<<<<< HEAD
 export default QuizDetails;
-=======
-export default QuizDetails;
->>>>>>> origin/tasks
