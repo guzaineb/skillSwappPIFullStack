@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuthStore } from '../../store/authStore';
+import { toast } from 'react-toastify';
 import './SkillResponses.css';
 
 const SkillResponses = ({ skillId }) => {
@@ -14,7 +15,9 @@ const SkillResponses = ({ skillId }) => {
 
   // Récupérer les réponses au chargement du composant
   useEffect(() => {
-    fetchResponses();
+    if (skillId) {
+      fetchResponses();
+    }
   }, [skillId]);
 
   // Fonction pour récupérer les réponses
@@ -53,10 +56,12 @@ const SkillResponses = ({ skillId }) => {
       setResponses([response.data, ...responses]);
       setNewResponse('');
       setLoading(false);
+      toast.success('Votre réponse a été ajoutée avec succès!');
     } catch (err) {
       console.error('Erreur lors de l\'ajout de la réponse:', err);
       setError('Impossible d\'ajouter votre réponse. Veuillez réessayer plus tard.');
       setLoading(false);
+      toast.error('Erreur lors de l\'ajout de la réponse');
     }
   };
 
@@ -77,20 +82,22 @@ const SkillResponses = ({ skillId }) => {
           withCredentials: true
         }
       );
-      
+
       // Mettre à jour la liste des réponses
-      const updatedResponses = responses.map(resp => 
+      const updatedResponses = responses.map(resp =>
         resp._id === response.data._id ? response.data : resp
       );
-      
+
       setResponses(updatedResponses);
       setReplyText('');
       setReplyingTo(null);
       setLoading(false);
+      toast.success('Votre réponse a été ajoutée avec succès!');
     } catch (err) {
       console.error('Erreur lors de l\'ajout de la réponse:', err);
       setError('Impossible d\'ajouter votre réponse. Veuillez réessayer plus tard.');
       setLoading(false);
+      toast.error('Erreur lors de l\'ajout de la réponse');
     }
   };
 
@@ -107,28 +114,30 @@ const SkillResponses = ({ skillId }) => {
           withCredentials: true
         }
       );
-      
+
       // Mettre à jour la liste des réponses
       const updatedResponses = responses.filter(resp => resp._id !== responseId);
       setResponses(updatedResponses);
       setLoading(false);
+      toast.success('Réponse supprimée avec succès!');
     } catch (err) {
       console.error('Erreur lors de la suppression de la réponse:', err);
       setError('Impossible de supprimer la réponse. Veuillez réessayer plus tard.');
       setLoading(false);
+      toast.error('Erreur lors de la suppression de la réponse');
     }
   };
 
   // Formater la date
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
   };
 
   return (
     <div className="skill-responses-container">
       <h3 className="responses-title">Réponses et Questions</h3>
-      
+
       {isAuthenticated ? (
         <form className="response-form" onSubmit={handleAddResponse}>
           <textarea
@@ -157,32 +166,32 @@ const SkillResponses = ({ skillId }) => {
             <div key={response._id} className="response-item">
               <div className="response-header">
                 <div className="user-info">
-                  <img 
-                    src={response.user?.profileImg || '/default-avatar.png'} 
-                    alt={response.user?.name || 'Utilisateur'} 
+                  <img
+                    src={response.user?.profileImg || '/default-avatar.png'}
+                    alt={response.user?.name || 'Utilisateur'}
                     className="user-avatar"
                   />
                   <span className="username">{response.user?.name || 'Utilisateur'}</span>
                 </div>
                 <span className="response-date">{formatDate(response.createdAt)}</span>
               </div>
-              
+
               <div className="response-content">
                 <p>{response.text}</p>
               </div>
-              
+
               <div className="response-actions">
                 {isAuthenticated && (
                   <>
-                    <button 
+                    <button
                       className="reply-button"
                       onClick={() => setReplyingTo(response._id)}
                     >
                       Répondre
                     </button>
-                    
-                    {user && user.id === response.user?._id && (
-                      <button 
+
+                    {user && (user.id === response.user?._id || user._id === response.user?._id) && (
+                      <button
                         className="delete-button"
                         onClick={() => handleDeleteResponse(response._id)}
                       >
@@ -206,8 +215,8 @@ const SkillResponses = ({ skillId }) => {
                     <button type="submit" disabled={loading}>
                       {loading ? 'Envoi...' : 'Répondre'}
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       onClick={() => {
                         setReplyingTo(null);
                         setReplyText('');
@@ -226,9 +235,9 @@ const SkillResponses = ({ skillId }) => {
                     <div key={index} className="reply-item">
                       <div className="reply-header">
                         <div className="user-info">
-                          <img 
-                            src={reply.user?.profileImg || '/default-avatar.png'} 
-                            alt={reply.user?.name || 'Utilisateur'} 
+                          <img
+                            src={reply.user?.profileImg || '/default-avatar.png'}
+                            alt={reply.user?.name || 'Utilisateur'}
                             className="user-avatar small"
                           />
                           <span className="username">{reply.user?.name || 'Utilisateur'}</span>

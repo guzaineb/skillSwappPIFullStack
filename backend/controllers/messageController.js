@@ -47,77 +47,54 @@ const getMessages = async (req, res) => {
 
 const sendMessage = async (req, res) => {
   try {
-    const { content, messageType } = req.body;
+    const { content } = req.body;
     const receiverId = req.params.id;
     const senderId = req.user?._id;
     let fileUrl = null;
     let fileType = null;
     let fileName = null;
 
-    console.log("Sending message via HTTP:", {
-      senderId,
-      receiverId,
-      content: content || "(empty)",
-      hasFile: !!req.file,
-      messageType: messageType || "sender",
-      user: req.user
+    console.log("Requête reçue pour envoyer un message:", {
+      body: req.body,
+      files: req.files,
+      file: req.file,
+      params: req.params,
+      user: req.user ? { id: req.user._id, name: req.user.fullName } : null
     });
 
     if (!senderId) {
-      console.error("No sender ID found in request. User object:", req.user);
+      console.error("Aucun ID d'expéditeur trouvé dans la requête. Objet utilisateur:", req.user);
       return res.status(400).json({ 
         success: false, 
-        message: "Sender ID is required" 
+        message: "L'ID de l'expéditeur est requis" 
       });
     }
 
     if (!receiverId) {
       return res.status(400).json({ 
         success: false, 
-        message: "Receiver ID is required" 
+        message: "L'ID du destinataire est requis" 
       });
     }
 
-    // Vérifier le contenu du message pour détecter du contenu inapproprié
-    if (content) {
-      const isInappropriate = await checkInappropriateContent(content);
-      if (isInappropriate) {
-        return res.status(400).json({ 
-          error: 'Le message contient du contenu inapproprié (propos violents, haineux ou NSFW)' 
-        });
-      }
+    // Vérifier si le contenu est vide et s'il n'y a pas de fichier
+    if (!content && !req.file) {
+      console.log("Message vide et pas de fichier");
+      return res.status(400).json({
+        success: false,
+        message: "Le message ne peut pas être vide"
+      });
     }
 
-    // Traitement du fichier s'il existe
+    console.log("Contenu du message:", content || "(vide)");
+    console.log("Fichier attaché:", req.file ? "Oui" : "Non");
+
+    // Traitement du fichier si présent
     if (req.file) {
-      try {
-        // Upload vers Cloudinary
-        const result = await cloudinary.uploader.upload(req.file.path, {
-          resource_type: 'auto',
-          folder: 'messages',
-        });
-        
-        fileUrl = result.secure_url;
-        fileName = req.file.originalname;
-        
-        // Déterminer le type de fichier
-        if (req.file.mimetype.startsWith('image/')) {
-          fileType = 'image';
-        } else if (req.file.mimetype.startsWith('audio/')) {
-          fileType = 'audio';
-        } else {
-          fileType = 'document';
-        }
-        
-        // Supprimer le fichier temporaire
-        fs.unlinkSync(req.file.path);
-      } catch (uploadError) {
-        console.error("Error uploading file to Cloudinary:", uploadError);
-        return res.status(500).json({ 
-          success: false, 
-          message: "Failed to upload file" 
-        });
-      }
+      console.log("Fichier détecté:", req.file);
+      fileUrl = req.file.path;
+      fileType = req.file.mimetype;
+      fileName = req.file.originalname;
     }
 
     const messageData = {
@@ -128,15 +105,15 @@ const sendMessage = async (req, res) => {
       fileType,
       fileName,
       delivered: true,
-      messageType: messageType || "sender"
+      messageType: req.body.messageType || "sender"
     };
 
-    console.log("Creating message with data:", messageData);
+    console.log("Création du message avec les données:", messageData);
 
     const newMessage = new Message(messageData);
     const savedMessage = await newMessage.save();
 
-    console.log("Message saved with ID:", savedMessage._id);
+    console.log("Message enregistré avec l'ID:", savedMessage._id);
 
     const populatedMessage = await Message.findById(savedMessage._id)
       .populate('senderId', 'fullName profilePic')
@@ -148,13 +125,13 @@ const sendMessage = async (req, res) => {
       io.to(receiverSocketId).emit("newMessage", populatedMessage);
     }
 
-    res.status(201).json(populatedMessage);
+    return res.status(201).json(populatedMessage);
   } catch (error) {
-    console.error("Error in sendMessage: ", error);
-    res.status(500).json({ 
+    console.error("Erreur lors de l'envoi du message:", error);
+    return res.status(500).json({ 
       success: false, 
-      message: "Failed to send message",
-      error: error.message
+      message: "Erreur lors de l'envoi du message", 
+      error: error.message 
     });
   }
 };

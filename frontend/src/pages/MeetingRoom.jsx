@@ -2,20 +2,30 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { toast } from 'react-toastify';
-import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaDesktop, FaPhoneSlash, FaComments, FaUserPlus, FaRobot, FaBrain } from 'react-icons/fa';
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaDesktop, FaPhoneSlash, FaComments, FaUserPlus, FaRobot, FaBrain, FaSmile } from 'react-icons/fa';
 import '../styles/meetingRoom.css';
 import MeetingAssistant from '../components/MeetingAssistant';
+import FaceDetection from '../components/FaceDetection';
 
 // URL du serveur socket - utilise l'URL de l'API depuis l'environnement ou par défaut
 const SOCKET_SERVER_URL = import.meta.env.VITE_API_URL || window.location.origin.replace(/:\d+$/, ':5000');
 
-// Configuration des options de socket
+// Configuration améliorée des options de socket pour résoudre les problèmes de connexion
 const SOCKET_OPTIONS = {
   reconnection: true,
-  reconnectionAttempts: 5,
+  reconnectionAttempts: 10,        // Augmenté pour plus de tentatives
   reconnectionDelay: 1000,
-  timeout: 10000,
-  transports: ['websocket', 'polling'] // Préférer WebSocket, fallback sur polling
+  reconnectionDelayMax: 5000,      // Délai maximum entre les tentatives
+  timeout: 20000,                  // Timeout augmenté
+  transports: ['polling', 'websocket'], // Commencer par polling puis passer à WebSocket
+  upgrade: true,                   // Permettre la mise à niveau vers WebSocket
+  forceNew: true,                  // Forcer une nouvelle connexion
+  autoConnect: true,               // Se connecter automatiquement
+  path: '/socket.io/',             // Chemin par défaut
+  query: {                         // Paramètres de requête pour le débogage
+    clientVersion: '1.0.0',
+    transport: 'polling,websocket'
+  }
 };
 
 const MeetingRoom = () => {
@@ -36,6 +46,8 @@ const MeetingRoom = () => {
   const [screenSharingUser, setScreenSharingUser] = useState(null);
   const [meetingStartTime, setMeetingStartTime] = useState(null);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [faceDetectionEnabled, setFaceDetectionEnabled] = useState(false);
+  const [detectedExpression, setDetectedExpression] = useState(null);
 
   // Références
   const socketRef = useRef(null);
@@ -109,7 +121,8 @@ const MeetingRoom = () => {
       }
     ],
     iceCandidatePoolSize: 10,
-    bundlePolicy: 'max-bundle',
+    // Modification de la politique de bundle pour éviter les erreurs
+    bundlePolicy: 'balanced', // Changé de 'max-bundle' à 'balanced'
     rtcpMuxPolicy: 'require',
     sdpSemantics: 'unified-plan'
   };
@@ -126,6 +139,13 @@ const MeetingRoom = () => {
       }
 
       console.log(`Configuration RTCPeerConnection pour ${participantSocketId}:`, rtcConfig);
+
+      // S'assurer que le flux local est disponible avant de créer la connexion
+      if (!localStream) {
+        console.warn(`Création de la connexion pour ${participantSocketId} sans flux local disponible`);
+        console.log("Un flux vide sera créé pour éviter les erreurs");
+      }
+
       const peerConnection = new RTCPeerConnection(rtcConfig);
       peerConnectionsRef.current[participantSocketId] = peerConnection;
 
@@ -225,9 +245,23 @@ const MeetingRoom = () => {
                     throw new Error(`Impossible de créer une nouvelle connexion pour ${participantSocketId}`);
                   }
 
-                  // Créer une nouvelle offre
-                  newPeerConnection.createOffer()
-                    .then(offer => newPeerConnection.setLocalDescription(offer))
+                  // Créer une nouvelle offre avec options explicites
+                  newPeerConnection.createOffer({
+                    offerToReceiveAudio: true,
+                    offerToReceiveVideo: true
+                  })
+                    .then(offer => {
+                      // Vérifier que l'offre est valide
+                      if (!offer || !offer.sdp) {
+                        throw new Error(`Offre SDP invalide pour ${participantSocketId}`);
+                      }
+                      console.log(`Offre SDP créée pour ${participantSocketId}`);
+                      return newPeerConnection.setLocalDescription(offer);
+                    })
+                    .then(() => {
+                      // Attendre un court délai pour s'assurer que la description est bien appliquée
+                      return new Promise(resolve => setTimeout(() => resolve(), 500));
+                    })
                     .then(() => {
                       socketRef.current.emit('offer', {
                         to: participantSocketId,
@@ -237,14 +271,29 @@ const MeetingRoom = () => {
                     })
                     .catch(error => {
                       console.error(`Erreur lors de la création de l'offre pour ${participantSocketId}:`, error);
+                      toast.error(`Problème de connexion avec un participant: ${error.message}`);
                     });
                 } else {
                   // Réutiliser la connexion existante
                   console.log(`Réutilisation de la connexion existante pour ${participantSocketId}`);
 
-                  // Créer une nouvelle offre
-                  peerConnectionsRef.current[participantSocketId].createOffer()
-                    .then(offer => peerConnectionsRef.current[participantSocketId].setLocalDescription(offer))
+                  // Créer une nouvelle offre avec options explicites
+                  peerConnectionsRef.current[participantSocketId].createOffer({
+                    offerToReceiveAudio: true,
+                    offerToReceiveVideo: true
+                  })
+                    .then(offer => {
+                      // Vérifier que l'offre est valide
+                      if (!offer || !offer.sdp) {
+                        throw new Error(`Offre SDP invalide pour ${participantSocketId}`);
+                      }
+                      console.log(`Offre SDP créée pour ${participantSocketId}`);
+                      return peerConnectionsRef.current[participantSocketId].setLocalDescription(offer);
+                    })
+                    .then(() => {
+                      // Attendre un court délai pour s'assurer que la description est bien appliquée
+                      return new Promise(resolve => setTimeout(() => resolve(), 500));
+                    })
                     .then(() => {
                       socketRef.current.emit('offer', {
                         to: participantSocketId,
@@ -254,6 +303,7 @@ const MeetingRoom = () => {
                     })
                     .catch(error => {
                       console.error(`Erreur lors de la reconnexion avec ${participantSocketId}:`, error);
+                      toast.error(`Problème de reconnexion avec un participant: ${error.message}`);
                     });
                 }
               } catch (error) {
@@ -278,6 +328,63 @@ const MeetingRoom = () => {
         console.log(`Piste reçue de ${participantSocketId}:`, event.track.kind, event.track.label);
         console.log('Flux associés:', event.streams);
 
+        // Activer explicitement la piste reçue et ajouter un délai pour s'assurer qu'elle est bien activée
+        event.track.enabled = true;
+
+        // Traiter les candidats ICE en attente une fois que la piste est reçue
+        if (iceCandidatesQueueRef.current[participantSocketId] &&
+          iceCandidatesQueueRef.current[participantSocketId].length > 0) {
+          console.log(`Traitement de ${iceCandidatesQueueRef.current[participantSocketId].length} candidats ICE en attente pour ${participantSocketId}`);
+
+          // Traiter tous les candidats en attente
+          const processCandidates = async () => {
+            for (const candidate of iceCandidatesQueueRef.current[participantSocketId]) {
+              try {
+                await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                console.log(`Candidat ICE en attente ajouté pour ${participantSocketId}`);
+              } catch (error) {
+                console.error(`Erreur lors de l'ajout d'un candidat ICE en attente pour ${participantSocketId}:`, error);
+              }
+            }
+            // Vider la file d'attente
+            iceCandidatesQueueRef.current[participantSocketId] = [];
+          };
+
+          processCandidates();
+        }
+
+        // Pour les pistes audio, s'assurer qu'elles sont bien audibles
+        if (event.track.kind === 'audio') {
+          console.log(`Configuration spéciale pour la piste audio de ${participantSocketId}`);
+
+          // Ajouter un gestionnaire d'événements pour détecter quand la piste devient active
+          event.track.onunmute = () => {
+            console.log(`Piste audio de ${participantSocketId} activée (unmuted)`);
+          };
+
+          // Ajouter un gestionnaire d'événements pour détecter quand la piste devient inactive
+          event.track.onmute = () => {
+            console.log(`Piste audio de ${participantSocketId} désactivée (muted), tentative de réactivation`);
+            event.track.enabled = true;
+          };
+
+          // Ajouter un gestionnaire d'événements pour détecter quand la piste est terminée
+          event.track.onended = () => {
+            console.log(`Piste audio de ${participantSocketId} terminée`);
+          };
+        }
+
+        // Vérifier périodiquement que la piste est activée
+        const trackCheckInterval = setInterval(() => {
+          if (!event.track.enabled) {
+            console.log(`Réactivation de la piste ${event.track.kind} de ${participantSocketId}`);
+            event.track.enabled = true;
+          }
+
+          // Arrêter l'intervalle après 30 secondes
+          setTimeout(() => clearInterval(trackCheckInterval), 30000);
+        }, 1000);
+
         if (!event.streams || !event.streams[0]) {
           console.error(`Aucun flux reçu de ${participantSocketId}`);
 
@@ -290,6 +397,20 @@ const MeetingRoom = () => {
           // Ajouter un identifiant au flux pour le retrouver facilement
           syntheticStream.socketId = participantSocketId;
 
+          // S'assurer que la piste est activée
+          event.track.enabled = true;
+
+          // Vérifier périodiquement que la piste reste activée
+          const trackActiveInterval = setInterval(() => {
+            if (event.track && !event.track.enabled) {
+              console.log(`Réactivation de la piste ${event.track.kind} dans le flux synthétique`);
+              event.track.enabled = true;
+            }
+          }, 1000);
+
+          // Arrêter l'intervalle après 30 secondes
+          setTimeout(() => clearInterval(trackActiveInterval), 30000);
+
           // Mettre à jour l'état des participants avec le flux
           updateParticipantStream(participantSocketId, syntheticStream);
           return;
@@ -299,6 +420,46 @@ const MeetingRoom = () => {
 
         // Ajouter un identifiant au flux pour le retrouver facilement
         remoteStream.socketId = participantSocketId;
+
+        // S'assurer que toutes les pistes sont activées
+        remoteStream.getTracks().forEach(track => {
+          track.enabled = true;
+          console.log(`Piste ${track.kind} (${track.label}) activée pour ${participantSocketId}`);
+
+          // Ajouter un gestionnaire d'événements pour s'assurer que la piste reste activée
+          track.onmute = () => {
+            console.log(`Piste ${track.kind} mise en sourdine, réactivation...`);
+            track.enabled = true;
+          };
+
+          // Configuration spéciale pour les pistes audio
+          if (track.kind === 'audio') {
+            console.log(`Configuration supplémentaire pour la piste audio de ${participantSocketId}`);
+
+            // Vérifier si la piste est active
+            console.log(`État initial de la piste audio: enabled=${track.enabled}, muted=${track.muted}, readyState=${track.readyState}`);
+
+            // Forcer l'activation de la piste audio
+            track.enabled = true;
+
+            // Ajouter un gestionnaire d'événements pour détecter quand la piste devient active
+            track.onunmute = () => {
+              console.log(`Piste audio de ${participantSocketId} activée (unmuted)`);
+              track.enabled = true;
+            };
+          }
+
+          // Vérifier périodiquement que la piste reste activée
+          const trackActiveInterval = setInterval(() => {
+            if (track && !track.enabled) {
+              console.log(`Réactivation de la piste ${track.kind} dans le flux distant`);
+              track.enabled = true;
+            }
+          }, 1000);
+
+          // Arrêter l'intervalle après 30 secondes
+          setTimeout(() => clearInterval(trackActiveInterval), 30000);
+        });
 
         console.log(`Mise à jour du participant ${participantSocketId} avec le flux reçu`);
         console.log('Pistes dans le flux:', remoteStream.getTracks().map(t => `${t.kind} (${t.label})`));
@@ -325,13 +486,22 @@ const MeetingRoom = () => {
 
           if (!participantExists) {
             console.log(`Participant ${socketId} non trouvé, ajout à la liste`);
+
+            // Vérifier si le flux contient des pistes audio
+            const hasAudio = stream && stream.getAudioTracks().length > 0;
+            console.log(`Le flux du nouveau participant contient ${hasAudio ? 'des' : 'aucune'} piste(s) audio`);
+
+            // Vérifier si le flux contient des pistes vidéo
+            const hasVideo = stream && stream.getVideoTracks().length > 0;
+            console.log(`Le flux du nouveau participant contient ${hasVideo ? 'des' : 'aucune'} piste(s) vidéo`);
+
             // Si le participant n'existe pas encore, l'ajouter
             return [...prev, {
               socketId: socketId,
               name: `Participant ${socketId.substring(0, 5)}`,
               stream: stream,
-              audio: true,
-              video: true,
+              audio: hasAudio,
+              video: hasVideo,
               isScreenSharing: isScreenShare
             }];
           }
@@ -340,6 +510,14 @@ const MeetingRoom = () => {
           return prev.map(p => {
             if (p.socketId === socketId) {
               console.log(`Mise à jour du flux pour ${p.name} (${socketId})`);
+
+              // Vérifier si le nouveau flux contient des pistes audio
+              const hasAudio = stream && stream.getAudioTracks().length > 0;
+              console.log(`Le nouveau flux contient ${hasAudio ? 'des' : 'aucune'} piste(s) audio`);
+
+              // Vérifier si le nouveau flux contient des pistes vidéo
+              const hasVideo = stream && stream.getVideoTracks().length > 0;
+              console.log(`Le nouveau flux contient ${hasVideo ? 'des' : 'aucune'} piste(s) vidéo`);
 
               // Si c'est un partage d'écran, mettre à jour l'état
               if (isScreenShare) {
@@ -355,6 +533,9 @@ const MeetingRoom = () => {
               return {
                 ...p,
                 stream: stream,
+                // Mettre à jour l'état audio/vidéo uniquement si le flux contient des pistes
+                audio: hasAudio ? true : p.audio,
+                video: hasVideo ? true : p.video,
                 isScreenSharing: isScreenShare || p.isScreenSharing
               };
             }
@@ -371,46 +552,430 @@ const MeetingRoom = () => {
     }
   };
 
+  // Fonction pour nettoyer les ressources média
+  const cleanupMediaResources = () => {
+    console.log('Nettoyage des ressources média...');
+
+    // Arrêter tous les tracks du stream local
+    if (localStream) {
+      console.log('Arrêt des pistes du flux local');
+      localStream.getTracks().forEach(track => {
+        console.log(`Arrêt de la piste ${track.kind}: ${track.label}`);
+        track.stop();
+      });
+
+      // Libérer explicitement le stream
+      setLocalStream(null);
+    }
+
+    // Réinitialiser les références
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = null;
+    }
+
+    // Réinitialiser les états des médias
+    setVideoEnabled(false);
+    setAudioEnabled(false);
+  };
+
   // Initialiser la connexion
   useEffect(() => {
-    // Référence au socket
-    console.log(`Connexion au serveur socket: ${SOCKET_SERVER_URL}`);
-    socketRef.current = io(SOCKET_SERVER_URL, SOCKET_OPTIONS);
+    // Nettoyer les ressources média existantes au démarrage
+    cleanupMediaResources();
+
+    // Référence au socket avec gestion améliorée des erreurs
+    console.log(`Tentative de connexion au serveur socket: ${SOCKET_SERVER_URL}`);
+    console.log('Options de connexion:', SOCKET_OPTIONS);
+
+    try {
+      // Créer la connexion socket avec gestion d'erreurs
+      socketRef.current = io(SOCKET_SERVER_URL, SOCKET_OPTIONS);
+
+      // Ajouter un gestionnaire d'événements pour les erreurs de connexion
+      socketRef.current.on('connect_error', (error) => {
+        console.error('Erreur de connexion socket:', error);
+        toast.error(`Problème de connexion au serveur: ${error.message}`);
+
+        // Vérifier si l'erreur est liée à WebSocket
+        if (error.message && error.message.includes('websocket')) {
+          console.log('Erreur WebSocket détectée, tentative de reconnexion avec polling uniquement...');
+
+          // Recréer la connexion avec polling uniquement
+          if (socketRef.current) {
+            socketRef.current.close();
+          }
+
+          // Nouvelles options sans WebSocket
+          const pollingOptions = {
+            ...SOCKET_OPTIONS,
+            transports: ['polling'],
+            forceNew: true
+          };
+
+          console.log('Nouvelles options de connexion (polling uniquement):', pollingOptions);
+          socketRef.current = io(SOCKET_SERVER_URL, pollingOptions);
+        }
+      });
+    } catch (error) {
+      console.error('Exception lors de la création de la connexion socket:', error);
+      toast.error(`Erreur de connexion: ${error.message}`);
+    }
 
     // Vérifier la connexion du socket
     socketRef.current.on('connect', () => {
-      console.log('Socket connecté:', socketRef.current.id);
-      toast.success('Connecté au serveur de réunion');
+      console.log('Socket connecté avec succès:', socketRef.current.id);
+      console.log('Transport utilisé:', socketRef.current.io.engine.transport.name);
+      toast.success(`Connecté au serveur de réunion (${socketRef.current.io.engine.transport.name})`);
 
-      // Demander l'accès à la caméra et au micro après la connexion socket
-      navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        }
-      })
-        .then(stream => {
-          console.log('Flux média obtenu:', stream);
-          console.log('Pistes audio:', stream.getAudioTracks().map(track => ({
-            label: track.label,
-            enabled: track.enabled,
-            muted: track.muted
-          })));
+      // Afficher les informations de transport
+      socketRef.current.io.engine.on('upgrade', (transport) => {
+        console.log(`Transport mis à niveau vers: ${transport.name}`);
+        toast.info(`Connexion améliorée (${transport.name})`);
+      });
 
-          // S'assurer que les pistes audio sont activées par défaut
-          stream.getAudioTracks().forEach(track => {
-            track.enabled = true;
+      // Fonction pour initialiser les médias avec gestion d'erreurs améliorée
+      const initializeMedia = async (videoEnabled = true, audioEnabled = true, retryCount = 0) => {
+        console.log(`Tentative d'initialisation des médias (essai ${retryCount + 1})...`);
+        console.log(`Paramètres: vidéo=${videoEnabled}, audio=${audioEnabled}`);
+
+        try {
+          // Nettoyer les ressources média existantes avant d'en créer de nouvelles
+          cleanupMediaResources();
+
+          // Forcer le navigateur à demander à nouveau les permissions
+          // en ajoutant un petit délai avant de demander l'accès aux médias
+          await new Promise(resolve => setTimeout(resolve, 500));
+
+          // Vérifier les permissions d'accès aux périphériques
+          console.log('Vérification des permissions...');
+          try {
+            const permissionStatus = await navigator.permissions.query({ name: 'camera' });
+            console.log(`Statut de permission caméra: ${permissionStatus.state}`);
+
+            if (permissionStatus.state === 'denied') {
+              console.warn('Permission caméra refusée par l\'utilisateur');
+              toast.error('L\'accès à la caméra a été refusé. Veuillez autoriser l\'accès dans les paramètres de votre navigateur.');
+              videoEnabled = false;
+            }
+          } catch (permError) {
+            console.log('Impossible de vérifier les permissions:', permError);
+            // Continuer malgré l'erreur de vérification des permissions
+          }
+
+          // Vérifier d'abord si les périphériques sont disponibles
+          console.log('Vérification des périphériques disponibles...');
+          let devices = [];
+
+          try {
+            devices = await navigator.mediaDevices.enumerateDevices();
+          } catch (enumError) {
+            console.error('Erreur lors de l\'énumération des périphériques:', enumError);
+            toast.warning('Impossible de détecter les périphériques. Tentative d\'accès direct...');
+
+            // Si nous ne pouvons pas énumérer les périphériques, essayons quand même d'accéder aux médias
+            devices = [];
+          }
+
+          const videoDevices = devices.filter(device => device.kind === 'videoinput');
+          const audioDevices = devices.filter(device => device.kind === 'audioinput');
+
+          console.log(`Périphériques détectés: ${videoDevices.length} caméras, ${audioDevices.length} microphones`);
+
+          // Afficher les périphériques disponibles
+          videoDevices.forEach((device, index) => {
+            console.log(`Caméra ${index + 1}: ${device.label || 'Sans nom'} (${device.deviceId})`);
           });
 
+          audioDevices.forEach((device, index) => {
+            console.log(`Microphone ${index + 1}: ${device.label || 'Sans nom'} (${device.deviceId})`);
+          });
+
+          // Vérifier si nous avons les périphériques nécessaires
+          const hasVideo = videoDevices.length > 0;
+          const hasAudio = audioDevices.length > 0;
+
+          // Si aucun périphérique n'est détecté, cela peut être dû à des permissions non accordées
+          // Nous allons quand même essayer d'accéder aux médias
+          const noDevicesDetected = videoDevices.length === 0 && audioDevices.length === 0;
+
+          if (videoEnabled && !hasVideo && !noDevicesDetected) {
+            console.warn('Aucune caméra détectée mais vidéo demandée');
+            toast.warning('Aucune caméra détectée. La vidéo sera désactivée.');
+            videoEnabled = false;
+          }
+
+          if (audioEnabled && !hasAudio && !noDevicesDetected) {
+            console.warn('Aucun microphone détecté mais audio demandé');
+            toast.warning('Aucun microphone détecté. L\'audio sera désactivé.');
+            audioEnabled = false;
+          }
+
+          // Options de configuration pour les contraintes média
+          // Utiliser des contraintes plus simples pour éviter les problèmes de compatibilité
+          const constraints = {
+            audio: audioEnabled,
+            video: videoEnabled ? {
+              width: { ideal: 640 },
+              height: { ideal: 480 },
+              frameRate: { ideal: 24 }
+            } : false
+          };
+
+          console.log('Utilisation de contraintes simplifiées pour améliorer la compatibilité');
+
+          // Si nous avons des périphériques spécifiques avec des labels (permissions déjà accordées), les utiliser
+          if (videoEnabled && videoDevices.length > 0 && videoDevices[0].deviceId && videoDevices[0].label) {
+            console.log(`Utilisation de la caméra spécifique: ${videoDevices[0].label}`);
+            constraints.video = {
+              ...constraints.video,
+              deviceId: { exact: videoDevices[0].deviceId }
+            };
+          }
+
+          if (audioEnabled && audioDevices.length > 0 && audioDevices[0].deviceId && audioDevices[0].label) {
+            console.log(`Utilisation du microphone spécifique: ${audioDevices[0].label}`);
+            constraints.audio = {
+              ...constraints.audio,
+              deviceId: { exact: audioDevices[0].deviceId }
+            };
+          }
+
+          console.log('Demande d\'accès aux périphériques avec contraintes:', JSON.stringify(constraints, null, 2));
+
+          // Demander l'accès aux périphériques avec une approche plus robuste
+          console.log('Tentative d\'accès aux périphériques avec contraintes simplifiées...');
+          let stream;
+
+          try {
+            // Première tentative avec les contraintes définies
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+          } catch (mediaError) {
+            console.warn('Première tentative échouée:', mediaError.name, mediaError.message);
+
+            // Si la première tentative échoue, essayer avec des contraintes encore plus simples
+            if (retryCount < 1) {
+              console.log('Tentative avec des contraintes minimales...');
+              const minimalConstraints = {
+                audio: audioEnabled && { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+                video: videoEnabled && {
+                  facingMode: "user",
+                  width: { ideal: 320 }, // Résolution plus basse
+                  height: { ideal: 240 },
+                  frameRate: { max: 15 } // Framerate plus bas
+                }
+              };
+
+              try {
+                stream = await navigator.mediaDevices.getUserMedia(minimalConstraints);
+                console.log('Accès aux médias réussi avec contraintes minimales');
+              } catch (minimalError) {
+                console.error('Échec avec contraintes minimales:', minimalError);
+                throw minimalError; // Propager l'erreur pour la gestion plus haut
+              }
+            } else {
+              throw mediaError; // Propager l'erreur originale
+            }
+          }
+
+          console.log('Flux média obtenu avec succès:', stream);
+
+          // Après avoir obtenu les permissions, réénumérer les périphériques pour obtenir leurs labels
+          if (noDevicesDetected) {
+            console.log('Réénumération des périphériques après obtention des permissions...');
+            try {
+              const updatedDevices = await navigator.mediaDevices.enumerateDevices();
+              const updatedVideoDevices = updatedDevices.filter(device => device.kind === 'videoinput');
+              const updatedAudioDevices = updatedDevices.filter(device => device.kind === 'audioinput');
+
+              console.log(`Périphériques après permissions: ${updatedVideoDevices.length} caméras, ${updatedAudioDevices.length} microphones`);
+
+              updatedVideoDevices.forEach((device, index) => {
+                console.log(`Caméra ${index + 1}: ${device.label || 'Sans nom'} (${device.deviceId})`);
+              });
+
+              updatedAudioDevices.forEach((device, index) => {
+                console.log(`Microphone ${index + 1}: ${device.label || 'Sans nom'} (${device.deviceId})`);
+              });
+            } catch (error) {
+              console.error('Erreur lors de la réénumération des périphériques:', error);
+            }
+          }
+
+          // Vérifier si le flux contient des pistes
+          const videoTracks = stream.getVideoTracks();
+          const audioTracks = stream.getAudioTracks();
+
+          console.log(`Pistes obtenues: ${videoTracks.length} vidéo, ${audioTracks.length} audio`);
+
+          // Afficher les détails des pistes vidéo
+          videoTracks.forEach((track, index) => {
+            console.log(`Piste vidéo ${index + 1}:`, {
+              label: track.label,
+              id: track.id,
+              enabled: track.enabled,
+              muted: track.muted,
+              readyState: track.readyState,
+              settings: track.getSettings()
+            });
+          });
+
+          // Afficher les détails des pistes audio
+          audioTracks.forEach((track, index) => {
+            console.log(`Piste audio ${index + 1}:`, {
+              label: track.label,
+              id: track.id,
+              enabled: track.enabled,
+              muted: track.muted,
+              readyState: track.readyState,
+              settings: track.getSettings()
+            });
+          });
+
+          // S'assurer que les pistes sont activées selon les préférences
+          audioTracks.forEach(track => {
+            track.enabled = audioEnabled;
+            console.log(`Piste audio ${track.label} ${audioEnabled ? 'activée' : 'désactivée'}`);
+          });
+
+          // Forcer l'activation des pistes vidéo pour que tous les participants soient visibles
+          videoTracks.forEach(track => {
+            track.enabled = true; // Forcer à true au lieu de videoEnabled
+            console.log(`Piste vidéo ${track.label} forcée à activée`);
+          });
+
+          // Mettre à jour les états globaux
+          setAudioEnabled(audioEnabled && audioTracks.length > 0);
+          setVideoEnabled(true); // Forcer l'activation de la vidéo
+
+          // Mettre à jour l'état et les références
           setLocalStream(stream);
+
+          // Attacher le flux à l'élément vidéo
           if (localVideoRef.current) {
+            console.log('Attachement du flux à l\'élément vidéo local');
             localVideoRef.current.srcObject = stream;
+
+            // Vérifier si l'élément vidéo est correctement configuré
+            console.log('État de l\'élément vidéo:', {
+              autoplay: localVideoRef.current.autoplay,
+              muted: localVideoRef.current.muted,
+              playsInline: localVideoRef.current.playsInline,
+              controls: localVideoRef.current.controls,
+              width: localVideoRef.current.width,
+              height: localVideoRef.current.height
+            });
+
+            // Forcer la lecture
+            try {
+              const playPromise = localVideoRef.current.play();
+              if (playPromise !== undefined) {
+                playPromise
+                  .then(() => console.log('Lecture vidéo démarrée avec succès'))
+                  .catch(error => {
+                    console.error('Erreur lors du démarrage de la lecture vidéo:', error);
+
+                    // Essayer à nouveau après un court délai
+                    setTimeout(() => {
+                      console.log('Nouvelle tentative de lecture vidéo...');
+                      localVideoRef.current.play()
+                        .then(() => console.log('Lecture vidéo démarrée avec succès (2e tentative)'))
+                        .catch(err => console.error('Échec de la 2e tentative de lecture vidéo:', err));
+                    }, 1000);
+                  });
+              }
+            } catch (error) {
+              console.error('Exception lors de la tentative de lecture vidéo:', error);
+            }
+          } else {
+            console.warn('Référence à l\'élément vidéo local non disponible');
           }
 
           setLoading(false);
           setMeetingStartTime(new Date());
+
+          // Notification de succès
+          if (videoTracks.length > 0 && audioTracks.length > 0) {
+            toast.success('Caméra et microphone initialisés avec succès');
+          } else if (videoTracks.length > 0) {
+            toast.success('Caméra initialisée avec succès (pas de microphone)');
+          } else if (audioTracks.length > 0) {
+            toast.success('Microphone initialisé avec succès (pas de caméra)');
+          } else {
+            toast.warning('Aucun périphérique média n\'a pu être initialisé');
+          }
+
+          return stream;
+        } catch (error) {
+          console.error('Erreur lors de l\'accès aux périphériques média:', error);
+
+          // Gestion spécifique selon le type d'erreur
+          if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+            toast.error('Accès à la caméra ou au microphone refusé. Veuillez autoriser l\'accès dans les paramètres de votre navigateur.');
+            setLoading(false);
+          } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+            // Si les périphériques ne sont pas trouvés, essayer avec des options différentes
+            if (videoEnabled && audioEnabled && retryCount === 0) {
+              toast.warning('Caméra ou microphone non détecté. Tentative avec audio uniquement...');
+              return initializeMedia(false, true, retryCount + 1);
+            } else if (!videoEnabled && audioEnabled && retryCount === 1) {
+              toast.warning('Microphone non détecté. Tentative avec vidéo uniquement...');
+              return initializeMedia(true, false, retryCount + 1);
+            } else {
+              toast.error('Aucun périphérique média (caméra/microphone) détecté.');
+              setLoading(false);
+            }
+          } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+            toast.error('Impossible d\'accéder à la caméra ou au microphone. Un autre programme utilise peut-être ces périphériques.');
+            setLoading(false);
+          } else if (error.name === 'OverconstrainedError') {
+            // Si les contraintes sont trop restrictives, essayer avec des contraintes plus souples
+            if (retryCount < 2) {
+              toast.warning('Contraintes média trop restrictives. Tentative avec des paramètres plus souples...');
+              const newConstraints = {
+                audio: audioEnabled,
+                video: videoEnabled
+              };
+              console.log('Nouvelles contraintes:', newConstraints);
+              return initializeMedia(videoEnabled, audioEnabled, retryCount + 1);
+            } else {
+              toast.error('Impossible de satisfaire les contraintes média requises.');
+              setLoading(false);
+            }
+          } else {
+            toast.error(`Erreur d'initialisation des périphériques: ${error.message}`);
+            setLoading(false);
+          }
+
+          // En cas d'échec, créer un flux vide pour permettre quand même la connexion
+          if (retryCount >= 2) {
+            console.log('Création d\'un flux vide après plusieurs échecs');
+            const emptyStream = new MediaStream();
+            setLocalStream(emptyStream);
+            if (localVideoRef.current) {
+              localVideoRef.current.srcObject = emptyStream;
+            }
+            return emptyStream;
+          }
+
+          return null;
+        }
+      };
+
+      // Initialiser les médias - forcer l'activation de la vidéo pour tous les participants
+      initializeMedia(true, true).then(stream => {
+        // Forcer l'activation de la vidéo
+        setVideoEnabled(true);
+
+        // S'assurer que toutes les pistes vidéo sont activées
+        if (stream) {
+          const videoTracks = stream.getVideoTracks();
+          videoTracks.forEach(track => {
+            track.enabled = true;
+            console.log(`Piste vidéo ${track.label} forcée à activée`);
+          });
+        }
+        if (stream) {
+          console.log('Initialisation des médias réussie, flux obtenu:', stream);
 
           // Préparer les données utilisateur
           const userData = {
@@ -476,13 +1041,29 @@ const MeetingRoom = () => {
 
                 console.log(`Création de l'offre pour ${participant.socketId}`);
 
-                peerConnection.createOffer()
+                peerConnection.createOffer({
+                  offerToReceiveAudio: true,
+                  offerToReceiveVideo: true
+                })
                   .then(offer => {
+                    // Vérifier que l'offre est valide
+                    if (!offer || !offer.sdp) {
+                      throw new Error(`Offre SDP invalide pour ${participant.socketId}`);
+                    }
                     console.log(`Offre créée pour ${participant.socketId}:`, offer);
                     return peerConnection.setLocalDescription(offer);
                   })
                   .then(() => {
+                    // Vérifier que la description locale est définie
+                    if (!peerConnection.localDescription) {
+                      throw new Error(`Description locale non définie pour ${participant.socketId}`);
+                    }
                     console.log(`Description locale définie pour ${participant.socketId}`);
+
+                    // Attendre un court délai pour s'assurer que la description est bien appliquée
+                    return new Promise(resolve => setTimeout(() => resolve(), 500));
+                  })
+                  .then(() => {
                     socketRef.current.emit('offer', {
                       to: participant.socketId,
                       offer: peerConnection.localDescription
@@ -510,8 +1091,15 @@ const MeetingRoom = () => {
                 console.log(`Le participant ${participant.name} existe déjà dans la liste`);
                 return prev;
               }
-              console.log(`Ajout du participant ${participant.name} à la liste`);
-              return [...prev, participant];
+
+              // Créer un MediaStream vide pour le nouveau participant
+              const emptyStream = new MediaStream();
+
+              console.log(`Ajout du participant ${participant.name} à la liste avec un stream vide`);
+              return [...prev, {
+                ...participant,
+                stream: emptyStream // Ajouter un stream vide pour préparer la réception
+              }];
             });
 
             // Attendre que le nouveau participant envoie une offre
@@ -606,14 +1194,51 @@ const MeetingRoom = () => {
             console.log(`Candidat ICE reçu de ${from}:`, candidate);
 
             try {
-              const peerConnection = peerConnectionsRef.current[from];
+              // Vérifier si la connexion existe
+              let peerConnection = peerConnectionsRef.current[from];
 
+              // Si la connexion n'existe pas, la créer et la stocker
               if (!peerConnection) {
-                throw new Error(`Aucune connexion trouvée pour ${from}`);
+                console.log(`Connexion non trouvée pour ${from}, création d'une nouvelle connexion`);
+
+                // Créer une nouvelle connexion
+                peerConnection = createPeerConnection(from);
+
+                if (!peerConnection) {
+                  console.error(`Impossible de créer une connexion pour ${from}`);
+                  return;
+                }
+
+                // Ajouter le candidat ICE à une file d'attente pour le traiter plus tard
+                if (!iceCandidatesQueueRef.current[from]) {
+                  iceCandidatesQueueRef.current[from] = [];
+                }
+
+                iceCandidatesQueueRef.current[from].push(candidate);
+                console.log(`Candidat ICE mis en file d'attente pour ${from}`);
+
+                // Attendre que la connexion soit établie avant de traiter les candidats
+                return;
               }
 
               if (!candidate) {
-                throw new Error(`Candidat ICE invalide reçu de ${from}`);
+                console.warn(`Candidat ICE invalide reçu de ${from}`);
+                return;
+              }
+
+              // Vérifier l'état de la connexion
+              const connectionState = peerConnection.connectionState || peerConnection.iceConnectionState;
+              console.log(`État de la connexion pour ${from}: ${connectionState}`);
+
+              // Si la connexion n'est pas encore établie, mettre le candidat en file d'attente
+              if (connectionState === 'new' || connectionState === 'checking') {
+                if (!iceCandidatesQueueRef.current[from]) {
+                  iceCandidatesQueueRef.current[from] = [];
+                }
+
+                iceCandidatesQueueRef.current[from].push(candidate);
+                console.log(`Candidat ICE mis en file d'attente pour ${from} (connexion en cours d'établissement)`);
+                return;
               }
 
               console.log(`Ajout du candidat ICE pour ${from}`);
@@ -631,6 +1256,7 @@ const MeetingRoom = () => {
             setParticipants(prev => {
               return prev.map(p => {
                 if (p.socketId === socketId) {
+                  // Mettre à jour l'état des médias du participant
                   return { ...p, audio, video };
                 }
                 return p;
@@ -683,7 +1309,7 @@ const MeetingRoom = () => {
           });
 
           // Gérer les conflits de partage d'écran
-          socketRef.current.on('screen-sharing-conflict', ({ message, sharerSocketId }) => {
+          socketRef.current.on('screen-sharing-conflict', ({ message }) => {
             console.log(`Conflit de partage d'écran: ${message}`);
 
             // Arrêter notre tentative de partage d'écran
@@ -821,12 +1447,12 @@ const MeetingRoom = () => {
               }, 100);
             }
           });
-        })
-        .catch(error => {
-          console.error('Erreur lors de l\'accès aux périphériques média:', error);
-          setLoading(false);
-          toast.error('Impossible d\'accéder à la caméra ou au microphone');
-        });
+        }
+      }).catch(error => {
+        console.error('Erreur lors de l\'accès aux périphériques média:', error);
+        setLoading(false);
+        toast.error('Impossible d\'accéder à la caméra ou au microphone');
+      });
 
       // Gérer les erreurs de connexion socket
       socketRef.current.on('connect_error', (error) => {
@@ -905,25 +1531,46 @@ const MeetingRoom = () => {
 
     // Nettoyage à la déconnexion
     return () => {
+      console.log('Nettoyage des ressources lors de la déconnexion...');
+
       // Fermer toutes les connexions peer
       Object.values(peerConnectionsRef.current).forEach(connection => {
         if (connection) {
-          connection.close();
+          try {
+            console.log(`Fermeture de la connexion peer: ${connection.connectionState || 'état inconnu'}`);
+            connection.close();
+          } catch (error) {
+            console.error('Erreur lors de la fermeture de la connexion peer:', error);
+          }
         }
       });
 
-      // Arrêter tous les tracks du stream local
-      if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-      }
+      // Vider la référence des connexions peer
+      peerConnectionsRef.current = {};
+
+      // Nettoyer les ressources média
+      cleanupMediaResources();
 
       // Déconnecter le socket
       if (socketRef.current) {
-        console.log('Déconnexion du socket');
-        socketRef.current.disconnect();
+        try {
+          console.log('Déconnexion du socket:', socketRef.current.id);
+          socketRef.current.disconnect();
+          socketRef.current = null;
+        } catch (error) {
+          console.error('Erreur lors de la déconnexion du socket:', error);
+        }
       }
+
+      // Réinitialiser les états
+      setParticipants([]);
+      setChatMessages([]);
+      setScreenSharingUser(null);
+      setIsScreenSharing(false);
+
+      console.log('Nettoyage des ressources terminé');
     };
-  }, [meetingId]);
+  }, [meetingId, navigate]);
 
   // Effet pour faire défiler le chat vers le bas à chaque nouveau message
   useEffect(() => {
@@ -1120,70 +1767,357 @@ const MeetingRoom = () => {
     );
   };
 
-  // Fonction pour activer/désactiver l'audio
-  const toggleAudio = () => {
-    if (localStream) {
-      const audioTracks = localStream.getAudioTracks();
-      console.log('Pistes audio avant toggle:', audioTracks.map(track => ({
-        label: track.label,
-        enabled: track.enabled,
-        muted: track.muted
-      })));
+  // Fonction pour activer/désactiver l'audio avec gestion d'erreurs améliorée
+  const toggleAudio = async () => {
+    console.log('Tentative de basculement de l\'état du microphone');
 
-      if (audioTracks.length > 0) {
-        const audioTrack = audioTracks[0];
+    try {
+      // Si nous n'avons pas de flux local, créer un nouveau
+      if (!localStream) {
+        console.log('Aucun flux local disponible, création d\'un nouveau flux');
 
-        // Inverser l'état d'activation
-        const newAudioState = !audioEnabled;
-        audioTrack.enabled = newAudioState;
-        setAudioEnabled(newAudioState);
-
-        console.log(`Microphone ${newAudioState ? 'activé' : 'désactivé'}`);
-        console.log('Nouvel état de la piste audio:', {
-          label: audioTrack.label,
-          enabled: audioTrack.enabled,
-          muted: audioTrack.muted
-        });
-
-        // Informer les autres participants
-        if (socketRef.current && socketRef.current.connected) {
-          socketRef.current.emit('media-state-change', {
-            audio: newAudioState,
-            video: videoEnabled
+        try {
+          // Obtenir un nouveau flux audio uniquement d'abord
+          const audioStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            },
+            video: false
           });
-        }
 
-        // Feedback visuel
-        toast.info(`Microphone ${newAudioState ? 'activé' : 'désactivé'}`);
-      } else {
-        console.error('Aucune piste audio trouvée dans le flux local');
-        toast.error('Impossible de trouver le microphone');
+          // Puis obtenir un flux vidéo si nécessaire
+          let combinedStream;
+
+          if (videoEnabled) {
+            try {
+              const videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+              // Créer un nouveau MediaStream combiné
+              combinedStream = new MediaStream();
+
+              // Ajouter toutes les pistes audio
+              audioStream.getAudioTracks().forEach(track => {
+                combinedStream.addTrack(track);
+              });
+
+              // Ajouter toutes les pistes vidéo
+              videoStream.getVideoTracks().forEach(track => {
+                combinedStream.addTrack(track);
+              });
+            } catch (videoError) {
+              console.error('Erreur lors de l\'obtention du flux vidéo:', videoError);
+              // Utiliser uniquement le flux audio en cas d'échec
+              combinedStream = audioStream;
+            }
+          } else {
+            combinedStream = audioStream;
+          }
+
+          // Mettre à jour le flux local
+          setLocalStream(combinedStream);
+
+          // Mettre à jour la vidéo locale
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = combinedStream;
+
+            // Forcer la lecture
+            try {
+              await localVideoRef.current.play();
+              console.log('Lecture de la vidéo locale démarrée avec succès');
+            } catch (playError) {
+              console.error('Erreur lors de la lecture de la vidéo locale:', playError);
+            }
+          }
+
+          // Activer l'audio
+          setAudioEnabled(true);
+
+          // Informer les autres participants
+          if (socketRef.current && socketRef.current.connected) {
+            socketRef.current.emit('media-state-change', {
+              audio: true,
+              video: videoEnabled
+            });
+          }
+
+          toast.success('Microphone activé avec succès');
+          return;
+        } catch (error) {
+          console.error('Erreur lors de la création d\'un nouveau flux:', error);
+          toast.error(`Impossible d'accéder au microphone: ${error.message}`);
+          return;
+        }
       }
-    } else {
-      console.error('Aucun flux média local disponible');
-      toast.error('Flux audio non disponible');
+
+      // Obtenir les pistes audio
+      const audioTracks = localStream.getAudioTracks();
+
+      // Si nous n'avons pas de pistes audio, en obtenir de nouvelles
+      if (audioTracks.length === 0) {
+        console.log('Aucune piste audio trouvée, tentative d\'obtention d\'une nouvelle piste');
+
+        try {
+          // Obtenir un nouveau flux audio uniquement
+          const audioStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            }
+          });
+
+          // Ajouter les pistes audio au flux existant
+          audioStream.getAudioTracks().forEach(track => {
+            localStream.addTrack(track);
+          });
+
+          // Activer l'audio
+          setAudioEnabled(true);
+
+          // Informer les autres participants
+          if (socketRef.current && socketRef.current.connected) {
+            socketRef.current.emit('media-state-change', {
+              audio: true,
+              video: videoEnabled
+            });
+          }
+
+          toast.success('Microphone activé avec succès');
+          return;
+        } catch (error) {
+          console.error('Erreur lors de l\'obtention d\'une nouvelle piste audio:', error);
+          toast.error(`Impossible d'accéder au microphone: ${error.message}`);
+          return;
+        }
+      }
+
+      // Inverser l'état de l'audio
+      const newAudioState = !audioEnabled;
+
+      // Appliquer le nouvel état à toutes les pistes audio
+      audioTracks.forEach(track => {
+        track.enabled = newAudioState;
+        console.log(`Piste audio ${track.label} ${newAudioState ? 'activée' : 'désactivée'}`);
+      });
+
+      // Mettre à jour l'état global
+      setAudioEnabled(newAudioState);
+
+      // Informer les autres participants
+      if (socketRef.current && socketRef.current.connected) {
+        socketRef.current.emit('media-state-change', {
+          audio: newAudioState,
+          video: videoEnabled
+        });
+      }
+
+      // Feedback visuel
+      toast.info(`Microphone ${newAudioState ? 'activé' : 'désactivé'}`);
+
+    } catch (error) {
+      console.error('Erreur lors du basculement de l\'état du microphone:', error);
+      toast.error(`Erreur: ${error.message}`);
     }
   };
 
-  // Fonction pour activer/désactiver la vidéo
-  const toggleVideo = () => {
-    if (localStream) {
-      const videoTrack = localStream.getVideoTracks()[0];
-      if (videoTrack) {
-        videoTrack.enabled = !videoEnabled;
-        setVideoEnabled(!videoEnabled);
+  // Fonction pour activer/désactiver la vidéo avec gestion d'erreurs améliorée
+  const toggleVideo = async () => {
+    console.log('Tentative de basculement de l\'état de la caméra');
 
-        // Informer les autres participants
+    try {
+      // Si nous n'avons pas de flux local, créer un nouveau
+      if (!localStream) {
+        console.log('Aucun flux local disponible, création d\'un nouveau flux');
+
+        try {
+          // Obtenir un nouveau flux vidéo uniquement d'abord
+          const videoStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              frameRate: { ideal: 30 }
+            },
+            audio: false
+          });
+
+          // Puis obtenir un flux audio si nécessaire
+          let combinedStream;
+
+          if (audioEnabled) {
+            try {
+              const audioStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                  echoCancellation: true,
+                  noiseSuppression: true,
+                  autoGainControl: true
+                }
+              });
+
+              // Créer un nouveau MediaStream combiné
+              combinedStream = new MediaStream();
+
+              // Ajouter toutes les pistes vidéo
+              videoStream.getVideoTracks().forEach(track => {
+                combinedStream.addTrack(track);
+              });
+
+              // Ajouter toutes les pistes audio
+              audioStream.getAudioTracks().forEach(track => {
+                combinedStream.addTrack(track);
+              });
+            } catch (audioError) {
+              console.error('Erreur lors de l\'obtention du flux audio:', audioError);
+              // Utiliser uniquement le flux vidéo en cas d'échec
+              combinedStream = videoStream;
+            }
+          } else {
+            combinedStream = videoStream;
+          }
+
+          // Mettre à jour le flux local
+          setLocalStream(combinedStream);
+
+          // Mettre à jour la vidéo locale
+          if (localVideoRef.current) {
+            // Arrêter toute lecture en cours
+            if (!localVideoRef.current.paused) {
+              localVideoRef.current.pause();
+            }
+
+            // Définir la nouvelle source
+            localVideoRef.current.srcObject = combinedStream;
+
+            // Forcer la lecture avec gestion d'erreur
+            try {
+              await localVideoRef.current.play();
+              console.log('Lecture de la vidéo locale démarrée avec succès');
+            } catch (playError) {
+              console.error('Erreur lors de la lecture de la vidéo locale:', playError);
+              // Réessayer après un court délai
+              setTimeout(async () => {
+                try {
+                  await localVideoRef.current.play();
+                  console.log('Lecture de la vidéo locale démarrée avec succès (2e tentative)');
+                } catch (retryError) {
+                  console.error('Échec de la seconde tentative de lecture vidéo:', retryError);
+                }
+              }, 500);
+            }
+          }
+
+          // Activer la vidéo
+          setVideoEnabled(true);
+
+          // Informer les autres participants
+          if (socketRef.current && socketRef.current.connected) {
+            socketRef.current.emit('media-state-change', {
+              audio: audioEnabled,
+              video: true
+            });
+          }
+
+          toast.success('Caméra activée avec succès');
+          return;
+        } catch (error) {
+          console.error('Erreur lors de la création d\'un nouveau flux:', error);
+          toast.error(`Impossible d'accéder à la caméra: ${error.message}`);
+          return;
+        }
+      }
+
+      // Obtenir les pistes vidéo
+      const videoTracks = localStream.getVideoTracks();
+
+      // Si nous n'avons pas de pistes vidéo, en obtenir de nouvelles
+      if (videoTracks.length === 0) {
+        console.log('Aucune piste vidéo trouvée, tentative d\'obtention d\'une nouvelle piste');
+
+        try {
+          // Obtenir un nouveau flux vidéo uniquement
+          const videoStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              frameRate: { ideal: 30 }
+            }
+          });
+
+          // Ajouter les pistes vidéo au flux existant
+          videoStream.getVideoTracks().forEach(track => {
+            localStream.addTrack(track);
+          });
+
+          // Mettre à jour l'élément vidéo
+          if (localVideoRef.current) {
+            // Arrêter toute lecture en cours
+            if (!localVideoRef.current.paused) {
+              localVideoRef.current.pause();
+            }
+
+            // Définir la nouvelle source
+            localVideoRef.current.srcObject = localStream;
+
+            // Forcer la lecture avec gestion d'erreur
+            try {
+              await localVideoRef.current.play();
+              console.log('Lecture de la vidéo locale démarrée avec succès');
+            } catch (playError) {
+              console.error('Erreur lors de la lecture de la vidéo locale:', playError);
+            }
+          }
+
+          // Activer la vidéo
+          setVideoEnabled(true);
+
+          // Informer les autres participants
+          if (socketRef.current && socketRef.current.connected) {
+            socketRef.current.emit('media-state-change', {
+              audio: audioEnabled,
+              video: true
+            });
+          }
+
+          toast.success('Caméra activée avec succès');
+          return;
+        } catch (error) {
+          console.error('Erreur lors de l\'obtention d\'une nouvelle piste vidéo:', error);
+          toast.error(`Impossible d'accéder à la caméra: ${error.message}`);
+          return;
+        }
+      }
+
+      // Inverser l'état de la vidéo
+      const newVideoState = !videoEnabled;
+
+      // Appliquer le nouvel état à toutes les pistes vidéo
+      videoTracks.forEach(track => {
+        track.enabled = newVideoState;
+        console.log(`Piste vidéo ${track.label} ${newVideoState ? 'activée' : 'désactivée'}`);
+      });
+
+      // Mettre à jour l'état global
+      setVideoEnabled(newVideoState);
+
+      // Informer les autres participants
+      if (socketRef.current && socketRef.current.connected) {
         socketRef.current.emit('media-state-change', {
           audio: audioEnabled,
-          video: !videoEnabled
+          video: newVideoState
         });
-
-        // Feedback visuel
-        toast.info(`Caméra ${!videoEnabled ? 'activée' : 'désactivée'}`);
       }
+
+      // Feedback visuel
+      toast.info(`Caméra ${newVideoState ? 'activée' : 'désactivée'}`);
+
+    } catch (error) {
+      console.error('Erreur lors du basculement de l\'état de la caméra:', error);
+      toast.error(`Erreur: ${error.message}`);
     }
   };
+
+
 
   // Fonction pour quitter la réunion
   const leaveMeeting = () => {
@@ -1544,6 +2478,18 @@ const MeetingRoom = () => {
             ref={el => {
               if (el && participant.stream && el.srcObject !== participant.stream) {
                 el.srcObject = participant.stream;
+
+                // Forcer la lecture de la vidéo
+                el.play().catch(error => {
+                  console.error(`Erreur lors de la lecture de la vidéo pour ${participant.name}:`, error);
+
+                  // Réessayer après un court délai
+                  setTimeout(() => {
+                    el.play().catch(e =>
+                      console.error(`Échec de la seconde tentative de lecture pour ${participant.name}:`, e)
+                    );
+                  }, 1000);
+                });
               }
             }}
             autoPlay
@@ -1714,10 +2660,17 @@ const MeetingRoom = () => {
                   <div className="local-video-container screen-sharing">
                     <video
                       ref={localVideoRef}
-                      autoPlay
-                      playsInline
-                      muted
+                      autoPlay={true}
+                      playsInline={true}
+                      muted={true}
+                      controls={false}
+                      width="100%"
+                      height="100%"
                       className="local-video screen-sharing-video"
+                      onLoadedMetadata={(e) => {
+                        console.log('Vidéo de partage d\'écran chargée, tentative de lecture');
+                        e.target.play().catch(err => console.error('Erreur lors de la lecture de la vidéo de partage d\'écran:', err));
+                      }}
                     />
                     <div className="local-info">
                       <span>
@@ -1737,17 +2690,32 @@ const MeetingRoom = () => {
                       <video
                         ref={el => {
                           if (el && participant.stream && el.srcObject !== participant.stream) {
+                            console.log(`Attachement du flux du participant ${participant.name} à l'élément vidéo`);
                             el.srcObject = participant.stream;
 
-                            // Ajouter un gestionnaire d'événements pour détecter les problèmes de lecture
-                            el.onerror = (e) => console.error('Erreur de lecture vidéo:', e);
-
-                            // Forcer la lecture
-                            el.play().catch(e => console.error('Erreur lors de la lecture:', e));
+                            // Ajouter des gestionnaires d'événements pour détecter les problèmes et succès
+                            el.onerror = (e) => console.error(`Erreur de lecture vidéo pour ${participant.name}:`, e);
+                            el.onloadedmetadata = () => {
+                              console.log(`Métadonnées chargées pour la vidéo de ${participant.name}, tentative de lecture`);
+                              el.play()
+                                .then(() => console.log(`Lecture démarrée pour ${participant.name}`))
+                                .catch(e => {
+                                  console.error(`Erreur lors de la lecture pour ${participant.name}:`, e);
+                                  // Nouvelle tentative après un court délai
+                                  setTimeout(() => {
+                                    console.log(`Nouvelle tentative de lecture pour ${participant.name}`);
+                                    el.play().catch(err => console.error(`Échec de la nouvelle tentative pour ${participant.name}:`, err));
+                                  }, 1000);
+                                });
+                            };
                           }
                         }}
-                        autoPlay
-                        playsInline
+                        autoPlay={true}
+                        playsInline={true}
+                        muted={false}
+                        controls={false}
+                        width="100%"
+                        height="100%"
                         className="participant-video screen-sharing-video"
                       />
                       <div className="participant-info">
@@ -1806,7 +2774,11 @@ const MeetingRoom = () => {
                           <video
                             ref={el => {
                               if (el && participant.stream && el.srcObject !== participant.stream) {
+                                console.log(`Attachement du flux pour ${participant.name} à l'élément vidéo`);
                                 el.srcObject = participant.stream;
+                                el.play().catch(error => {
+                                  console.error(`Erreur lors de la lecture de la vidéo pour ${participant.name}:`, error);
+                                });
                               }
                             }}
                             autoPlay
@@ -1839,11 +2811,27 @@ const MeetingRoom = () => {
                 <div className="local-video-container">
                   <video
                     ref={localVideoRef}
-                    autoPlay
-                    playsInline
-                    muted
+                    autoPlay={true}
+                    playsInline={true}
+                    muted={true}
+                    controls={false}
+                    width="100%"
+                    height="100%"
                     className={`local-video ${!videoEnabled ? 'video-off' : ''}`}
+                    onLoadedMetadata={(e) => {
+                      console.log('Vidéo locale chargée, tentative de lecture');
+                      e.target.play().catch(err => console.error('Erreur lors de la lecture de la vidéo locale:', err));
+                    }}
                   />
+                  {videoEnabled && faceDetectionEnabled && (
+                    <FaceDetection
+                      videoRef={localVideoRef}
+                      onExpressionDetected={(expression, probability) => {
+                        console.log(`Expression détectée: ${expression} avec une probabilité de ${probability}`);
+                        setDetectedExpression(expression);
+                      }}
+                    />
+                  )}
                   {!videoEnabled && (
                     <div className="no-video-placeholder">
                       <span>{user.name ? user.name.charAt(0).toUpperCase() : 'V'}</span>
@@ -1854,6 +2842,18 @@ const MeetingRoom = () => {
                     <div className="media-indicators">
                       {!audioEnabled && <i className="fas fa-microphone-slash"></i>}
                       {!videoEnabled && <i className="fas fa-video-slash"></i>}
+                      {faceDetectionEnabled && <i className="fas fa-smile" title="Détection faciale activée"></i>}
+                      {detectedExpression && (
+                        <span className="detected-expression" title={`Expression détectée: ${detectedExpression}`}>
+                          {detectedExpression === 'happy' && '😊'}
+                          {detectedExpression === 'sad' && '😢'}
+                          {detectedExpression === 'angry' && '😠'}
+                          {detectedExpression === 'fearful' && '😨'}
+                          {detectedExpression === 'disgusted' && '🤢'}
+                          {detectedExpression === 'surprised' && '😲'}
+                          {detectedExpression === 'neutral' && '😐'}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1918,6 +2918,17 @@ const MeetingRoom = () => {
           </button>
 
           <button
+            className={`control-button ${faceDetectionEnabled ? 'active' : ''}`}
+            onClick={() => {
+              setFaceDetectionEnabled(!faceDetectionEnabled);
+              toast.info(`Détection faciale ${!faceDetectionEnabled ? 'activée' : 'désactivée'}`);
+            }}
+            title={faceDetectionEnabled ? "Désactiver la détection faciale" : "Activer la détection faciale"}
+          >
+            <i className="fas fa-smile"></i>
+          </button>
+
+          <button
             className="control-button end-call"
             onClick={leaveMeeting}
             title="Quitter la réunion"
@@ -1929,8 +2940,9 @@ const MeetingRoom = () => {
 
       {renderChat()}
 
-      {/* Assistant contextuel */}
+      {/* Assistant contextuel IA */}
       <MeetingAssistant
+        meetingId={meetingId}
         messages={chatMessages}
         isOpen={isAssistantOpen}
         onClose={() => setIsAssistantOpen(false)}
@@ -1940,10 +2952,12 @@ const MeetingRoom = () => {
 };
 
 // Composant pour afficher la durée de la réunion
-const MeetingTimer = ({ startTime }) => {
+function MeetingTimer({ startTime }) {
   const [duration, setDuration] = useState('00:00:00');
 
   useEffect(() => {
+    if (!startTime) return;
+
     const interval = setInterval(() => {
       const now = new Date();
       const diff = now - startTime;
@@ -1963,6 +2977,6 @@ const MeetingTimer = ({ startTime }) => {
   }, [startTime]);
 
   return <div className="timer">Durée: {duration}</div>;
-};
+}
 
 export default MeetingRoom;

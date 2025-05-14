@@ -1,0 +1,259 @@
+/* Styles pour les cartes de session */
+
+.session-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.session-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Badge "En cours" */
+.live-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #e53e3e;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* En-tête de la carte */
+.session-header {
+  padding: 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.session-header h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+  color: #2d3748;
+}
+
+.session-subject {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4299e1;
+  font-weight: 500;
+}
+
+/* Informations de la session */
+.session-info {
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.info-item svg {
+  color: #718096;
+}
+
+/* Compte à rebours */
+.session-countdown {
+  padding: 0 15px 15px;
+  color: #805ad5;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Actions */
+.session-actions {
+  padding: 15px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.join-button {
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.join-button:hover {
+  background-color: #c53030;
+}
+
+.invitation-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.accept-button, .decline-button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.accept-button {
+  background-color: #48bb78;
+  color: white;
+  border: none;
+}
+
+.accept-button:hover {
+  background-color: #38a169;
+}
+
+.decline-button {
+  background-color: #f7fafc;
+  color: #718096;
+  border: 1px solid #e2e8f0;
+}
+
+.decline-button:hover {
+  background-color: #edf2f7;
+}
+
+.details-button {
+  background: none;
+  border: none;
+  color: #4299e1;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.details-button:hover {
+  text-decoration: underline;
+}
+
+/* Badges de statut */
+.status-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.status-badge.accepted {
+  background-color: #c6f6d5;
+  color: #38a169;
+}
+
+.status-badge.declined {
+  background-color: #fed7d7;
+  color: #e53e3e;
+}
+
+/* Détails de la session */
+.session-details {
+  padding: 15px;
+  background-color: #f7fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.details-section {
+  margin-bottom: 15px;
+}
+
+.details-section:last-child {
+  margin-bottom: 0;
+}
+
+.details-section h4 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  color: #2d3748;
+}
+
+.details-section p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+/* Liste des participants */
+.participants-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.participant {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.status-indicator .accepted {
+  color: #38a169;
+}
+
+.status-indicator .declined {
+  color: #e53e3e;
+}
+
+.status-indicator .pending {
+  color: #ed8936;
+  font-size: 0.8rem;
+}
+
+/* États spéciaux de la carte */
+.session-card.live {
+  border-color: #e53e3e;
+}
+
+.session-card.ended {
+  opacity: 0.7;
+}

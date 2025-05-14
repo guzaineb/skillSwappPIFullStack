@@ -11,10 +11,8 @@ const initializeMeetingSocket = (io) => {
     socket.on('join-meeting', async ({ meetingId, user }) => {
       try {
         console.log(`${user.name} (${socket.id}) rejoint la réunion ${meetingId}`);
-
         // Vérifier si la réunion existe
         let meeting = await Meeting.findOne({ meetingId });
-
         // Si la réunion n'existe pas, la créer automatiquement
         if (!meeting) {
           console.log(`Réunion ${meetingId} non trouvée, création automatique`);
@@ -103,13 +101,24 @@ const initializeMeetingSocket = (io) => {
           meetingRooms.set(meetingId, new Map());
         }
 
-        // Ajouter le participant à la map
+        // Ajouter le participant à la map avec des états média explicites
+        const initialAudio = user.audio !== undefined ? user.audio : true;
+        const initialVideo = user.video !== undefined ? user.video : true;
+
+        console.log(`Ajout du participant ${user.name} (${socket.id}) à la réunion ${meetingId} avec audio=${initialAudio}, video=${initialVideo}`);
+
         meetingRooms.get(meetingId).set(socket.id, {
           socketId: socket.id,
           userId: user._id,
           name: user.name,
-          audio: true,
-          video: true
+          audio: initialAudio,
+          video: initialVideo,
+          deviceStatus: {
+            hasCamera: true,
+            hasMicrophone: true,
+            cameraActive: initialVideo,
+            microphoneActive: initialAudio
+          }
         });
 
         // Informer le nouveau participant des participants existants
@@ -301,20 +310,52 @@ const initializeMeetingSocket = (io) => {
     // Mise à jour de l'état audio/vidéo
     socket.on('media-state-change', ({ audio, video }) => {
       const { meetingId } = socket.data || {};
+      console.log(`Changement d'état média pour ${socket.id}: audio=${audio}, video=${video}, meetingId=${meetingId}`);
 
       if (meetingId && meetingRooms.has(meetingId)) {
         const participant = meetingRooms.get(meetingId).get(socket.id);
 
         if (participant) {
+          // Mettre à jour l'état du participant
           participant.audio = audio;
           participant.video = video;
 
+          console.log(`État du participant ${participant.name} mis à jour: audio=${audio}, video=${video}`);
+
+          // Informer les autres participants du changement
           socket.to(meetingId).emit('user-media-changed', {
             socketId: socket.id,
             audio,
             video
           });
+
+          // Enregistrer l'événement dans la base de données
+          try {
+            Meeting.findOneAndUpdate(
+              { meetingId },
+              {
+                $push: {
+                  events: {
+                    type: 'media-change',
+                    userId: participant.userId || null,
+                    socketId: socket.id,
+                    userName: participant.name || 'Utilisateur',
+                    audio,
+                    video,
+                    timestamp: new Date()
+                  }
+                }
+              }
+            ).exec();
+            console.log(`Événement de changement média enregistré pour ${socket.id} dans la réunion ${meetingId}`);
+          } catch (dbError) {
+            console.error('Erreur lors de l\'enregistrement de l\'événement de changement média:', dbError);
+          }
+        } else {
+          console.warn(`Participant ${socket.id} non trouvé dans la réunion ${meetingId}`);
         }
+      } else {
+        console.warn(`Réunion ${meetingId} non trouvée pour le changement d'état média`);
       }
     });
 

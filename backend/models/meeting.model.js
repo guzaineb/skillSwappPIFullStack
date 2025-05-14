@@ -52,6 +52,21 @@ const MeetingSchema = new mongoose.Schema({
       default: false
     }
   },
+  messages: [{
+    sender: String,
+    text: String,
+    timestamp: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  aiAnalysis: {
+    lastUpdated: Date,
+    keyPoints: [String],
+    questions: [String],
+    actions: [String],
+    summary: String
+  },
   isActive: {
     type: Boolean,
     default: true

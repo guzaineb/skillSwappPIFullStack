@@ -1,127 +1,194 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { CheckCircle, Clock } from 'lucide-react';
+import { useSkillStore } from '../../store/skillStore';
+import {
+  CheckCircle,
+  Clock,
+  BookOpen,
+  Award,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Video,
+  Link as LinkIcon,
+  FileText,
+  ExternalLink,
+  Star,
+  Users
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 import mongoose from 'mongoose';
 import SkillResponses from './SkillResponses';
+import DOMPurify from 'dompurify';
+import { motion } from 'framer-motion';
 
+/**
+ * Composant de lecture et progression dans une compétence
+ */
 const SkillReader = () => {
   const { user } = useAuthStore();
+  const { fetchSkillById, markLessonAsRead, generateCertificate } = useSkillStore();
   const { id: skillId } = useParams();
+
   const [skill, setSkill] = useState(null);
   const [progress, setProgress] = useState(null);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [certificateUrl, setCertificateUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('content'); // 'content', 'resources', 'discussion'
+  const [isCompletingLesson, setIsCompletingLesson] = useState(false);
 
+  // Calcul des valeurs dérivées
   const totalLessons = skill?.lessons?.length || 0;
   const currentLesson = skill?.lessons?.[currentLessonIndex];
+  const isLessonCompleted = progress?.completedLessons?.includes(currentLesson?._id?.toString());
+  const isLastLesson = currentLessonIndex === totalLessons - 1;
+  const isFirstLesson = currentLessonIndex === 0;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Validation renforcée de l'ID
-      if (!skillId || typeof skillId !== 'string' || !mongoose.Types.ObjectId.isValid(skillId)) {
-        setError("ID de compétence invalide");
-        setIsLoading(false);
-        toast.error("L'identifiant de la compétence est incorrect");
-        return;
-      }
+  // Calcul du pourcentage de progression
+  const percentage = progress?.completedLessons?.length && totalLessons > 0
+    ? Math.round((progress.completedLessons.length / totalLessons) * 100)
+    : 0;
 
-
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const [skillRes, progressRes] = await Promise.all([
-          axios.get(`http://localhost:5000/api/skill/skills/${skillId}`),
-          user?._id && axios.get(`http://localhost:5000/api/skill/progress/${user._id}/${skillId}`)
-        ]);
-
-        if (!skillRes.data) {
-          throw new Error("Compétence non trouvée");
-        }
-
-        setSkill(skillRes.data);
-
-        if (progressRes?.data) {
-          setProgress(progressRes.data);
-
-          // Find first incomplete lesson
-          const nextIncompleteIndex = skillRes.data.lessons.findIndex(
-            lesson => !progressRes.data.completedLessons?.includes(lesson._id.toString())
-          );
-
-          setCurrentLessonIndex(
-            nextIncompleteIndex !== -1 ? nextIncompleteIndex :
-              skillRes.data.lessons.length > 0 ? skillRes.data.lessons.length - 1 : 0
-          );
-
-          if (progressRes.data.isCompleted) {
-            // Check for existing certificate
-            try {
-              const certRes = await axios.get(
-                `http://localhost:5000/api/certificates/${user._id}/${skillId}`
-              );
-              setCertificateUrl(certRes.data.certificateUrl);
-            } catch (certErr) {
-              console.log("No certificate found yet");
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Erreur de chargement:", err);
-        setError(err.response?.data?.message || err.message || "Erreur de chargement");
-        toast.error("Erreur de chargement des données");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [skillId, user?._id]);
-
-  const handleCompleteLesson = async () => {
-    if (!user?._id || !skillId) return;
+  // Fonction pour charger les données de la compétence et de la progression
+  const fetchData = useCallback(async () => {
+    // Validation de l'ID de la compétence
+    if (!skillId || typeof skillId !== 'string' || !mongoose.Types.ObjectId.isValid(skillId)) {
+      setError("ID de compétence invalide");
+      setIsLoading(false);
+      toast.error("L'identifiant de la compétence est incorrect");
+      return;
+    }
 
     try {
-      // Mark skill as read (backend will handle lesson completion)
-      const res = await axios.post('http://localhost:5000/api/skill/read-skill', {
-        userId: user._id,
-        skillId: skillId
-      });
+      setIsLoading(true);
+      setError(null);
 
-      // Update local state
-      const updatedProgress = res.data.progress;
-      setProgress(updatedProgress);
+      // Récupération de la compétence
+      const skillData = await fetchSkillById(skillId);
+      setSkill(skillData);
 
-      if (updatedProgress.isCompleted) {
-        setCertificateUrl(res.data.certificateUrl ||
-          `http://localhost:5000/certificates/${user._id}_${skillId}.pdf`);
+      // Si l'utilisateur est connecté, récupérer sa progression
+      if (user?._id) {
+        try {
+          const progressData = await fetch(`http://localhost:5000/api/skill/progress/${user._id}/${skillId}`)
+            .then(res => res.json());
+
+          setProgress(progressData);
+
+          // Trouver la première leçon non complétée
+          if (progressData && skillData?.lessons?.length > 0) {
+            const nextIncompleteIndex = skillData.lessons.findIndex(
+              lesson => !progressData.completedLessons?.includes(lesson._id.toString())
+            );
+
+            // Si toutes les leçons sont complétées, afficher la dernière
+            setCurrentLessonIndex(
+              nextIncompleteIndex !== -1 ? nextIncompleteIndex :
+                skillData.lessons.length - 1
+            );
+
+            // Vérifier si un certificat existe pour cette compétence
+            if (progressData.isCompleted) {
+              try {
+                const certResponse = await fetch(
+                  `http://localhost:5000/api/certificates/${user._id}/${skillId}`
+                ).then(res => res.json());
+
+                setCertificateUrl(certResponse.certificateUrl);
+              } catch (certErr) {
+                console.log("Aucun certificat trouvé");
+              }
+            }
+          }
+        } catch (progressErr) {
+          console.log("Aucune progression trouvée pour cet utilisateur");
+        }
+      }
+    } catch (err) {
+      console.error("Erreur de chargement:", err);
+      setError(err.message || "Erreur de chargement");
+      toast.error("Erreur de chargement des données");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [skillId, user?._id, fetchSkillById]);
+
+  // Chargement initial des données
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Fonction pour marquer une leçon comme complétée
+  const handleCompleteLesson = async () => {
+    if (!user?._id || !skillId || !currentLesson?._id || isLessonCompleted) return;
+
+    setIsCompletingLesson(true);
+    try {
+      // Marquer la leçon comme lue
+      const response = await markLessonAsRead(user._id, skillId, currentLesson._id);
+
+      // Mettre à jour la progression locale
+      setProgress(response.progress);
+
+      // Si la compétence est complétée, générer un certificat
+      if (response.progress.isCompleted) {
+        try {
+          const certResponse = await generateCertificate(user._id, skillId);
+          setCertificateUrl(certResponse.certificateUrl);
+          toast.success("Félicitations ! Vous avez terminé cette compétence 🎉");
+        } catch (certErr) {
+          console.error("Erreur lors de la génération du certificat:", certErr);
+        }
       }
 
-      // Move to next lesson if not completed
-      if (!updatedProgress.isCompleted) {
-        const nextIndex = skill.lessons.findIndex(
-          lesson => !updatedProgress.completedLessons.includes(lesson._id.toString())
-        );
-        if (nextIndex !== -1) {
-          setCurrentLessonIndex(nextIndex);
-        }
+      // Passer à la leçon suivante si ce n'est pas la dernière
+      if (!isLastLesson && !response.progress.isCompleted) {
+        setCurrentLessonIndex(currentIndex => currentIndex + 1);
       }
 
       toast.success("Progression enregistrée");
     } catch (error) {
       console.error("Erreur:", error);
-      toast.error(error.response?.data?.message || "Erreur lors de la mise à jour");
+      toast.error(error.message || "Erreur lors de la mise à jour de la progression");
+    } finally {
+      setIsCompletingLesson(false);
     }
   };
 
-  const percentage = progress?.completedLessons?.length && totalLessons > 0
-    ? Math.round((progress.completedLessons.length / totalLessons) * 100)
-    : 0;
+  // Fonction pour naviguer vers la leçon précédente
+  const goToPreviousLesson = () => {
+    if (!isFirstLesson) {
+      setCurrentLessonIndex(currentIndex => currentIndex - 1);
+    }
+  };
+
+  // Fonction pour naviguer vers la leçon suivante
+  const goToNextLesson = () => {
+    if (!isLastLesson) {
+      setCurrentLessonIndex(currentIndex => currentIndex + 1);
+    }
+  };
+
+  // Fonction pour formater la durée en heures et minutes
+  const formatDuration = (minutes) => {
+    if (!minutes) return "Durée inconnue";
+
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    if (hours > 0) {
+      return `${hours}h${mins > 0 ? ` ${mins}min` : ''}`;
+    }
+    return `${mins} min`;
+  };
+
+  // Fonction pour rendre le contenu HTML sécurisé
+  const renderSafeHTML = (content) => {
+    return { __html: DOMPurify.sanitize(content) };
+  };
 
   if (isLoading) {
     return (
@@ -216,7 +283,6 @@ const SkillReader = () => {
           )}
         </div>
       )}
-
       {progress?.isCompleted && (
         <div className="bg-green-50 p-4 text-center rounded-lg mt-4">
           <p className="text-green-700 font-semibold flex items-center justify-center">

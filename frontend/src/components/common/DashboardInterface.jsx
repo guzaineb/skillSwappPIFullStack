@@ -4,12 +4,10 @@ import { Camera } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
 import { Outlet, Link } from "react-router-dom";
-
 export default function DashboardInterface() {
   const { user, isUpdatingProfile, isAuthenticated, updateProfile, checkAuth } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
-  
   useEffect(() => {
     const verifyUser = async () => {
       try {
@@ -25,8 +23,7 @@ export default function DashboardInterface() {
     if (!isAuthenticated) { // Check only if user is not authenticated already
       verifyUser();
     }
-  }, [isAuthenticated, checkAuth]); 
-  
+  }, [isAuthenticated, checkAuth]);
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -40,11 +37,16 @@ export default function DashboardInterface() {
       await updateProfile({ profilePic: base64Image });
     };
   };
-  
-  console.log({user});
-  
+  console.log({ user });
   return (
     <>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/sessions">Sessions</Link>
+          </li>
+        </ul>
+      </nav>
       <div className="main-wrapper">
         {/* Header */}
         <Header />
@@ -110,68 +112,95 @@ export default function DashboardInterface() {
                   <div className="settings-menu">
                     <h3>Dashboard</h3>
                     <ul className="nav flex-column">
-                      <li className="nav-item">
+
+                      <li className="nav-item ">
+
                         <Link className="nav-link" to="/Profile">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           My Profile
                         </Link>
                       </li>
-                      <li className="nav-item">
+                      <li className="nav-item ">
+
                         <Link className="nav-link" to="/Profile/update-password">
-                          <i className="bx bxs-user"/>
-                          Update Password 
+                          <i className="bx bxs-user" />
+                          Update Password
                         </Link>
                       </li>
-                      <li className="nav-item">
+                      <li className="nav-item ">
+
                         <Link className="nav-link" to="/Profile/Categories">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           Categories
                         </Link>
                       </li>
-                      <li className="nav-item">
+
+                      <li className="nav-item ">
+
                         <Link className="nav-link" to="/Profile/skills">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           List skills
                         </Link>
                       </li>
-                      <li>
+                      <li >
                         <Link className="nav-link" to="/Profile/CreateQuiz">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           Create Quiz
                         </Link>
                       </li>
-                      <li>
+
+                      <li >
                         <Link className="nav-link" to="/ProfileCoursDetails">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           Cours Details
                         </Link>
                       </li>
-                      <li>
+
+                      <li >
                         <Link className="nav-link" to="/Profile/Quizzes">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           Quizzes
                         </Link>
                       </li>
-                      <li className="nav-item">
+
+                      <li className="nav-item ">
                         <Link className="nav-link" to="/Profile/Chat">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           ChatRoom
                         </Link>
                       </li>
-                      <li className="nav-item">
+
+                      <li className="nav-item ">
                         <Link className="nav-link" to="/meetings">
-                          <i className="bx bxs-video"/>
+                          <i className="bx bxs-video" />
                           Meetings
+                        </Link>
+                      </li>
+
+                      <li className="nav-item ">
+                        <Link className="nav-link" to="/Profile/scheduled-sessions">
+                          <i className="bx bxs-calendar-alt" />
+                          Sessions planifiées
+                        </Link>
+                      </li>
+
+                      <li className="nav-item ">
+                        <Link className="nav-link" to="/Profile/discover-users">
+                          <i className="bx bxs-group" />
+                          Découvrir des utilisateurs
                         </Link>
                       </li>
                       {/* Additional list items */}
                     </ul>
+
                   </div>
                 </div>
               </div>
               {/* /Sidebar */}
               <div className="col-xl-9 col-lg-9">
-                <Outlet/>
+
+                <Outlet />
+
               </div>
             </div>
           </div>
@@ -182,5 +211,5 @@ export default function DashboardInterface() {
         {/* /Footer */}
       </div>
     </>
-  );
+  )
 }

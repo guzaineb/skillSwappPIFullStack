@@ -57,26 +57,45 @@ const AdvancedChatBot = ({ userId = 'anonymous' }) => {
   // Charger l'historique des messages
   const loadHistory = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/advanced-chatbot/history/${userId}`);
-      const formattedMessages = response.data.map(msg => ({
-        text: msg.content,
-        isBot: msg.role === 'assistant',
-        timestamp: new Date(msg.timestamp)
-      }));
-      setMessages(formattedMessages);
+      // Nous utilisons maintenant le modèle ChatbotMessage via notre API de chatbot
+      const response = await axios.get(`http://localhost:5000/api/chatbot/history/${userId}`);
+      if (response.data && Array.isArray(response.data)) {
+        const formattedMessages = response.data.map(msg => ({
+          text: msg.content,
+          isBot: msg.role === 'assistant',
+          timestamp: new Date(msg.timestamp)
+        }));
+        setMessages(formattedMessages);
+      } else {
+        // Si aucun historique n'est disponible, afficher un message de bienvenue
+        setMessages([{
+          text: "Bienvenue sur l'Assistant SkillExchange ! Comment puis-je vous aider aujourd'hui ?",
+          isBot: true,
+          timestamp: new Date()
+        }]);
+      }
     } catch (error) {
       console.error('Erreur lors du chargement de l\'historique:', error);
+      // En cas d'erreur, afficher un message de bienvenue
+      setMessages([{
+        text: "Bienvenue sur l'Assistant SkillExchange ! Comment puis-je vous aider aujourd'hui ?",
+        isBot: true,
+        timestamp: new Date()
+      }]);
     }
   };
 
   // Charger les suggestions
   const loadSuggestions = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/advanced-chatbot/suggestions');
-      setSuggestions(response.data);
-    } catch (error) {
-      console.error('Erreur lors du chargement des suggestions:', error);
-    }
+    // Utiliser des suggestions statiques puisque nous n'avons plus d'endpoint spécifique
+    const defaultSuggestions = [
+      { text: "Comment fonctionne SkillExchange ?" },
+      { text: "Je veux apprendre le JavaScript" },
+      { text: "Je propose des cours de piano" },
+      { text: "Quelles compétences sont disponibles ?" },
+      { text: "Comment suivre ma progression ?" }
+    ];
+    setSuggestions(defaultSuggestions);
   };
 
   // Envoyer un message
@@ -97,17 +116,20 @@ const AdvancedChatBot = ({ userId = 'anonymous' }) => {
     setShowSuggestions(false);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/advanced-chatbot/message', {
+      const response = await axios.post('http://localhost:5000/api/chatbot/chat', {
         message: input,
-        userId
+        userId,
+        username: 'Utilisateur',
+        context: {
+          page: window.location.pathname
+        }
       });
 
       const botMessage = {
-        text: response.data.text,
+        text: response.data.reply,
         isBot: true,
-        intent: response.data.intent,
-        confidence: response.data.confidence,
-        timestamp: new Date()
+        timestamp: new Date(),
+        isOpenAI: !response.data.fallback // Indiquer si la réponse vient d'OpenAI ou du système de secours
       };
 
       setMessages(prev => [...prev, botMessage]);
@@ -136,10 +158,21 @@ const AdvancedChatBot = ({ userId = 'anonymous' }) => {
   // Effacer l'historique
   const clearHistory = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/advanced-chatbot/history/${userId}`);
-      setMessages([]);
+      // Nous utilisons maintenant notre API de chatbot
+      await axios.delete(`http://localhost:5000/api/chatbot/history/${userId}`);
+      setMessages([{
+        text: "Historique effacé. Comment puis-je vous aider aujourd'hui ?",
+        isBot: true,
+        timestamp: new Date()
+      }]);
     } catch (error) {
       console.error('Erreur lors de la suppression de l\'historique:', error);
+      // Afficher un message d'erreur à l'utilisateur
+      setMessages(prev => [...prev, {
+        text: "Désolé, je n'ai pas pu effacer l'historique. Veuillez réessayer plus tard.",
+        isBot: true,
+        timestamp: new Date()
+      }]);
     }
   };
 
@@ -229,7 +262,11 @@ const AdvancedChatBot = ({ userId = 'anonymous' }) => {
                     <div className="bubble">{msg.text}</div>
                     <div className="message-time">{formatTime(msg.timestamp)}</div>
                   </div>
-                  {msg.isBot && <div className="avatar bot-avatar"><Bot size={18} /></div>}
+                  {msg.isBot && (
+                    <div className="avatar bot-avatar" title={msg.isOpenAI === false ? "Réponse générée localement" : "Réponse OpenAI"}>
+                      <Bot size={18} color={msg.isOpenAI === false ? "#ff9800" : "#0078d7"} />
+                    </div>
+                  )}
                 </div>
               ))
             )}

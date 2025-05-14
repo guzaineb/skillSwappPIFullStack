@@ -1,0 +1,304 @@
+/* Styles pour la page de détail des compétences */
+.skill-detail-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Styles pour les cartes */
+.card {
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 20px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 15px 20px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Styles pour les titres */
+h1.card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  color: #2c3e50;
+}
+
+h3.h5 {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0;
+}
+
+h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+/* Styles pour la barre de progression */
+.progress {
+  height: 20px;
+  border-radius: 10px;
+  background-color: #e9ecef;
+  overflow: hidden;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: width 0.6s ease;
+}
+
+.bg-info {
+  background-color: #4e73df !important;
+}
+
+.bg-success {
+  background-color: #1cc88a !important;
+}
+
+/* Styles pour les informations de la compétence */
+.skill-info {
+  margin-bottom: 20px;
+}
+
+.skill-info .d-flex {
+  margin-bottom: 10px;
+}
+
+.skill-info .text-primary {
+  color: #4e73df !important;
+}
+
+/* Styles pour les badges */
+.badge {
+  padding: 6px 10px;
+  font-weight: 500;
+  border-radius: 5px;
+  font-size: 0.75rem;
+}
+
+.badge.bg-success {
+  background-color: #1cc88a !important;
+}
+
+.badge.bg-warning {
+  background-color: #f6c23e !important;
+}
+
+.badge.bg-primary {
+  background-color: #4e73df !important;
+}
+
+/* Styles pour les boutons */
+.btn {
+  padding: 10px 20px;
+  font-weight: 500;
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background-color: #4e73df;
+  border-color: #4e73df;
+}
+
+.btn-primary:hover {
+  background-color: #2e59d9;
+  border-color: #2e59d9;
+}
+
+.btn-outline-primary {
+  color: #4e73df;
+  border-color: #4e73df;
+}
+
+.btn-outline-primary:hover {
+  background-color: #4e73df;
+  color: white;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Styles pour les alertes */
+.alert {
+  border-radius: 5px;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.alert-success {
+  background-color: #e8f5e9;
+  color: #1e7e34;
+  border-color: #c3e6cb;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border-color: #ffeeba;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+/* Styles pour la liste des leçons */
+.list-group-item {
+  border: none;
+  padding: 12px 15px;
+  margin-bottom: 5px;
+  border-radius: 5px !important;
+  transition: all 0.2s;
+}
+
+.list-group-item-action {
+  cursor: pointer;
+}
+
+.list-group-item-action:hover {
+  background-color: #f8f9fa;
+}
+
+.list-group-item-action.active {
+  background-color: #4e73df;
+  border-color: #4e73df;
+}
+
+/* Styles pour le contenu des leçons */
+.lesson-content {
+  padding: 10px;
+}
+
+.lesson-text {
+  line-height: 1.6;
+  color: #333;
+}
+
+.lesson-text p {
+  margin-bottom: 15px;
+}
+
+/* Styles pour les ressources */
+.resources {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.resources h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.resources .list-group-item {
+  background-color: transparent;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.resources .list-group-item:last-child {
+  border-bottom: none;
+}
+
+.resources a {
+  color: #4e73df;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.resources a:hover {
+  color: #2e59d9;
+  text-decoration: underline;
+}
+
+/* Styles pour les objectifs et prérequis */
+.list-group-flush .list-group-item {
+  padding-left: 0;
+  padding-right: 0;
+  background-color: transparent;
+}
+
+/* Styles pour les icônes */
+.text-success {
+  color: #1cc88a !important;
+}
+
+.text-info {
+  color: #36b9cc !important;
+}
+
+/* Styles pour les images */
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Styles pour le chargement */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  color: #4e73df;
+}
+
+/* Styles responsifs */
+@media (max-width: 992px) {
+  .col-lg-4, .col-lg-8 {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .col-md-4, .col-md-8 {
+    margin-bottom: 20px;
+  }
+  
+  .col-md-4 {
+    margin-bottom: 20px;
+  }
+  
+  .lesson-content {
+    padding: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-body {
+    padding: 15px;
+  }
+  
+  h1.card-title {
+    font-size: 1.3rem;
+  }
+  
+  .btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+}

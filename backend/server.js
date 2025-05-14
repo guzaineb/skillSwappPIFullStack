@@ -32,7 +32,7 @@ const meetingRoutes = require('./routes/meeting.routes');
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/meetings', meetingRoutes);
-
+app.use('/api/openai', openaiRoutes);
 // Route de test
 app.get('/', (req, res) => {
   res.send('API en ligne');

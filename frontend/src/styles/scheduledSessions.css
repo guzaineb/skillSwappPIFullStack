@@ -1,0 +1,210 @@
+/* Styles pour la page des sessions planifiées */
+
+.scheduled-sessions-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* En-tête */
+.sessions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sessions-header h1 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sessions-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.create-session-btn, .join-session-btn {
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.create-session-btn {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+}
+
+.create-session-btn:hover {
+  background-color: #3182ce;
+}
+
+.join-session-btn {
+  background-color: #f7fafc;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+.join-session-btn:hover {
+  background-color: #edf2f7;
+}
+
+/* Barre de recherche */
+.sessions-search-bar {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  padding: 0 15px;
+}
+
+.search-input svg {
+  color: #a0aec0;
+  margin-right: 10px;
+}
+
+.search-input input {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+.search-input input:focus {
+  outline: none;
+}
+
+/* Onglets */
+.sessions-tabs {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.sessions-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.sessions-tabs .tab {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #718096;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.sessions-tabs .tab:hover {
+  color: #4299e1;
+}
+
+.sessions-tabs .tab.active {
+  color: #4299e1;
+  border-bottom-color: #4299e1;
+}
+
+/* Grille de sessions */
+.sessions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* États de chargement et d'erreur */
+.sessions-loading, .sessions-error, .no-sessions {
+  text-align: center;
+  padding: 40px;
+  background-color: #f7fafc;
+  border-radius: 8px;
+  grid-column: 1 / -1;
+}
+
+.sessions-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(66, 153, 225, 0.2);
+  border-radius: 50%;
+  border-top-color: #4299e1;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sessions-error {
+  color: #e53e3e;
+}
+
+.sessions-error button, .no-sessions button {
+  margin-top: 15px;
+  padding: 8px 15px;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.no-sessions {
+  color: #718096;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sessions-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .sessions-actions {
+    width: 100%;
+  }
+  
+  .create-session-btn, .join-session-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .sessions-grid {
+    grid-template-columns: 1fr;
+  }
+}

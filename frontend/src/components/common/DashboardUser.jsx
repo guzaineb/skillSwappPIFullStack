@@ -5,22 +5,11 @@ import { Camera } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
 import { Outlet, Link } from "react-router-dom";
-import { fetchRandomQuote } from '../../services/quote.service';
 
 function DashboardUser() {
   const { user, isUpdatingProfile, isAuthenticated, updateProfile, checkAuth } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
-  const [quote, setQuote] = useState({ content: '', author: '' });
-
-  useEffect(() => {
-    const loadQuote = async () => {
-      const newQuote = await fetchRandomQuote();
-      setQuote(newQuote);
-    };
-    loadQuote();
-  }, []);
-
   useEffect(() => {
     const verifyUser = async () => {
       try {
@@ -50,11 +39,16 @@ function DashboardUser() {
       await updateProfile({ profilePic: base64Image });
     };
   };
-  
   console.log({ user });
-  
   return (
     <>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/sessions">Sessions</Link>
+          </li>
+        </ul>
+      </nav>
       <div className="main-wrapper">
         {/* Header */}
         <Header />
@@ -67,6 +61,7 @@ function DashboardUser() {
                   <nav aria-label="breadcrumb" className="page-breadcrumb">
                     <ol className="breadcrumb">
                       <li className="breadcrumb-item"><a href="index-2.html">Welcome to SkillSwapp</a></li>
+
                     </ol>
                   </nav>
                 </div>
@@ -74,35 +69,6 @@ function DashboardUser() {
             </div>
           </div>
         </div>
-
-        {/* Daily Motivation Quote Section */}
-        <div className="container mt-3">
-          <div className="row justify-content-center">
-            <div className="col-md-8">
-              <div className="card motivation-card">
-                <div className="card-body text-center">
-                  <h5 className="card-title">Daily Motivation</h5>
-                  <blockquote className="blockquote mb-0">
-                    <p>"{quote.content}"</p>
-                    <footer className="blockquote-footer mt-2">
-                      <cite title="Source Title">{quote.author}</cite>
-                    </footer>
-                  </blockquote>
-                  <button 
-                    className="btn btn-sm btn-outline-primary mt-3"
-                    onClick={async () => {
-                      const newQuote = await fetchRandomQuote();
-                      setQuote(newQuote);
-                    }}
-                  >
-                    New Quote
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* /Breadcrumb */}
         {/* Page Content */}
         <div className="page-content">
@@ -148,56 +114,84 @@ function DashboardUser() {
                   <div className="settings-menu">
                     <h3>Dashboard</h3>
                     <ul className="nav flex-column">
-                      <li className="nav-item">
+                      <li className="nav-item ">
+
                         <Link className="nav-link" to="/Profile1">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           Skill List
                         </Link>
                       </li>
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/Profile1/mytasks">
-                          <i className="bx bxs-user"/>
-                          My Tasks
-                        </Link>
-                      </li>
-                      <li className="nav-item">
+                      <li className="nav-item ">
+
                         <Link className="nav-link" to="/Profile1/profile2">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           My Profile
                         </Link>
                       </li>
-                      <li className="nav-item">
+                      <li className="nav-item ">
+
                         <Link className="nav-link" to="/Profile1/update-password">
-                          <i className="bx bxs-user"/>
-                          Update Password 
+                          <i className="bx bxs-user" />
+                          Update Password
                         </Link>
                       </li>
-                      <li className="nav-item">
+                      <li className="nav-item ">
+
                         <Link className="nav-link" to="/Profile1/learnskills">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           Learn new skills
                         </Link>
                       </li>
-                      <li>
+
+                      <li className="nav-item ">
+
+
+                      </li>
+                      <li >
                         <Link className="nav-link" to="/Profile1/Quiz/:id">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           Pass Quiz
                         </Link>
                       </li>
-                      <li className="nav-item">
+                      <li className="nav-item ">
                         <Link className="nav-link" to="/Profile1/Chat">
-                          <i className="bx bxs-user"/>
+                          <i className="bx bxs-user" />
                           ChatRoom
+                        </Link>
+                      </li>
+
+                      <li className="nav-item ">
+                        <Link className="nav-link" to="/Profile1/meetings">
+                          <i className="bx bxs-video" />
+                          Meetings
+                        </Link>
+                      </li>
+
+                      <li className="nav-item ">
+                        <Link className="nav-link" to="/Profile1/scheduled-sessions">
+                          <i className="bx bxs-calendar-alt" />
+                          Sessions planifiées
+                        </Link>
+                      </li>
+
+                      <li className="nav-item ">
+                        <Link className="nav-link" to="/Profile1/discover-users">
+                          <i className="bx bxs-group" />
+                          Découvrir des utilisateurs
                         </Link>
                       </li>
                       {/* Additional list items */}
                     </ul>
+
+
                   </div>
                 </div>
               </div>
               {/* /Sidebar */}
               <div className="col-xl-9 col-lg-9">
-                <Outlet/>
+
+                <Outlet />
+
               </div>
             </div>
           </div>
@@ -208,7 +202,6 @@ function DashboardUser() {
         {/* /Footer */}
       </div>
     </>
-  );
+  )
 }
-
 export default DashboardUser;

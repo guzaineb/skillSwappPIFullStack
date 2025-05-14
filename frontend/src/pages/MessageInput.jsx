@@ -328,46 +328,94 @@ const MessageInput = ({ isDarkMode }) => {
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  // Envoyer le message
+  // Ajouter une fonction pour vérifier le contenu avant l'envoi
+  const checkContentBeforeSend = async (text) => {
+    if (!text || !text.trim()) return { isInappropriate: false };
+    
+    try {
+      // Vérifier d'abord avec une liste locale de mots interdits
+      const localForbiddenWords = [
+        "tuer", "mort", "violence", "haine", "sexe", "drogue",
+        "putain", "connard", "salope", "pute", "enculé"
+      ];
+      
+      const lowerText = text.toLowerCase();
+      for (const word of localForbiddenWords) {
+        if (lowerText.includes(word)) {
+          console.log("Mot interdit détecté localement:", word);
+          return { 
+            isInappropriate: true, 
+            reason: `Le message contient un mot interdit: "${word}"` 
+          };
+        }
+      }
+      
+      // Si aucun mot interdit n'est détecté localement, vérifier avec le serveur
+      if (socket?.connected) {
+        return new Promise((resolve) => {
+          console.log("Vérification du contenu via socket:", text);
+          socket.emit('checkContent', text, (response) => {
+            console.log("Réponse de la vérification:", response);
+            resolve(response);
+          });
+        });
+      }
+      
+      // Si pas de socket, faire une vérification via API
+      const response = await axios.post('/api/check-content', { text });
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la vérification du contenu:", error);
+      return { isInappropriate: false }; // En cas d'erreur, permettre l'envoi
+    }
+  };
+
+  // Modifier la fonction handleSendMessage pour vérifier le contenu
   const handleSendMessage = async (e) => {
     e.preventDefault();
     
-    if ((!text.trim() && !imagePreview && !audioPreview && !documentPreview) || isRecording) {
+    // Vérifier si le message est vide (pas de texte et pas de fichiers)
+    const messageIsEmpty = !text.trim() && !imagePreview && !audioPreview && !documentPreview;
+    
+    if (messageIsEmpty || isRecording) {
+      console.log("Message vide ou enregistrement en cours, annulation de l'envoi");
+      if (messageIsEmpty) {
+        toast.warning("Le message ne peut pas être vide");
+      }
       return;
     }
     
-    // Vérification basique côté client pour le contenu inapproprié
-    const forbiddenWords = ["tuer", "mort", "violence", "haine"];
-    const lowerText = text.toLowerCase();
-    
-    for (const word of forbiddenWords) {
-      if (lowerText.includes(word.toLowerCase())) {
-        // Afficher l'alerte visuelle
-        setWarningMessage("Votre message contient du contenu inapproprié et ne sera pas envoyé.");
-        setShowWarning(true);
-        
-        // Synthèse vocale
-        speakWarning("Attention! Votre message contient du contenu inapproprié et ne sera pas envoyé.");
-        
-        return;
-      }
-    }
-    
     try {
-      console.log("Sending message with:", {
-        text: text.trim() || "(empty)",
-        hasImage: !!imagePreview,
-        hasAudio: !!audioPreview,
-        hasDocument: !!documentPreview
-      });
+      // Vérifier le contenu du message si du texte est présent
+      if (text.trim()) {
+        const contentCheck = await checkContentBeforeSend(text.trim());
+        
+        if (contentCheck.isInappropriate) {
+          console.log("Contenu inapproprié détecté:", contentCheck);
+          setWarningMessage(contentCheck.reason || "Votre message contient du contenu inapproprié");
+          setShowWarning(true);
+          
+          // Optionnel: utiliser la synthèse vocale pour l'avertissement
+          speakWarning(contentCheck.reason || "Votre message contient du contenu inapproprié");
+          
+          return;
+        }
+      }
       
-      await sendMessage({
-        content: text.trim(),
-        image: imagePreview,
-        audio: audioPreview,
-        document: documentPreview,
-        documentName: documentName
-      });
+      // Créer un objet avec uniquement les propriétés non vides
+      const messageData = {};
+      
+      if (text.trim()) messageData.content = text.trim();
+      if (imagePreview) messageData.image = imagePreview;
+      if (audioPreview) messageData.audio = audioPreview;
+      if (documentPreview) {
+        messageData.document = documentPreview;
+        messageData.documentName = documentName;
+      }
+      
+      console.log("Envoi du message avec:", messageData);
+      
+      await sendMessage(messageData);
       
       // Réinitialiser le formulaire
       setText("");
@@ -386,17 +434,7 @@ const MessageInput = ({ isDarkMode }) => {
       }
     } catch (error) {
       console.error("Erreur lors de l'envoi du message:", error);
-      toast.error("Échec de l'envoi du message");
-      
-      // Vérifier si l'erreur est liée à du contenu inapproprié
-      if (error.response?.data?.error && error.response.data.error.includes('contenu inapproprié')) {
-        // Afficher l'alerte visuelle
-        setWarningMessage(error.response.data.error);
-        setShowWarning(true);
-        
-        // Synthèse vocale
-        speakWarning("Attention! Votre message contient du contenu inapproprié et n'a pas été envoyé.");
-      }
+      toast.error("Erreur lors de l'envoi du message");
     }
   };
 

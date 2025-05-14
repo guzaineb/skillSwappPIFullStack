@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSkillStore } from '../../store/skillStore';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
 export const EditSkill = () => {
@@ -19,11 +20,28 @@ export const EditSkill = () => {
   });
   const [validationErrors, setValidationErrors] = useState({});
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
 
+  // Chargement des catégories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/category/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des catégories:', error);
+        toast.error('Impossible de charger les catégories');
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Chargement de la compétence à modifier
   useEffect(() => {
     const loadSkill = async () => {
       if (!id) return;
-      
+
       try {
         setLoading(true);
         const skillData = await fetchSkillById(id);
@@ -47,13 +65,13 @@ export const EditSkill = () => {
 
   const validateForm = () => {
     const errors = {};
-    
+
     if (!formData.skillname?.trim()) errors.skillname = 'Le nom est requis';
     if (!formData.category) errors.category = 'La catégorie est requise';
     if (!formData.description?.trim()) errors.description = 'La description est requise';
     if (!formData.status) errors.status = 'Le statut est requis';
     if (!formData.level) errors.level = 'Le niveau est requis';
-    
+
     if (formData.pricingType === 'paid' && (!formData.price || formData.price <= 0)) {
       errors.price = 'Un prix valide est requis pour une compétence payante';
     }
@@ -81,14 +99,40 @@ export const EditSkill = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    // Validation du formulaire avant soumission
+    if (!validateForm()) {
+      toast.error('Veuillez corriger les erreurs dans le formulaire');
+      return;
+    }
+
     try {
-      const updatedSkill = await updateSkill(id, formData);
+      console.log('Données du formulaire à soumettre:', formData);
+
+      // Préparation des leçons avec validation
+      const validatedLessons = formData.lessons.map(lesson => ({
+        title: lesson.title || 'Sans titre',
+        content: lesson.content || 'Contenu à venir',
+        duration: Number(lesson.duration) || 30,
+        order: Number(lesson.order) || 1,
+        resources: Array.isArray(lesson.resources) ? lesson.resources : []
+      }));
+
+      // Préparation des données à envoyer
+      const dataToSend = {
+        ...formData,
+        lessons: validatedLessons
+      };
+
+      console.log('Données validées à envoyer:', dataToSend);
+
+      const updatedSkill = await updateSkill(id, dataToSend);
       toast.success('Compétence mise à jour avec succès');
-      navigate('/skills');
+      navigate('/Profile/skills');
       return updatedSkill;
     } catch (error) {
-      toast.error(error.message);
+      const errorMessage = error.response?.data?.message || error.message || 'Erreur lors de la mise à jour';
+      toast.error(errorMessage);
       console.error('Erreur de mise à jour:', error);
     }
   };
@@ -114,7 +158,7 @@ export const EditSkill = () => {
       toast.warning('Au moins une leçon est requise');
       return;
     }
-    
+
     const updatedLessons = formData.lessons.filter((_, i) => i !== index);
     setFormData({ ...formData, lessons: updatedLessons });
   };
@@ -152,7 +196,11 @@ export const EditSkill = () => {
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
           >
             <option value="">Sélectionner une catégorie</option>
-            {/* Ajouter les options de catégorie ici */}
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.title}
+              </option>
+            ))}
           </select>
           {validationErrors.category && (
             <div className="invalid-feedback">{validationErrors.category}</div>
@@ -264,10 +312,10 @@ export const EditSkill = () => {
           <button type="submit" className="btn btn-primary me-2">
             Enregistrer les modifications
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="btn btn-secondary"
-            onClick={() => navigate('/skills')}
+            onClick={() => navigate('/Profile/skills')}
           >
             Annuler
           </button>
@@ -276,3 +324,5 @@ export const EditSkill = () => {
     </div>
   );
 };
+
+
